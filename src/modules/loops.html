@@ -50,181 +50,141 @@
       <section id="concept" aria-labelledby="concept-heading">
         <h2 id="concept-heading">How Loops Work in VBA</h2>
 
-        <p>When you write a macro, it runs from top to bottom — one line, then the next, then
-        the next. That works fine for a handful of actions. But what if you need to do the
-        same thing to 30 student records? Or 300? Writing the same lines of code 30 times
-        isn't just tedious — it means if you need to change something, you have to change it
-        30 times. Loops solve this. A loop lets you write the logic once and repeat it
-        automatically for as many records as you have.</p>
+        <p>When a macro runs, it executes each line once, top to bottom. That works fine for
+        a handful of actions — but if you need to process 30 student records, you don't
+        want to write the same logic 30 times. Loops let you write the code once and repeat
+        it automatically for every record in your data.</p>
 
-        <p>VBA gives you three loop structures: For Next, Do While, and Do Until. They all
-        repeat a block of code, but they differ in how they decide when to stop. Choosing
-        the right one for your situation makes your macro clearer and easier to debug.
-        For this course, the Do Until loop is the one you'll use most — especially for
-        processing rows of data where you don't know in advance how many records there are.</p>
+        <p>VBA has three loop structures: For Next, Do While, and Do Until. They all repeat
+        a block of code but differ in how they decide when to stop. For this course,
+        Do Until is the one you'll use most — it's built for processing rows of data
+        when you don't know in advance how many records there are.</p>
 
         <div class="course-tip">
           <p>The "move to next record" line at the bottom of the loop is the one students
-          forget most often. If you forget it on a Deny record, the loop runs forever on
-          that row. Write the move line before you write anything else inside the loop.</p>
+          forget most often. If you forget it, the loop processes the same row forever.
+          Write that line before you write anything else inside the loop.</p>
         </div>
 
         <!-- ── For Next ── -->
         <h3>For Next Loop</h3>
 
-        <p>The For Next loop is the right choice when you know exactly how many times the loop
-        needs to run. It uses a counter variable that starts at a number you specify, runs
-        the code inside, then increases the counter by 1, and checks if it's reached the
-        end value. If not, it runs again. If so, it stops.</p>
+        <p>Use a For Next loop when you know exactly how many times the loop needs to run.
+        It uses a counter variable that starts at a value you set, runs the code inside,
+        increments by 1, then checks if it's reached the end value. If not, it loops again.
+        You can use any variable name for the counter — <code>i</code> is conventional — and you can
+        use variables for the start and end values instead of hardcoded numbers.</p>
 
-        <p>Think of it like telling Excel: "Do this starting from step 1, and keep going until
-        you've done it 4 times." The counter variable tracks where you are. You can use any
-        variable name for the counter — <code>i</code> is common by convention — and you can use
-        variables for the start and end values instead of hardcoded numbers.</p>
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>For [counter] = [start] To [end]
+    ' your code here
+Next [counter]</pre>
+        </div>
 
-        <p>Here is what a For Next loop looks like — this example puts the numbers 1 through
-        4 into adjacent columns:</p>
+        <p>This example puts the numbers 1 through 4 into adjacent columns:</p>
 
-<pre class="code-block"><code class="language-vba">Sub ForNextLoop()
-    ' Makes cell A1 on Sheet2 the active cell
-    Sheets("Sheet2").Select
-    Range("A1").Select
-    Cells.ClearContents   ' Deletes all the cells on the worksheet
-
-    ' Goes through the loop 4 times and inserts the value of i into the selected cell
-    ' Moves to the right i number of cells
-    For i = 1 To 4
-        ActiveCell.Value = i
-        ActiveCell.Offset(0, i).Select
-    Next i
-End Sub</code></pre>
+<pre class="code-block"><code class="language-vba">For i = 1 To 4
+    ActiveCell.Value = i
+    ActiveCell.Offset(0, i).Select
+Next i</code></pre>
 
         <!-- ── Do While ── -->
         <h3>Do While Loop</h3>
 
-        <p>The Do While loop runs as long as a condition is true. Before each pass through
-        the loop, VBA checks the condition. If it's true, the code inside runs. If it's
-        false, the loop stops and VBA moves on to whatever comes after it. Importantly,
-        if the condition is already false when the loop starts, the code inside never
-        runs at all.</p>
+        <p>A Do While loop runs as long as a condition is true. VBA checks the condition
+        before each pass — if it's true, the code inside runs; if it's false, the loop
+        stops. If the condition is already false when the loop starts, the code inside
+        never runs at all. The condition must involve a variable that changes inside
+        the loop, otherwise the condition never becomes false and the loop runs forever.</p>
 
-        <p>The key word here is "while" — the loop keeps going while something is happening.
-        In the example below, the loop keeps running while <code>myNum</code> is greater than 10.
-        Each time through, <code>myNum</code> gets smaller by 1. When it hits 10, the condition
-        becomes false and the loop stops. Notice that <code>myNum</code> must change inside the loop —
-        if it never changed, the condition would stay true forever and the loop would
-        never stop.</p>
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>Do While [condition is true]
+    ' your code here
+Loop</pre>
+        </div>
 
-        <p>Here is a Do While loop that counts how many times it subtracts 1 from a number
-        before it reaches 10:</p>
+        <p>This example counts how many times it subtracts 1 from a number before
+        reaching 10:</p>
 
-<pre class="code-block"><code class="language-vba">Sub ChkFirstWhile()
-    counter = 0
-    myNum = 20
+<pre class="code-block"><code class="language-vba">myNum = 20
 
-    Do While myNum &gt; 10
-        myNum = myNum - 1
-        counter = counter + 1
-    Loop
+Do While myNum &gt; 10
+    myNum = myNum - 1
+    counter = counter + 1
+Loop
 
-    MsgBox "The loop made " &amp; counter &amp; " repetitions."
-End Sub</code></pre>
+MsgBox "The loop made " &amp; counter &amp; " repetitions."</code></pre>
 
         <!-- ── Do Until ── -->
         <h3>Do Until Loop</h3>
 
-        <p>The Do Until loop is the mirror image of Do While. Instead of running while
-        a condition is true, it runs until a condition becomes true — which means it keeps
-        going while the condition is false. This might sound confusing at first, but
-        it becomes natural once you see it in context. Think of it as: "keep doing this
-        until you're done."</p>
+        <p>A Do Until loop runs until a condition becomes true — which means it keeps going
+        while the condition is false. For processing rows of data, the condition is always
+        a blank cell check: <code>Do Until ActiveCell = ""</code>. The loop continues as long as
+        there's data in the current cell and stops when it hits a blank row. This works
+        for 10 records or 10,000 without changing a single line of code.</p>
 
-        <p>For processing rows of data in Excel, Do Until is almost always the right choice.
-        The condition you check is whether the active cell is blank — <code>Do Until ActiveCell = ""</code>.
-        As long as there's data in the current cell, the loop continues. When you reach an
-        empty cell, the loop stops. This works regardless of how many records are in your
-        spreadsheet, which makes your macro adaptable instead of hardcoded.</p>
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>Do Until [condition is true]
+    ' your code here
+Loop</pre>
+        </div>
 
-        <p>Here is a Do Until loop using the same counting example — notice how it reads
-        almost like the opposite of Do While:</p>
+        <p>The same counting example using Do Until — notice it reads as the inverse
+        of Do While:</p>
 
-<pre class="code-block"><code class="language-vba">Sub ChkFirstUntil()
-    counter = 0
-    myNum = 20
+<pre class="code-block"><code class="language-vba">myNum = 20
 
-    Do Until myNum = 10
-        myNum = myNum - 1
-        counter = counter + 1
-    Loop
+Do Until myNum = 10
+    myNum = myNum - 1
+    counter = counter + 1
+Loop
 
-    MsgBox "The loop made " &amp; counter &amp; " repetitions."
-End Sub</code></pre>
+MsgBox "The loop made " &amp; counter &amp; " repetitions."</code></pre>
 
         <!-- ── Processing All Records ── -->
         <h3>Processing All Records</h3>
 
-        <p>In this course, almost every time you use a loop you'll be using it to process
-        rows of data in Excel — going through a list of students, applicants, or records
-        and doing something with each one. This pattern is so common that it's worth
-        memorizing as a single unit. Professor Sanders calls it the "Processing All Records"
-        pattern, and it looks the same every time you use it.</p>
+        <p>In this course, loops are almost always used to process rows of data — going through
+        a list of students or applicants and acting on each one. This pattern is the same
+        every time: navigate to the first record, loop until you hit a blank cell, do your
+        work, then move down one row at the very end of the loop body.</p>
 
-        <p>The pattern has three parts: navigate to the first record, loop until you hit a
-        blank cell, and at the very end of the loop body, move down one row. That last
-        part — moving down — is what makes the loop progress. Without it, the loop checks
-        the same cell forever. With it, the loop moves through every row until it runs out
-        of data and hits a blank.</p>
-
-        <p>In pseudocode, the pattern looks like this every time:</p>
-
-        <div class="pseudocode-block">
-<pre><span class="kw">SELECT</span> first record
-<span class="kw">DO UNTIL</span> ActiveCell = ""
-    <span class="kw">PERFORM</span> action on current row
-    <span class="kw">MOVE</span> to next record
-<span class="kw">ENDLOOP</span></pre>
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>SELECT first record (e.g. Range("A2").Select)
+DO UNTIL ActiveCell = ""
+    ' process current row
+    MOVE to next record (ActiveCell.Offset(1, 0).Select)
+ENDLOOP</pre>
         </div>
 
-        <p>And here is what it looks like in a real macro — this is the actual loop from
-        the Project Demo that processes student applicants:</p>
+        <p>Here is what this pattern looks like in the actual Project Demo — the loop
+        that processes student applicants:</p>
 
-<pre class="code-block"><code class="language-vba">' SELECT Starting Location for Applicant Information (first record)
-Sheets("Applicant Information Group " &amp; NewGroup &amp; "").Select
-Range("A2").Select
+<pre class="code-block"><code class="language-vba">Range("A2").Select
 
 Do Until ActiveCell = ""
 
-    If ActiveCell.Offset(0, 10) = Range("accept") Then
-
-        ' POPULATE variables for UIN, GPR, Gender, Birthdate
-        UIN = ActiveCell
-        GPR = ActiveCell.Offset(0, 1)
-
-        ' SELECT Student Information and DISPLAY values
-        Sheets("Student Information").Select
-        ActiveCell = UIN
-        ' ... more population ...
-
-        ' MOVE to next Student row
-        ActiveCell.Offset(1, 0).Range("PPAData[[#Headers],[UIN]]").Select
-
-        ' RETURN to Applicant Information
-        Sheets("Applicant Information Group " &amp; NewGroup &amp; "").Select
-
+    If ActiveCell.Offset(0, 7) = Range("AcceptValue") Then
+        ' process this record
+        NumberAccepted = NumberAccepted + 1
     End If
 
-    ' ALWAYS move to next applicant — whether accepted or not
-    ActiveCell.Offset(1, 0).Range("ApplicantData[[#Headers],[UIN]]").Select
+    ' Always move to next row — inside or outside the IF
+    ActiveCell.Offset(1, 0).Select
 
 Loop</code></pre>
 
         <!-- ── Cautions ── -->
         <h3>Cautions: Endless Loops</h3>
 
-        <p>An endless loop is what happens when the condition never becomes true — the loop
-        runs forever and Excel freezes. This almost always happens for one of three reasons:
-        the condition doesn't involve a variable, the variable never changes inside the loop,
-        or the "move to next record" line is inside an IF block instead of outside it.</p>
+        <p>An endless loop happens when the condition never becomes true. The three common
+        causes: the condition doesn't involve a variable, the variable never changes inside
+        the loop, or the "move to next record" line is inside an IF block instead of outside it.</p>
 
         <ul>
           <li>The condition MUST involve at least one variable</li>
@@ -242,13 +202,11 @@ Loop</code></pre>
           </div>
           <div class="ai-panel" data-panel="sanders">
             <h4>Simple Do Until — mirrors how you navigate in Excel</h4>
-<pre class="code-block"><code class="language-vba">' Sanders approach — easy to follow with F8
-Sheets("Student Information").Select
-Range("A2").Select
+<pre class="code-block"><code class="language-vba">Range("A2").Select
 
 Do Until ActiveCell = ""
     ' process current row
-    ActiveCell.Offset(1, 0).Select  ' move to next record
+    ActiveCell.Offset(1, 0).Select
 Loop</code></pre>
           </div>
           <div class="ai-panel" data-panel="ai">
@@ -671,9 +629,11 @@ End If</code></pre>
     </main>
 
     <nav class="module-nav" aria-label="Module navigation">
-      <a href="/src/modules/variables.html">← Variables</a>
-      <a href="/" class="module-nav-center">All Modules</a>
-      <a href="/src/modules/references.html">Relative vs Absolute References →</a>
+      <div class="module-nav__inner">
+        <a href="/src/modules/variables.html">← Variables</a>
+        <a href="/" class="module-nav__home">All Modules</a>
+        <a href="/src/modules/references.html">Relative vs Absolute References →</a>
+      </div>
     </nav>
 
     <footer class="site-footer" role="contentinfo">

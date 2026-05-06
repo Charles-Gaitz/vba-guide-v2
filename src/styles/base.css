@@ -80,10 +80,22 @@ li {
 .site-main {
   flex:       1;
   width:      100%;
-  max-width:  860px;
+  max-width:  960px;
   margin:     0 auto;
   padding:    var(--space-8) var(--space-6);
   padding-top: var(--header-height);
+}
+
+/* Scroll offset — keeps anchor targets below the fixed header */
+[id] {
+  scroll-margin-top: calc(var(--header-height) + var(--space-6));
+}
+
+/* Bottom padding on desktop — pushes footer above fixed .module-nav */
+@media (min-width: 640px) {
+  .site-wrapper {
+    padding-bottom: 80px;
+  }
 }
 
 /* Focus ring for keyboard nav */

@@ -53,6 +53,13 @@
         <p>[Written explanation of the concept. Key points, terminology, and how this
         fits into the course.]</p>
 
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>[Syntax skeleton — e.g. For [counter] = [start] To [end]
+    ' your code here
+Next [counter]]</pre>
+        </div>
+
         <div class="course-tip">
           <p>[Peer-voice tip — why this matters in the course. Short, direct, CE
           talking to fellow students. Example: "This is the part that makes the exam click."]</p>
@@ -164,9 +171,11 @@ ENDLOOP]</pre>
     </main>
 
     <nav class="module-nav" aria-label="Module navigation">
-      <a href="/modules/[prev-slug]">← [Previous Module Name]</a>
-      <a href="/">All Modules</a>
-      <a href="/modules/[next-slug]">[Next Module Name] →</a>
+      <div class="module-nav__inner">
+        <a href="/src/modules/[prev-slug].html">← [Previous Module Name]</a>
+        <a href="/" class="module-nav__home">All Modules</a>
+        <a href="/src/modules/[next-slug].html">[Next Module Name] →</a>
+      </div>
     </nav>
 
     <footer class="site-footer" role="contentinfo">

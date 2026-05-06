@@ -19,6 +19,11 @@
   --tip-border:       #a0845c;
   --tip-text:         #5c3a1e;  /* 9.3:1 on --tip-bg ✓ */
 
+  /* Syntax boxes (maroon-tinted) */
+  --syntax-bg:        #fce8e8;  /* var(--accent-light) */
+  --syntax-border:    #500000;  /* var(--accent) */
+  --syntax-text:      #3a0000;  /* 10.8:1 on --syntax-bg ✓ */
+
   /* Code blocks */
   --code-bg:          #1e1e1e;
   --code-text:        #d4d0cb;

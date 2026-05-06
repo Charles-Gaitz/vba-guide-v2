@@ -6,6 +6,33 @@
    ============================================================ */
 
 
+/* ── 0. Module Section Headings ─────────────────────────────── */
+
+#concept h2,
+#quick-check h2,
+#easy-wins h2,
+#sample-data h2,
+#exam-challenge h2 {
+  font-size:     var(--text-3xl);
+  font-weight:   700;
+  color:         var(--accent);
+  padding-bottom: var(--space-3);
+  border-bottom: 3px solid var(--accent);
+  margin-bottom: var(--space-6);
+  margin-top:    var(--space-12);
+}
+
+#concept h3 {
+  font-size:     var(--text-xl);
+  font-weight:   600;
+  color:         var(--text);
+  margin-top:    var(--space-8);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border);
+}
+
+
 /* ── 1. Box Reminder ────────────────────────────────────────── */
 
 .box-reminder {
@@ -59,6 +86,36 @@
   font-size: var(--text-sm);
   color:     var(--text-subtle);
   margin:    0;
+}
+
+
+/* ── 4. Syntax Box ──────────────────────────────────────────── */
+/* Used in concept sections for loop/syntax skeleton BEFORE full code example. */
+
+.syntax-box {
+  background:    var(--syntax-bg);
+  border-left:   4px solid var(--syntax-border);
+  border-radius: 4px;
+  padding:       var(--space-3) var(--space-4);
+  margin:        var(--space-3) 0 var(--space-4) 0;
+  font-family:   var(--font-code);
+  font-size:     var(--text-sm);
+  color:         var(--syntax-text);
+}
+
+.syntax-box pre {
+  margin:      0;
+  white-space: pre;
+  line-height: var(--leading-code);
+}
+
+.syntax-label {
+  font-size:      var(--text-xs);
+  font-weight:    700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color:          var(--accent);
+  margin:         0 0 var(--space-2) 0;
 }
 
 
@@ -381,14 +438,26 @@ pre.code-block code {
 
 
 /* ── 12. Module Nav ─────────────────────────────────────────── */
+/* Desktop: fixed to bottom of viewport */
 
 .module-nav {
+  background: var(--surface);
+  border-top: 2px solid var(--border);
+  padding:    var(--space-3) var(--space-4);
+  position:   fixed;
+  bottom:     0;
+  left:       0;
+  right:      0;
+  z-index:    90;
+}
+
+.module-nav__inner {
+  max-width:       960px;
+  margin:          0 auto;
   display:         flex;
   justify-content: space-between;
   align-items:     center;
-  padding:         var(--space-6) 0;
-  border-top:      1px solid var(--border);
-  margin-top:      var(--space-12);
+  width:           100%;
 }
 
 .module-nav a {
@@ -407,13 +476,20 @@ pre.code-block code {
   border-radius:  2px;
 }
 
-.module-nav-center {
+.module-nav__home {
   color:     var(--text-muted);
   font-size: var(--text-sm);
 }
 
+/* Mobile: normal page flow */
 @media (max-width: 639px) {
   .module-nav {
+    position:   static;
+    border-top: 1px solid var(--border);
+    margin-top: var(--space-12);
+    padding:    var(--space-4);
+  }
+  .module-nav__inner {
     flex-direction: column;
     gap:            var(--space-3);
     text-align:     center;
