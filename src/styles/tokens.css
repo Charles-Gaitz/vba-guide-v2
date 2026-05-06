@@ -1,0 +1,81 @@
+:root {
+  /* Primary */
+  --accent:           #500000;  /* TAMU Maroon */
+  --accent-dark:      #3a0000;
+  --accent-light:     #fce8e8;
+
+  /* Text */
+  --text:             #1a1a1a;  /* body text — 21:1 on white ✓ */
+  --text-muted:       #4a4a4a;  /* secondary text — 8.9:1 on white ✓ */
+  --text-subtle:      #6b6866;  /* tertiary — 5.5:1 on white ✓ */
+
+  /* Reminder boxes (green) */
+  --reminder-bg:      #e8f5e9;
+  --reminder-border:  #2e7d32;
+  --reminder-text:    #1b5e20;  /* 7.2:1 on --reminder-bg ✓ */
+
+  /* Tip boxes (beige) */
+  --tip-bg:           #fdf6e3;
+  --tip-border:       #a0845c;
+  --tip-text:         #5c3a1e;  /* 9.3:1 on --tip-bg ✓ */
+
+  /* Code blocks */
+  --code-bg:          #1e1e1e;
+  --code-text:        #d4d0cb;
+  --code-keyword:     #e8a0a0;  /* warm rose, 6.0:1 on --code-bg ✓ */
+  --code-comment:     #9a9090;  /* warm gray, 5.8:1 on --code-bg ✓ */
+  --code-string:      #c8e6a0;
+  --code-number:      #f0c080;
+
+  /* Pseudocode blocks */
+  --pseudo-bg:        #f5f0eb;
+  --pseudo-border:    #c8b89a;
+  --pseudo-text:      #3a2a1a;
+
+  /* Surface */
+  --surface:          #ffffff;
+  --surface-alt:      #fafafa;
+  --border:           #e0dbd5;
+
+  /* Coming Soon cards */
+  --coming-soon-bg:   #f5f5f5;
+  --coming-soon-text: #6b6866;  /* 5.5:1 on --coming-soon-bg ✓ */
+
+  /* Multiple choice feedback */
+  --mc-correct-bg:       #e8f5e9;
+  --mc-correct-border:   #2e7d32;
+  --mc-correct-text:     #1b5e20;
+  --mc-incorrect-bg:     #fce8e8;
+  --mc-incorrect-border: #500000;
+  --mc-incorrect-text:   #3a0000;
+
+  /* Layout */
+  --header-height: 96px;
+
+  /* Typography */
+  --font-body:   'Inter', system-ui, sans-serif;
+  --font-code:   'JetBrains Mono', 'Fira Code', monospace;
+
+  --text-xs:     0.75rem;
+  --text-sm:     0.875rem;
+  --text-base:   1rem;
+  --text-lg:     1.125rem;
+  --text-xl:     1.25rem;
+  --text-2xl:    1.5rem;
+  --text-3xl:    1.875rem;
+  --text-4xl:    2.25rem;
+
+  --leading-tight:  1.25;
+  --leading-normal: 1.6;
+  --leading-code:   1.7;
+
+  /* Spacing Scale */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+}

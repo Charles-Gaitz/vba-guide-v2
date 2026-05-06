@@ -1,0 +1,13 @@
+code[class*="language-"],
+pre[class*="language-"] {
+  color:       var(--code-text);
+  background:  var(--code-bg);
+  font-family: var(--font-code);
+  line-height: var(--leading-code);
+}
+.token.keyword     { color: var(--code-keyword); }
+.token.comment     { color: var(--code-comment); font-style: italic; }
+.token.string      { color: var(--code-string); }
+.token.number      { color: var(--code-number); }
+.token.operator    { color: var(--code-text); }
+.token.punctuation { color: var(--code-text); }

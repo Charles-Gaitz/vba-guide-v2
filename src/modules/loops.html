@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Practice VBA loops for ACCT 628 — Do Until, Do While, and For Next with Aggie Advisors exercises." />
+  <title>Loops — VBA Practice for ACCT 628</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script type="module" src="/src/module.js"></script>
+</head>
+<body>
+  <div class="site-wrapper">
+
+    <header class="site-header" role="banner">
+      <div class="site-header__inner">
+        <h1 class="site-header__title">
+          <a href="/" class="site-header__home-link">VBA Practice for ACCT 628</a>
+        </h1>
+        <p class="site-header__subtitle">
+          A supplement to your Canvas course materials — not a replacement
+        </p>
+        <nav class="anchor-nav" aria-label="Page sections">
+          <a href="#concept">Concept</a>
+          <a href="#quick-check">Quick Check</a>
+          <a href="#easy-wins">Easy Wins</a>
+          <a href="#sample-data">Sample Data</a>
+          <a href="#exam-challenge">Exam Challenge</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="site-main" id="main-content">
+
+      <!-- ── Page intro ─────────────────────────────────────────── -->
+      <div class="page-intro">
+        <h1 class="page-title">Loops</h1>
+        <p class="page-subtitle">Module 4 of 8</p>
+      </div>
+
+      <!-- ── Reminder box ─────────────────────────────────────── -->
+      <div class="box-reminder">
+        <p><strong>REMINDER:</strong> To fully understand Loops, you should have already watched the Loops
+        Video in Canvas and followed along with the Macro Demo file.
+        This practice will build upon that foundation.</p>
+      </div>
+
+      <!-- ── Concept ─────────────────────────────────────────── -->
+      <section id="concept" aria-labelledby="concept-heading">
+        <h2 id="concept-heading">How Loops Work in VBA</h2>
+
+        <p>When you write a macro, it runs from top to bottom — one line, then the next, then
+        the next. That works fine for a handful of actions. But what if you need to do the
+        same thing to 30 student records? Or 300? Writing the same lines of code 30 times
+        isn't just tedious — it means if you need to change something, you have to change it
+        30 times. Loops solve this. A loop lets you write the logic once and repeat it
+        automatically for as many records as you have.</p>
+
+        <p>VBA gives you three loop structures: For Next, Do While, and Do Until. They all
+        repeat a block of code, but they differ in how they decide when to stop. Choosing
+        the right one for your situation makes your macro clearer and easier to debug.
+        For this course, the Do Until loop is the one you'll use most — especially for
+        processing rows of data where you don't know in advance how many records there are.</p>
+
+        <div class="course-tip">
+          <p>The "move to next record" line at the bottom of the loop is the one students
+          forget most often. If you forget it on a Deny record, the loop runs forever on
+          that row. Write the move line before you write anything else inside the loop.</p>
+        </div>
+
+        <!-- ── For Next ── -->
+        <h3>For Next Loop</h3>
+
+        <p>The For Next loop is the right choice when you know exactly how many times the loop
+        needs to run. It uses a counter variable that starts at a number you specify, runs
+        the code inside, then increases the counter by 1, and checks if it's reached the
+        end value. If not, it runs again. If so, it stops.</p>
+
+        <p>Think of it like telling Excel: "Do this starting from step 1, and keep going until
+        you've done it 4 times." The counter variable tracks where you are. You can use any
+        variable name for the counter — <code>i</code> is common by convention — and you can use
+        variables for the start and end values instead of hardcoded numbers.</p>
+
+        <p>Here is what a For Next loop looks like — this example puts the numbers 1 through
+        4 into adjacent columns:</p>
+
+<pre class="code-block"><code class="language-vba">Sub ForNextLoop()
+    ' Makes cell A1 on Sheet2 the active cell
+    Sheets("Sheet2").Select
+    Range("A1").Select
+    Cells.ClearContents   ' Deletes all the cells on the worksheet
+
+    ' Goes through the loop 4 times and inserts the value of i into the selected cell
+    ' Moves to the right i number of cells
+    For i = 1 To 4
+        ActiveCell.Value = i
+        ActiveCell.Offset(0, i).Select
+    Next i
+End Sub</code></pre>
+
+        <!-- ── Do While ── -->
+        <h3>Do While Loop</h3>
+
+        <p>The Do While loop runs as long as a condition is true. Before each pass through
+        the loop, VBA checks the condition. If it's true, the code inside runs. If it's
+        false, the loop stops and VBA moves on to whatever comes after it. Importantly,
+        if the condition is already false when the loop starts, the code inside never
+        runs at all.</p>
+
+        <p>The key word here is "while" — the loop keeps going while something is happening.
+        In the example below, the loop keeps running while <code>myNum</code> is greater than 10.
+        Each time through, <code>myNum</code> gets smaller by 1. When it hits 10, the condition
+        becomes false and the loop stops. Notice that <code>myNum</code> must change inside the loop —
+        if it never changed, the condition would stay true forever and the loop would
+        never stop.</p>
+
+        <p>Here is a Do While loop that counts how many times it subtracts 1 from a number
+        before it reaches 10:</p>
+
+<pre class="code-block"><code class="language-vba">Sub ChkFirstWhile()
+    counter = 0
+    myNum = 20
+
+    Do While myNum &gt; 10
+        myNum = myNum - 1
+        counter = counter + 1
+    Loop
+
+    MsgBox "The loop made " &amp; counter &amp; " repetitions."
+End Sub</code></pre>
+
+        <!-- ── Do Until ── -->
+        <h3>Do Until Loop</h3>
+
+        <p>The Do Until loop is the mirror image of Do While. Instead of running while
+        a condition is true, it runs until a condition becomes true — which means it keeps
+        going while the condition is false. This might sound confusing at first, but
+        it becomes natural once you see it in context. Think of it as: "keep doing this
+        until you're done."</p>
+
+        <p>For processing rows of data in Excel, Do Until is almost always the right choice.
+        The condition you check is whether the active cell is blank — <code>Do Until ActiveCell = ""</code>.
+        As long as there's data in the current cell, the loop continues. When you reach an
+        empty cell, the loop stops. This works regardless of how many records are in your
+        spreadsheet, which makes your macro adaptable instead of hardcoded.</p>
+
+        <p>Here is a Do Until loop using the same counting example — notice how it reads
+        almost like the opposite of Do While:</p>
+
+<pre class="code-block"><code class="language-vba">Sub ChkFirstUntil()
+    counter = 0
+    myNum = 20
+
+    Do Until myNum = 10
+        myNum = myNum - 1
+        counter = counter + 1
+    Loop
+
+    MsgBox "The loop made " &amp; counter &amp; " repetitions."
+End Sub</code></pre>
+
+        <!-- ── Processing All Records ── -->
+        <h3>Processing All Records</h3>
+
+        <p>In this course, almost every time you use a loop you'll be using it to process
+        rows of data in Excel — going through a list of students, applicants, or records
+        and doing something with each one. This pattern is so common that it's worth
+        memorizing as a single unit. Professor Sanders calls it the "Processing All Records"
+        pattern, and it looks the same every time you use it.</p>
+
+        <p>The pattern has three parts: navigate to the first record, loop until you hit a
+        blank cell, and at the very end of the loop body, move down one row. That last
+        part — moving down — is what makes the loop progress. Without it, the loop checks
+        the same cell forever. With it, the loop moves through every row until it runs out
+        of data and hits a blank.</p>
+
+        <p>In pseudocode, the pattern looks like this every time:</p>
+
+        <div class="pseudocode-block">
+<pre><span class="kw">SELECT</span> first record
+<span class="kw">DO UNTIL</span> ActiveCell = ""
+    <span class="kw">PERFORM</span> action on current row
+    <span class="kw">MOVE</span> to next record
+<span class="kw">ENDLOOP</span></pre>
+        </div>
+
+        <p>And here is what it looks like in a real macro — this is the actual loop from
+        the Project Demo that processes student applicants:</p>
+
+<pre class="code-block"><code class="language-vba">' SELECT Starting Location for Applicant Information (first record)
+Sheets("Applicant Information Group " &amp; NewGroup &amp; "").Select
+Range("A2").Select
+
+Do Until ActiveCell = ""
+
+    If ActiveCell.Offset(0, 10) = Range("accept") Then
+
+        ' POPULATE variables for UIN, GPR, Gender, Birthdate
+        UIN = ActiveCell
+        GPR = ActiveCell.Offset(0, 1)
+
+        ' SELECT Student Information and DISPLAY values
+        Sheets("Student Information").Select
+        ActiveCell = UIN
+        ' ... more population ...
+
+        ' MOVE to next Student row
+        ActiveCell.Offset(1, 0).Range("PPAData[[#Headers],[UIN]]").Select
+
+        ' RETURN to Applicant Information
+        Sheets("Applicant Information Group " &amp; NewGroup &amp; "").Select
+
+    End If
+
+    ' ALWAYS move to next applicant — whether accepted or not
+    ActiveCell.Offset(1, 0).Range("ApplicantData[[#Headers],[UIN]]").Select
+
+Loop</code></pre>
+
+        <!-- ── Cautions ── -->
+        <h3>Cautions: Endless Loops</h3>
+
+        <p>An endless loop is what happens when the condition never becomes true — the loop
+        runs forever and Excel freezes. This almost always happens for one of three reasons:
+        the condition doesn't involve a variable, the variable never changes inside the loop,
+        or the "move to next record" line is inside an IF block instead of outside it.</p>
+
+        <ul>
+          <li>The condition MUST involve at least one variable</li>
+          <li>That variable MUST change value somewhere inside the loop body</li>
+          <li>The "move to next record" line must be OUTSIDE any IF block — it should
+          always execute, whether the IF condition is true or false</li>
+          <li>If you get stuck in an endless loop: press <strong>Ctrl+Break</strong> to stop it</li>
+        </ul>
+
+        <!-- ── AI Compare ── -->
+        <div class="ai-compare">
+          <div class="ai-compare-tabs">
+            <button class="ai-tab active" data-panel="sanders">Sanders Approach</button>
+            <button class="ai-tab" data-panel="ai">Typical AI Result</button>
+          </div>
+          <div class="ai-panel" data-panel="sanders">
+            <h4>Simple Do Until — mirrors how you navigate in Excel</h4>
+<pre class="code-block"><code class="language-vba">' Sanders approach — easy to follow with F8
+Sheets("Student Information").Select
+Range("A2").Select
+
+Do Until ActiveCell = ""
+    ' process current row
+    ActiveCell.Offset(1, 0).Select  ' move to next record
+Loop</code></pre>
+          </div>
+          <div class="ai-panel" data-panel="ai">
+            <h4>For Each with object variables</h4>
+<pre class="code-block"><code class="language-vba">' AI approach — uses concepts this course doesn't cover
+Dim ws As Worksheet
+Dim lastRow As Long
+Dim cell As Range
+
+Set ws = ThisWorkbook.Sheets("Student Information")
+lastRow = ws.Cells(ws.Rows.Count, "A").End(xlUp).Row
+
+For Each cell In ws.Range("A2:A" &amp; lastRow)
+    If cell.Value &lt;&gt; "" Then
+        ' process row
+    End If
+Next cell</code></pre>
+          </div>
+          <div class="ai-compare-explanation">
+            <p>Both loops process every record — but they don't look the same. The Sanders
+            approach mirrors how you navigate in Excel: start at A2, loop until blank, move
+            down one row. You can watch it run with F8 and see exactly where the cursor is
+            at every step.</p>
+            <p>The AI version works, but it uses concepts this course doesn't cover — object
+            variables, For Each, finding the last row with End(xlUp). If you use code like
+            this without understanding it, debugging with F8 will be confusing and the
+            exam won't go well.</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ── Quick Check ────────────────────────────────────── -->
+      <section id="quick-check" aria-labelledby="quick-check-heading">
+        <h2 id="quick-check-heading">Quick Check</h2>
+
+        <div class="mc-question">
+          <p>1. You have a macro that needs to process every student record in a spreadsheet.
+          You don't know how many students there are. Which loop should you use?</p>
+          <button class="mc-option" data-correct="false">A. For Next Loop</button>
+          <button class="mc-option" data-correct="true">B. Do Until Loop</button>
+          <button class="mc-option" data-correct="false">C. Do While Loop</button>
+          <button class="mc-option" data-correct="false">D. It doesn't matter, they all work the same</button>
+          <div class="mc-explanation" hidden>
+            <p>Do Until is the right choice when you don't know how many records there are.
+            You loop until you hit a blank cell — this works for 10 records or 10,000
+            without changing a single line of code.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>2. In a Do Until loop, the code inside the loop runs when the condition is _____.</p>
+          <button class="mc-option" data-correct="false">A. True</button>
+          <button class="mc-option" data-correct="true">B. False</button>
+          <button class="mc-option" data-correct="false">C. Either true or false</button>
+          <button class="mc-option" data-correct="false">D. Only on the first pass</button>
+          <div class="mc-explanation" hidden>
+            <p>Do Until runs while the condition is false, and stops when it becomes true.
+            So <code>Do Until ActiveCell = ""</code> keeps running while the cell is NOT blank,
+            and stops the moment it hits a blank cell.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>3. What happens if you forget the <code>ActiveCell.Offset(1, 0).Select</code> line at the
+          bottom of your Do Until loop?</p>
+          <button class="mc-option" data-correct="false">A. The loop skips every other row</button>
+          <button class="mc-option" data-correct="false">B. VBA throws an error and stops</button>
+          <button class="mc-option" data-correct="true">C. The macro runs forever on the same cell</button>
+          <button class="mc-option" data-correct="false">D. The loop only runs once</button>
+          <div class="mc-explanation" hidden>
+            <p>Without moving to the next row, the loop checks the same cell over and over.
+            The condition never becomes true, so it never stops. Press Ctrl+Break if you
+            get stuck.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>4. Which of the following is the correct pattern for processing all records
+          in an Excel table using a Do Until loop?</p>
+          <button class="mc-option" data-correct="false">A. <code>Do Until ActiveCell = 0</code></button>
+          <button class="mc-option" data-correct="false">B. <code>Do Until ActiveCell = "done"</code></button>
+          <button class="mc-option" data-correct="true">C. <code>Do Until ActiveCell = ""</code></button>
+          <button class="mc-option" data-correct="false">D. <code>Do Until ActiveCell.Row = 100</code></button>
+          <div class="mc-explanation" hidden>
+            <p>Checking for a blank cell (<code>""</code>) is the standard pattern. It works
+            regardless of how many records are in the table, which makes your macro adaptable
+            instead of hardcoded to a specific row number.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>5. In a For Next loop with <code>For i = 1 To 4</code>, how many times does the loop run?</p>
+          <button class="mc-option" data-correct="false">A. 3 times</button>
+          <button class="mc-option" data-correct="true">B. 4 times</button>
+          <button class="mc-option" data-correct="false">C. 5 times</button>
+          <button class="mc-option" data-correct="false">D. It depends on the data</button>
+          <div class="mc-explanation" hidden>
+            <p>The loop runs for i = 1, 2, 3, and 4 — four times total. The counter starts
+            at the start value and runs through the end value inclusive.</p>
+          </div>
+        </div>
+
+        <div class="course-tip">
+          <p>Question 2 trips people up every semester. Do Until sounds like it runs
+          until something is true — but the code inside runs while the condition is
+          false. Draw it out: the loop asks "am I done yet?" and keeps going as long
+          as the answer is no.</p>
+        </div>
+
+      </section>
+
+      <!-- ── Easy Wins ──────────────────────────────────────── -->
+      <section id="easy-wins" aria-labelledby="easy-wins-heading">
+        <h2 id="easy-wins-heading">Easy Wins</h2>
+
+        <!-- Exercise 1 — Steps Format -->
+        <h3>Write Your First For Next Loop <span class="coming-soon-badge">Guided</span></h3>
+        <p>Write a macro that uses a For Next loop to put the numbers
+        1 through 5 into cells A1 through A5, one number per cell.</p>
+
+        <div class="exercise-steps">
+
+          <div class="exercise-step open">
+            <button class="step-header" aria-expanded="true">Step 1 — Open the VBA Editor</button>
+            <div class="step-body">
+              <p>Press Alt+F11 to open the VBA Editor. Go to Insert → Module. You should
+              see a blank white area. This is where you write your code.</p>
+              <p>Type this shell to start:</p>
+<pre class="code-block"><code class="language-vba">Option Explicit
+Sub NumberCells()
+
+End Sub</code></pre>
+              <p><code>Option Explicit</code> forces you to declare variables. Always include it.</p>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 2 — Navigate to your starting cell</button>
+            <div class="step-body" hidden>
+              <p>Before the loop starts, you need to tell Excel where to begin. Add these
+              two lines inside your Sub, before the loop:</p>
+<pre class="code-block"><code class="language-vba">Sheets("Sheet1").Select
+Range("A1").Select</code></pre>
+              <p>This selects Sheet1 and moves to cell A1 — your starting point.</p>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 3 — Write the For Next loop</button>
+            <div class="step-body" hidden>
+              <p>Now add the loop. It should count from 1 to 5 and put the current
+              counter value into the active cell:</p>
+<pre class="code-block"><code class="language-vba">For i = 1 To 5
+    ActiveCell.Value = i
+    ActiveCell.Offset(1, 0).Select
+Next i</code></pre>
+              <p><code>ActiveCell.Value = i</code> puts the current number into the cell.<br>
+              <code>ActiveCell.Offset(1, 0).Select</code> moves down one row.<br>
+              <code>Next i</code> increases i by 1 and loops back.</p>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 4 — Run it</button>
+            <div class="step-body" hidden>
+              <p>Press F5 or click the green Play button. Switch to Excel and check
+              column A. You should see 1, 2, 3, 4, 5 in cells A1 through A5.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="exercise-solution">
+          <button aria-expanded="false">View Complete Code</button>
+          <div class="solution-body" hidden>
+<pre class="code-block"><code class="language-vba">Option Explicit
+Sub NumberCells()
+    Sheets("Sheet1").Select
+    Range("A1").Select
+
+    For i = 1 To 5
+        ActiveCell.Value = i
+        ActiveCell.Offset(1, 0).Select
+    Next i
+End Sub</code></pre>
+            <p><strong>Expected result:</strong> Cells A1–A5 contain 1, 2, 3, 4, 5.</p>
+          </div>
+        </div>
+
+        <!-- Exercise 2 — Simple Format -->
+        <h3>Test the Do Until Condition <span class="coming-soon-badge">Observation</span></h3>
+        <p>This is a quick experiment, not a build exercise.</p>
+
+        <div class="exercise-simple">
+          <p>Go back to the <code>ChkFirstUntil</code> example from the concept section above.
+          Change <code>myNum = 20</code> to <code>myNum = 9</code>. Run the macro.</p>
+          <p>What happens? Why?</p>
+
+          <div class="exercise-hint">
+            <button aria-expanded="false">Show Hint</button>
+            <div class="hint-body" hidden>
+              <p>Think about what the condition <code>Do Until myNum = 10</code> checks
+              before the loop even starts.</p>
+            </div>
+          </div>
+
+          <div class="exercise-solution">
+            <button aria-expanded="false">Show Solution</button>
+            <div class="solution-body" hidden>
+              <p>Set <code>myNum = 10</code> to see the loop not run at all (condition already
+              true at start). Set <code>myNum = 9</code> to see an endless loop (condition can never
+              become true). Press Ctrl+Break to stop it.</p>
+              <p><strong>Key takeaway:</strong> Do Until won't run if the condition is already true when
+              it starts. And if the condition can never become true, it runs forever.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Exercise 3 — Steps Format -->
+        <h3>Count Non-Blank Cells with Do Until <span class="coming-soon-badge">Guided</span></h3>
+        <p>Write a macro that starts at cell A1, uses a Do Until loop
+        to move down the column, and counts every non-blank cell it finds. Display
+        the count in a MsgBox when done.</p>
+
+        <div class="exercise-steps">
+
+          <div class="exercise-step open">
+            <button class="step-header" aria-expanded="true">Step 1 — Set up your macro</button>
+            <div class="step-body">
+              <p>Open the VBA Editor (Alt+F11). Add a new module (Insert → Module) or
+              use the same one. Create this shell:</p>
+<pre class="code-block"><code class="language-vba">Option Explicit
+Sub CountCells()
+
+End Sub</code></pre>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 2 — Declare your variable</button>
+            <div class="step-body" hidden>
+              <p>You need one variable to keep a running total of non-blank cells.
+              Add this inside your Sub:</p>
+<pre class="code-block"><code class="language-vba">Dim CellCount As Integer</code></pre>
+              <p><code>Integer</code> is fine here — we won't have more than 32,000 rows.</p>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 3 — Navigate to your starting cell</button>
+            <div class="step-body" hidden>
+              <p>Add these lines to start at A1:</p>
+<pre class="code-block"><code class="language-vba">Sheets("Sheet1").Select
+Range("A1").Select</code></pre>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 4 — Write the Do Until loop</button>
+            <div class="step-body" hidden>
+              <p>Now add the loop. It should keep going until it hits a blank cell,
+              add 1 to the counter on each pass, and move down one row:</p>
+<pre class="code-block"><code class="language-vba">Do Until ActiveCell = ""
+    CellCount = CellCount + 1
+    ActiveCell.Offset(1, 0).Select
+Loop</code></pre>
+              <p>Notice <code>CellCount = CellCount + 1</code> — this takes the current value of
+              CellCount, adds 1, and stores the result back into CellCount. This is
+              how you accumulate a total.</p>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 5 — Display the result</button>
+            <div class="step-body" hidden>
+              <p>After the loop ends, display the count:</p>
+<pre class="code-block"><code class="language-vba">MsgBox "Non-blank cells found: " &amp; CellCount</code></pre>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="exercise-solution">
+          <button aria-expanded="false">View Complete Code</button>
+          <div class="solution-body" hidden>
+<pre class="code-block"><code class="language-vba">Option Explicit
+Sub CountCells()
+    Dim CellCount As Integer
+
+    Sheets("Sheet1").Select
+    Range("A1").Select
+
+    Do Until ActiveCell = ""
+        CellCount = CellCount + 1
+        ActiveCell.Offset(1, 0).Select
+    Loop
+
+    MsgBox "Non-blank cells found: " &amp; CellCount
+End Sub</code></pre>
+            <p><strong>Expected result:</strong> MsgBox shows the number of filled cells in column A.</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ── Sample Data ────────────────────────────────────── -->
+      <section id="sample-data" aria-labelledby="sample-data-heading">
+        <h2 id="sample-data-heading">Sample Data Exercise</h2>
+
+        <div class="data-table-section">
+          <p>Copy this data and paste it into cell A1 of a new Excel worksheet. Use Ctrl+V
+          to paste — Excel will automatically split the columns. This is your practice
+          dataset for the exercises below.</p>
+          <button class="data-table-toggle" aria-expanded="false">📋 Show Data Table</button>
+          <div class="data-table-wrap" hidden>
+            <button class="copy-data-btn" data-tsv="StudentID&#9;LastName&#9;FirstName&#9;TAMU_GPR&#9;Grade229&#9;Grade230&#9;Grade327&#9;FinalDecision&#10;724816395&#9;Anderson&#9;Emma&#9;3.842&#9;A&#9;B+&#9;A-&#9;Accept&#10;831924750&#9;Martinez&#9;Carlos&#9;3.156&#9;B&#9;B&#9;B-&#9;Deny&#10;619283740&#9;Thompson&#9;Sarah&#9;3.971&#9;A&#9;A-&#9;A&#9;Accept&#10;748291036&#9;Nguyen&#9;Michael&#9;3.624&#9;B+&#9;A-&#9;B+&#9;Accept&#10;825163947&#9;Williams&#9;Ashley&#9;2.987&#9;C+&#9;B&#9;C&#9;Deny&#10;736481920&#9;Brown&#9;James&#9;3.745&#9;A-&#9;B+&#9;A-&#9;Accept&#10;814729360&#9;Davis&#9;Lauren&#9;3.512&#9;B+&#9;B+&#9;B&#9;Accept&#10;729183640&#9;Wilson&#9;Tyler&#9;2.843&#9;C&#9;C+&#9;B-&#9;Deny&#10;836492710&#9;Johnson&#9;Megan&#9;3.889&#9;A&#9;A&#9;A-&#9;Accept&#10;715824930&#9;Garcia&#9;Daniel&#9;3.234&#9;B&#9;B-&#9;B&#9;Deny&#10;842163950&#9;Miller&#9;Rachel&#9;3.763&#9;A-&#9;A-&#9;B+&#9;Accept&#10;726849130&#9;Moore&#9;Kevin&#9;3.091&#9;B-&#9;C+&#9;B&#9;Deny&#10;819374620&#9;Taylor&#9;Jessica&#9;3.956&#9;A&#9;A-&#9;A&#9;Accept&#10;734826190&#9;Jackson&#9;Ryan&#9;3.478&#9;B+&#9;B&#9;B+&#9;Accept&#10;821649370&#9;White&#9;Brittany&#9;2.765&#9;C&#9;B-&#9;C+&#9;Deny&#10;716293840&#9;Harris&#9;Brandon&#9;3.834&#9;A-&#9;A-&#9;A-&#9;Accept&#10;843716290&#9;Martin&#9;Stephanie&#9;3.612&#9;B+&#9;B+&#9;A-&#9;Accept&#10;728493610&#9;Thompson&#9;Nathan&#9;3.147&#9;B&#9;B-&#9;B&#9;Deny&#10;815264930&#9;Lewis&#9;Amanda&#9;3.891&#9;A&#9;A&#9;A&#9;Accept&#10;731846920&#9;Robinson&#9;Justin&#9;3.423&#9;B+&#9;B&#9;B&#9;Accept&#10;824619730&#9;Clark&#9;Samantha&#9;2.914&#9;C+&#9;B-&#9;C&#9;Deny&#10;719283460&#9;Rodriguez&#9;Matthew&#9;3.756&#9;A-&#9;B+&#9;A-&#9;Accept&#10;836142790&#9;Lee&#9;Kayla&#9;3.534&#9;B+&#9;A-&#9;B+&#9;Accept&#10;724891360&#9;Walker&#9;Andrew&#9;3.068&#9;B-&#9;C+&#9;B-&#9;Deny&#10;811364920&#9;Hall&#9;Courtney&#9;3.847&#9;A&#9;A-&#9;A&#9;Accept&#10;738261490&#9;Allen&#9;Christopher&#9;3.389&#9;B&#9;B+&#9;B&#9;Accept&#10;826419730&#9;Young&#9;Melissa&#9;2.831&#9;C&#9;C+&#9;B-&#9;Deny&#10;713849260&#9;Hernandez&#9;Joshua&#9;3.912&#9;A&#9;A&#9;A-&#9;Accept&#10;841263970&#9;King&#9;Tiffany&#9;3.645&#9;B+&#9;A-&#9;B+&#9;Accept&#10;727491360&#9;Wright&#9;Patrick&#9;3.178&#9;B&#9;B-&#9;B&#9;Deny">Copy to Clipboard</button>
+            <table>
+              <thead>
+                <tr>
+                  <th>StudentID</th><th>LastName</th><th>FirstName</th><th>TAMU_GPR</th>
+                  <th>Grade229</th><th>Grade230</th><th>Grade327</th><th>FinalDecision</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>724816395</td><td>Anderson</td><td>Emma</td><td>3.842</td><td>A</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>831924750</td><td>Martinez</td><td>Carlos</td><td>3.156</td><td>B</td><td>B</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>619283740</td><td>Thompson</td><td>Sarah</td><td>3.971</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>748291036</td><td>Nguyen</td><td>Michael</td><td>3.624</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>825163947</td><td>Williams</td><td>Ashley</td><td>2.987</td><td>C+</td><td>B</td><td>C</td><td>Deny</td></tr>
+                <tr><td>736481920</td><td>Brown</td><td>James</td><td>3.745</td><td>A-</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>814729360</td><td>Davis</td><td>Lauren</td><td>3.512</td><td>B+</td><td>B+</td><td>B</td><td>Accept</td></tr>
+                <tr><td>729183640</td><td>Wilson</td><td>Tyler</td><td>2.843</td><td>C</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>836492710</td><td>Johnson</td><td>Megan</td><td>3.889</td><td>A</td><td>A</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>715824930</td><td>Garcia</td><td>Daniel</td><td>3.234</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+                <tr><td>842163950</td><td>Miller</td><td>Rachel</td><td>3.763</td><td>A-</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>726849130</td><td>Moore</td><td>Kevin</td><td>3.091</td><td>B-</td><td>C+</td><td>B</td><td>Deny</td></tr>
+                <tr><td>819374620</td><td>Taylor</td><td>Jessica</td><td>3.956</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>734826190</td><td>Jackson</td><td>Ryan</td><td>3.478</td><td>B+</td><td>B</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>821649370</td><td>White</td><td>Brittany</td><td>2.765</td><td>C</td><td>B-</td><td>C+</td><td>Deny</td></tr>
+                <tr><td>716293840</td><td>Harris</td><td>Brandon</td><td>3.834</td><td>A-</td><td>A-</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>843716290</td><td>Martin</td><td>Stephanie</td><td>3.612</td><td>B+</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>728493610</td><td>Thompson</td><td>Nathan</td><td>3.147</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+                <tr><td>815264930</td><td>Lewis</td><td>Amanda</td><td>3.891</td><td>A</td><td>A</td><td>A</td><td>Accept</td></tr>
+                <tr><td>731846920</td><td>Robinson</td><td>Justin</td><td>3.423</td><td>B+</td><td>B</td><td>B</td><td>Accept</td></tr>
+                <tr><td>824619730</td><td>Clark</td><td>Samantha</td><td>2.914</td><td>C+</td><td>B-</td><td>C</td><td>Deny</td></tr>
+                <tr><td>719283460</td><td>Rodriguez</td><td>Matthew</td><td>3.756</td><td>A-</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>836142790</td><td>Lee</td><td>Kayla</td><td>3.534</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>724891360</td><td>Walker</td><td>Andrew</td><td>3.068</td><td>B-</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>811364920</td><td>Hall</td><td>Courtney</td><td>3.847</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>738261490</td><td>Allen</td><td>Christopher</td><td>3.389</td><td>B</td><td>B+</td><td>B</td><td>Accept</td></tr>
+                <tr><td>826419730</td><td>Young</td><td>Melissa</td><td>2.831</td><td>C</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>713849260</td><td>Hernandez</td><td>Joshua</td><td>3.912</td><td>A</td><td>A</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>841263970</td><td>King</td><td>Tiffany</td><td>3.645</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>727491360</td><td>Wright</td><td>Patrick</td><td>3.178</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="sample-data-exercise">
+          <h3>Count Accepted Applicants</h3>
+          <p>Using the Aggie Advisors data you just pasted into Excel,
+          write a macro that loops through all 30 applicant records and counts only
+          the students whose FinalDecision column says "Accept". Display the result
+          in a MsgBox.</p>
+          <p><strong>What your macro needs to do:</strong></p>
+          <ul>
+            <li>Start at cell A2 (row 1 is the header)</li>
+            <li>Use <code>Do Until ActiveCell = ""</code> to loop through all records</li>
+            <li>Inside the loop, check if the FinalDecision column = "Accept"
+            (FinalDecision is in column H — that's <code>Offset(0, 7)</code> from column A)</li>
+            <li>Add 1 to a counter variable each time you find an "Accept"</li>
+            <li>Move to the next row at the bottom of the loop — every time,
+            whether the decision was Accept or not</li>
+            <li>After the loop, display: <code>"Accepted applicants: " &amp; your counter</code></li>
+          </ul>
+          <p><strong>Expected answer:</strong> Accepted applicants: 20</p>
+          <p><strong>Hint:</strong> Your IF statement should look like this:</p>
+<pre class="code-block"><code class="language-vba">If ActiveCell.Offset(0, 7) = "Accept" Then
+    AcceptCount = AcceptCount + 1
+End If</code></pre>
+          <p>The move line goes AFTER the End If, not inside it.</p>
+          <a href="/src/modules/practice-project.html#module-4">See this in the Aggie Advisors project →</a>
+        </div>
+
+      </section>
+
+      <!-- ── Exam Challenge ─────────────────────────────────── -->
+      <section id="exam-challenge" aria-labelledby="exam-challenge-heading">
+        <h2 id="exam-challenge-heading">Exam Challenge</h2>
+
+        <div class="exam-challenge">
+          <h3>Accepted and Denied GPR Averages</h3>
+          <p><strong>No hints. No steps. This is exam level.</strong></p>
+          <p>Using the same Aggie Advisors dataset, write a macro that:</p>
+          <ol>
+            <li>Loops through all 30 applicant records using Do Until with blank cell check</li>
+            <li>Separately accumulates total GPR for accepted students and denied students</li>
+            <li>Counts accepted and denied students separately</li>
+            <li>After the loop, calculates the average GPR for each group</li>
+            <li>Displays both averages in a single MsgBox:
+            <code>"Accepted avg GPR: X.XX | Denied avg GPR: X.XX"</code></li>
+          </ol>
+          <p>Must use <code>Option Explicit</code>. Must declare all variables with correct data types.
+          Must use a Named Range or the literal string "Accept" consistently —
+          do not mix approaches.</p>
+          <p><strong>Expected answers:</strong></p>
+          <ul>
+            <li>Accepted: 20 students, average GPR 3.7175</li>
+            <li>Denied: 10 students, average GPR 3.0014</li>
+          </ul>
+          <p>If your numbers don't match, use F8 and the Watch Window to step through
+          the first few records and check what your IF condition is actually comparing.</p>
+          <a href="/src/modules/practice-project.html#module-4">See this in the Aggie Advisors project →</a>
+        </div>
+
+      </section>
+
+    </main>
+
+    <nav class="module-nav" aria-label="Module navigation">
+      <a href="/src/modules/variables.html">← Variables</a>
+      <a href="/" class="module-nav-center">All Modules</a>
+      <a href="/src/modules/references.html">Relative vs Absolute References →</a>
+    </nav>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <p>
+          VBA Practice for ACCT 628 &mdash; Mays Business School, Texas A&amp;M University.
+          Built by CE Gaitz in collaboration with Professor Joan Sanders.
+        </p>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Prism.js CDN — syntax highlighting for VBA code blocks -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-vba.min.js"></script>
+</body>
+</html>

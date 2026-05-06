@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-Content *)",
+      "PowerShell(Get-Item \"C:\\\\Users\\\\cegai\\\\vba-guide-v2\\\\CLAUDE.md\" | Select-Object Length, LastWriteTime; [System.IO.File]::ReadAllText\\(\"C:\\\\Users\\\\cegai\\\\vba-guide-v2\\\\CLAUDE.md\"\\))",
+      "PowerShell([System.IO.File]::ReadAllBytes\\(\"C:\\\\Users\\\\cegai\\\\vba-guide-v2\\\\CLAUDE.md\"\\).Length)",
+      "PowerShell($bytes = [System.IO.File]::ReadAllBytes\\(\"C:\\\\Users\\\\cegai\\\\vba-guide-v2\\\\CLAUDE.md\"\\); $encoding = [System.Text.Encoding]::UTF8; $encoding.GetString\\($bytes\\) | Out-String)",
+      "PowerShell(New-Item *)",
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:5173/src/modules/loops.html)"
+    ]
+  }
+}
