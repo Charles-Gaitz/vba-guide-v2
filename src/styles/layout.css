@@ -47,7 +47,6 @@
 }
 
 .site-header__subtitle {
-  display: none;
   font-size: var(--text-xs);
   color: var(--accent-light);
   margin: 0;

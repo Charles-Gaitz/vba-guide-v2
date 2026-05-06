@@ -19,7 +19,7 @@
           <a href="/" class="site-header__home-link">VBA Practice for ACCT 628</a>
         </h1>
         <p class="site-header__subtitle">
-          A supplement to your Canvas course materials — not a replacement
+          Watch. Review. Practice.
         </p>
         <nav class="anchor-nav" aria-label="Page sections">
           <a href="#concept">Concept</a>
@@ -100,26 +100,37 @@ ENDLOOP]</pre>
       <section id="quick-check" aria-labelledby="quick-check-heading">
         <h2 id="quick-check-heading">Quick Check</h2>
 
-        <div class="quick-check">
-
-          <div class="qc-item">
-            <p class="qc-question">1. [Question 1 text]</p>
-            <button class="qc-reveal" aria-expanded="false">Show Answer</button>
-            <div class="qc-answer" hidden>[Answer 1]</div>
+        <div class="mc-question">
+          <p class="mc-prompt">1. [Question 1 text]</p>
+          <div class="mc-options">
+            <button class="mc-option" data-correct="false">A. [Option A]</button>
+            <button class="mc-option" data-correct="true">B. [Correct option]</button>
+            <button class="mc-option" data-correct="false">C. [Option C]</button>
+            <button class="mc-option" data-correct="false">D. [Option D]</button>
           </div>
+          <div class="mc-explanation" hidden>[Explanation of why the correct answer is right.]</div>
+        </div>
 
-          <div class="qc-item">
-            <p class="qc-question">2. [Question 2 text]</p>
-            <button class="qc-reveal" aria-expanded="false">Show Answer</button>
-            <div class="qc-answer" hidden>[Answer 2]</div>
+        <div class="mc-question">
+          <p class="mc-prompt">2. [Question 2 text]</p>
+          <div class="mc-options">
+            <button class="mc-option" data-correct="false">A. [Option A]</button>
+            <button class="mc-option" data-correct="false">B. [Option B]</button>
+            <button class="mc-option" data-correct="true">C. [Correct option]</button>
+            <button class="mc-option" data-correct="false">D. [Option D]</button>
           </div>
+          <div class="mc-explanation" hidden>[Explanation of why the correct answer is right.]</div>
+        </div>
 
-          <div class="qc-item">
-            <p class="qc-question">3. [Question 3 text]</p>
-            <button class="qc-reveal" aria-expanded="false">Show Answer</button>
-            <div class="qc-answer" hidden>[Answer 3]</div>
+        <div class="mc-question">
+          <p class="mc-prompt">3. [Question 3 text]</p>
+          <div class="mc-options">
+            <button class="mc-option" data-correct="false">A. [Option A]</button>
+            <button class="mc-option" data-correct="false">B. [Option B]</button>
+            <button class="mc-option" data-correct="false">C. [Option C]</button>
+            <button class="mc-option" data-correct="true">D. [Correct option]</button>
           </div>
-
+          <div class="mc-explanation" hidden>[Explanation of why the correct answer is right.]</div>
         </div>
 
         <div class="course-tip">
@@ -152,7 +163,7 @@ ENDLOOP]</pre>
 
         <div class="sample-data-exercise">
           <p>[Sample data exercise using the Aggie Advisors dataset. Tier 2.]</p>
-          <a href="/modules/practice-project#module-N">See this in the Aggie Advisors project →</a>
+          <a href="/src/modules/practice-project.html#module-N">See this in the Aggie Advisors project →</a>
         </div>
 
       </section>
@@ -163,7 +174,7 @@ ENDLOOP]</pre>
 
         <div class="exam-challenge">
           <p>[Exam-level challenge — no hints. Tier 3.]</p>
-          <a href="/modules/practice-project#module-N">See this in the Aggie Advisors project →</a>
+          <a href="/src/modules/practice-project.html#module-N">See this in the Aggie Advisors project →</a>
         </div>
 
       </section>

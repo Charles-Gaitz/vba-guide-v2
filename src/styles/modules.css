@@ -71,6 +71,7 @@
 
 .page-intro {
   padding:       var(--space-6) 0 var(--space-4) 0;
+  padding-top:   var(--space-8);
   border-bottom: 1px solid var(--border);
   margin-bottom: var(--space-6);
 }

@@ -158,7 +158,7 @@ src/
   --mc-incorrect-text: #3a0000;
 
   /* Layout */
-  --header-height:     96px;
+  --header-height:     72px;
 }
 ```
 
@@ -224,7 +224,7 @@ src/
 ### Site Header
 - Fixed to top, always visible: `position: fixed; top: 0; z-index: 100`
 - Contains: title (home link) + subtitle + `.anchor-nav` pills
-- `--header-height: 96px` — main content has `padding-top: var(--header-height)`
+- `--header-height: 72px` — main content has `padding-top: calc(var(--header-height) + var(--space-12))`
 - Mobile scroll: adds `.header-scrolled` class → hides subtitle, reduces padding
 
 ### Anchor Nav (inside header)
@@ -466,7 +466,7 @@ import './js/exercise-steps.js';
 3. ✅ vite.config.js multi-page + all CSS/JS files
 4. ✅ Module template + placeholder files
 5. ✅ Loops page — reference implementation
-6. → Update: content width to 960px, syntax-box styles, loops.html prose trim
+6. ✅ Update: content width to 960px, syntax-box styles, loops.html prose trim, sticky nav, header height
 7. Variables page
 8. Macro Foundations page
 9. Adding Programming Concepts page
