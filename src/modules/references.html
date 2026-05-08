@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Practice relative vs absolute references in VBA for ACCT 628 — a supplement to your Canvas course materials." />
+  <meta name="description" content="Practice relative and absolute references in VBA for ACCT 628 — Offset navigation, Named Ranges, and when to use each." />
   <title>Relative vs Absolute References — VBA Practice for ACCT 628</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,7 +25,6 @@
           <a href="#concept">Concept</a>
           <a href="#quick-check">Quick Check</a>
           <a href="#easy-wins">Easy Wins</a>
-          <a href="#sample-data">Sample Data</a>
           <a href="#practice-problem">Practice Problem</a>
           <a href="#challenge">Challenge</a>
         </nav>
@@ -40,51 +39,435 @@
       </div>
 
       <div class="box-reminder">
-        <p><strong>REMINDER:</strong> Watch the associated course video before working through this module.</p>
+        <p><strong>REMINDER:</strong> To fully understand Relative vs Absolute References, you should have already watched the Absolute vs Relative References Video in Canvas and followed along with the Macro Demo file. This practice will build upon that foundation.</p>
       </div>
 
       <!-- ── Concept ─────────────────────────────────────────── -->
       <section id="concept" aria-labelledby="concept-heading">
-        <h2 id="concept-heading">Concepts</h2>
-        <!-- TODO: content -->
+        <h2 id="concept-heading">Relative vs Absolute References in VBA</h2>
+
+        <p>When you record a macro, Excel defaults to absolute references —
+        every action is recorded as a specific cell address like Range("B3").
+        That means no matter where you are when you run the macro, it always
+        goes to B3. Relative references work differently: they record movement
+        relative to wherever the active cell is, using Offset. Understanding
+        when to use each one is one of the most practical skills in this course.</p>
+
+        <p>The distinction matters most when you're building loops. Inside a loop,
+        you almost always want relative references — move down one row from
+        wherever you are. Outside a loop, navigating to a specific header or
+        starting cell, you want absolute. Mixing them up is one of the most
+        common sources of bugs in student macros.</p>
+
+        <div class="course-tip">
+          <p>If your macro keeps going to the wrong cell, the first thing to check
+          is whether you used absolute when you needed relative, or vice versa.
+          This is almost always the cause.</p>
+        </div>
+
+        <!-- ── Absolute References ── -->
+        <h3>Absolute References</h3>
+
+        <p>Absolute references always go to the same cell regardless of where
+        the active cell is. They are the default when you record a macro.
+        Range("B3") always selects B3. This is what you want when navigating
+        to a fixed location — a header row, a named range, or a specific
+        starting cell.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>' Always goes to cell B3 — absolute
+Range("B3").Select
+
+' Always populates A1 — absolute
+Range("A1") = "Sales Report"
+
+' Navigate to the start of data — absolute
+Range("A2").Select</pre>
+        </div>
+
+        <!-- ── Relative References ── -->
+        <h3>Relative References</h3>
+
+        <p>Relative references move relative to the current active cell using
+        Offset. Offset(rows, columns) — positive rows move down, positive
+        columns move right, negative values move up or left. This is what
+        you want inside loops when you need to process the current row and
+        then move to the next one.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>' Move down one row from wherever you are
+ActiveCell.Offset(1, 0).Select
+
+' Move one column to the right
+ActiveCell.Offset(0, 1).Select
+
+' Move two rows down, one column left
+ActiveCell.Offset(2, -1).Select
+
+' Populate the cell one row below without selecting it
+ActiveCell.Offset(1, 0) = "Done"</pre>
+        </div>
+
+        <p>Inside a loop, relative references are essential — this pattern
+        moves through every row without hardcoding any cell address:</p>
+
+<pre class="code-block"><code class="language-vba">Range("A2").Select
+
+Do Until ActiveCell = ""
+    ' process current row using Offset
+    ActiveCell.Offset(0, 1) = "Processed"
+
+    ' always move down one row at end of loop
+    ActiveCell.Offset(1, 0).Select
+Loop</code></pre>
+
+        <!-- ── Switching Between the Two ── -->
+        <h3>Switching Between the Two</h3>
+
+        <p>You switch to relative recording in Excel via the Developer ribbon →
+        Use Relative References button. When active, recorded actions use
+        Offset instead of Range addresses. Toggle it off to go back to absolute.
+        In code you write yourself, you choose by deciding whether to use
+        Range("address") or ActiveCell.Offset(row, col).</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>' Recorded in absolute mode
+Range("B3").Select
+Selection.Font.Bold = True
+
+' Same action recorded in relative mode
+ActiveCell.Offset(0, 1).Select
+Selection.Font.Bold = True
+
+' Written directly — populate without selecting
+Range("B3").Font.Bold = True              ' absolute, no Select needed
+ActiveCell.Offset(0, 1).Font.Bold = True  ' relative, no Select needed</pre>
+        </div>
+
+        <!-- ── Named Ranges and Why They Matter ── -->
+        <h3>Named Ranges and Why They Matter</h3>
+
+        <p>Hardcoded cell references like Range("B3") break if someone inserts
+        a row above row 3 — your code still goes to B3 but that's now the
+        wrong cell. Named Ranges solve this. A Named Range always follows
+        the data it was assigned to, regardless of where rows or columns move.
+        In VBA, reference them exactly like any range: Range("MyNamedRange").</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>' Hardcoded — breaks if rows are inserted above
+Range("B3") = NewGroup
+
+' Named Range — always finds the right cell
+Range("CurrentGroup") = NewGroup
+
+' Named Range in a formula
+Range("AverageRange") = "=TotalRange/CountRange"</pre>
+        </div>
+
       </section>
 
       <!-- ── Quick Check ────────────────────────────────────── -->
       <section id="quick-check" aria-labelledby="quick-check-heading">
         <h2 id="quick-check-heading">Quick Check</h2>
-        <!-- TODO: content -->
+
+        <div class="mc-question">
+          <p>1. What is the default reference type when you record a macro in Excel?</p>
+          <button class="mc-option" data-correct="false">A. Relative</button>
+          <button class="mc-option" data-correct="true">B. Absolute</button>
+          <button class="mc-option" data-correct="false">C. Mixed</button>
+          <button class="mc-option" data-correct="false">D. It depends on which cell you start on</button>
+          <div class="mc-explanation" hidden>
+            <p>Excel records in absolute mode by default. Every action is recorded as a
+            specific cell address. Switch to relative mode using Developer → Use Relative
+            References before recording.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>2. Your ActiveCell is B5. What cell does <code>ActiveCell.Offset(2, -1)</code> reference?</p>
+          <button class="mc-option" data-correct="false">A. B7</button>
+          <button class="mc-option" data-correct="true">B. A7</button>
+          <button class="mc-option" data-correct="false">C. C3</button>
+          <button class="mc-option" data-correct="false">D. A3</button>
+          <div class="mc-explanation" hidden>
+            <p>Offset(2, -1) means 2 rows down and 1 column left. From B5: 2 rows down =
+            row 7, 1 column left = column A. Result: A7.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>3. Inside a loop that processes rows of data, which reference type should
+          you use to move to the next row?</p>
+          <button class="mc-option" data-correct="false">A. Absolute — <code>Range("A" &amp; rowNumber).Select</code></button>
+          <button class="mc-option" data-correct="true">B. Relative — <code>ActiveCell.Offset(1, 0).Select</code></button>
+          <button class="mc-option" data-correct="false">C. Either works the same way</button>
+          <button class="mc-option" data-correct="false">D. Neither — loops move automatically</button>
+          <div class="mc-explanation" hidden>
+            <p>Inside a loop you're at a different row each iteration. Relative references
+            move from wherever you are — that's exactly what you need. Absolute would
+            always go back to the same row.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>4. You insert a new row at the top of your data. Your code has
+          <code>Range("A2").Select</code> as the starting point. What happens?</p>
+          <button class="mc-option" data-correct="false">A. The code finds the new first data row automatically</button>
+          <button class="mc-option" data-correct="true">B. The code still selects A2, which is now the wrong row</button>
+          <button class="mc-option" data-correct="false">C. VBA throws an error</button>
+          <button class="mc-option" data-correct="false">D. The named range updates automatically</button>
+          <div class="mc-explanation" hidden>
+            <p>Absolute cell references in code don't adjust when rows are inserted.
+            Range("A2") always goes to A2. Use Named Ranges for starting points that
+            might shift.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>5. What is the advantage of using a Named Range over a hardcoded cell address?</p>
+          <button class="mc-option" data-correct="false">A. Named Ranges run faster</button>
+          <button class="mc-option" data-correct="false">B. Named Ranges work in formulas but hardcoded addresses don't</button>
+          <button class="mc-option" data-correct="true">C. Named Ranges follow the data if rows or columns are inserted</button>
+          <button class="mc-option" data-correct="false">D. There is no advantage — they work identically</button>
+          <div class="mc-explanation" hidden>
+            <p>Named Ranges are tied to the data, not the address. If rows shift, the
+            Named Range still points to the right cell. Hardcoded addresses always go
+            to the same address regardless.</p>
+          </div>
+        </div>
+
+        <div class="course-tip">
+          <p>Question 2 is the exact type you'll see on the exam — given a starting
+          cell and an Offset, find the target. Practice these until they're instant.</p>
+        </div>
+
       </section>
 
       <!-- ── Easy Wins ──────────────────────────────────────── -->
       <section id="easy-wins" aria-labelledby="easy-wins-heading">
         <h2 id="easy-wins-heading">Easy Wins</h2>
-        <!-- TODO: content -->
-      </section>
 
-      <!-- ── Sample Data ────────────────────────────────────── -->
-      <section id="sample-data" aria-labelledby="sample-data-heading">
-        <h2 id="sample-data-heading">Sample Data</h2>
-        <!-- TODO: content -->
+        <!-- Exercise 1 — Simple Format -->
+        <div class="exercise-simple">
+          <div class="exercise-header">
+            <span class="exercise-title">Predict the Cell</span>
+            <span class="exercise-badge">Observation</span>
+          </div>
+          <p>Without running any code, predict where each Offset lands if ActiveCell
+          is currently D10. Then paste the code into VBA and run it to verify your
+          predictions. Each MsgBox pauses to show the target cell address.</p>
+
+<pre class="code-block"><code class="language-vba">Option Explicit
+Sub OffsetPractice()
+    Sheets("Sheet1").Select
+    Range("D10").Select
+
+    ' Predict each target cell before running
+    MsgBox "Offset(1,0): " &amp; ActiveCell.Offset(1, 0).Address
+    MsgBox "Offset(0,1): " &amp; ActiveCell.Offset(0, 1).Address
+    MsgBox "Offset(-2,3): " &amp; ActiveCell.Offset(-2, 3).Address
+    MsgBox "Offset(0,-3): " &amp; ActiveCell.Offset(0, -3).Address
+End Sub</code></pre>
+
+          <div class="exercise-hint">
+            <button aria-expanded="false">Show Hint</button>
+            <div class="hint-body" hidden>
+              <p>Address property returns the cell address as a string like "$E$10".</p>
+            </div>
+          </div>
+
+          <div class="exercise-solution">
+            <button aria-expanded="false">Show Solution</button>
+            <div class="solution-body" hidden>
+              <ul>
+                <li>Offset(1, 0) → D11 (one row down)</li>
+                <li>Offset(0, 1) → E10 (one column right)</li>
+                <li>Offset(-2, 3) → G8 (two rows up, three columns right)</li>
+                <li>Offset(0, -3) → A10 (three columns left)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Exercise 2 — Steps Format -->
+        <div class="exercise-steps">
+          <div class="exercise-header">
+            <span class="exercise-title">Record Both Ways</span>
+            <span class="exercise-badge">Guided</span>
+          </div>
+          <p>Record the same macro twice — once in absolute mode, once in relative
+          mode — and compare the code.</p>
+
+          <div class="exercise-step open">
+            <button class="step-header" aria-expanded="true">Step 1 — Record in absolute mode</button>
+            <div class="step-body">
+              <p>Go to Developer → Record Macro. Name it <strong>AbsoluteTest</strong>.
+              Click cell C5. Type "Hello". Press Enter. Stop recording.
+              Open the VBA Editor (Alt+F11) and look at the generated code.</p>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 2 — Record in relative mode</button>
+            <div class="step-body" hidden>
+              <p>Go to Developer → <strong>Use Relative References</strong> (turn it ON — the button highlights).
+              Go to Developer → Record Macro. Name it <strong>RelativeTest</strong>.
+              Click cell C5. Type "Hello". Press Enter. Stop recording.
+              Turn off Use Relative References by clicking it again.</p>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 3 — Compare the two macros</button>
+            <div class="step-body" hidden>
+              <p>Open both macros in the VBA Editor. The key difference is in how each
+              one selects the target cell:</p>
+              <p><strong>AbsoluteTest</strong> — always goes to C5, no matter where you are:</p>
+<pre class="code-block"><code class="language-vba">Range("C5").Select
+ActiveCell.FormulaR1C1 = "Hello"</code></pre>
+              <p><strong>RelativeTest</strong> — types at wherever the active cell is when you run it:</p>
+<pre class="code-block"><code class="language-vba">ActiveCell.FormulaR1C1 = "Hello"</code></pre>
+              <p>To test the difference: click cell A1, then run RelativeTest. It types "Hello"
+              into A1. Run AbsoluteTest from A1 and it still goes to C5. The relative version
+              moves with you; the absolute version doesn't.</p>
+            </div>
+          </div>
+
+        </div>
+
       </section>
 
       <!-- ── Practice Problem ──────────────────────────────── -->
       <section id="practice-problem" aria-labelledby="practice-problem-heading">
         <h2 id="practice-problem-heading">Practice Problem</h2>
-        <!-- TODO: content -->
+
+        <div class="data-table-section">
+          <p>Copy this data and paste it into cell A1 of a new Excel worksheet.
+          Press Ctrl+V — Excel will split the columns automatically.</p>
+          <button class="data-table-toggle" aria-expanded="false">📋 Show Data Table</button>
+          <div class="data-table-wrap" hidden>
+            <button class="copy-data-btn" data-tsv="StudentID&#9;LastName&#9;FirstName&#9;TAMU_GPR&#9;Grade229&#9;Grade230&#9;Grade327&#9;FinalDecision&#10;724816395&#9;Anderson&#9;Emma&#9;3.842&#9;A&#9;B+&#9;A-&#9;Accept&#10;831924750&#9;Martinez&#9;Carlos&#9;3.156&#9;B&#9;B&#9;B-&#9;Deny&#10;619283740&#9;Thompson&#9;Sarah&#9;3.971&#9;A&#9;A-&#9;A&#9;Accept&#10;748291036&#9;Nguyen&#9;Michael&#9;3.624&#9;B+&#9;A-&#9;B+&#9;Accept&#10;825163947&#9;Williams&#9;Ashley&#9;2.987&#9;C+&#9;B&#9;C&#9;Deny&#10;736481920&#9;Brown&#9;James&#9;3.745&#9;A-&#9;B+&#9;A-&#9;Accept&#10;814729360&#9;Davis&#9;Lauren&#9;3.512&#9;B+&#9;B+&#9;B&#9;Accept&#10;729183640&#9;Wilson&#9;Tyler&#9;2.843&#9;C&#9;C+&#9;B-&#9;Deny&#10;836492710&#9;Johnson&#9;Megan&#9;3.889&#9;A&#9;A&#9;A-&#9;Accept&#10;715824930&#9;Garcia&#9;Daniel&#9;3.234&#9;B&#9;B-&#9;B&#9;Deny&#10;842163950&#9;Miller&#9;Rachel&#9;3.763&#9;A-&#9;A-&#9;B+&#9;Accept&#10;726849130&#9;Moore&#9;Kevin&#9;3.091&#9;B-&#9;C+&#9;B&#9;Deny&#10;819374620&#9;Taylor&#9;Jessica&#9;3.956&#9;A&#9;A-&#9;A&#9;Accept&#10;734826190&#9;Jackson&#9;Ryan&#9;3.478&#9;B+&#9;B&#9;B+&#9;Accept&#10;821649370&#9;White&#9;Brittany&#9;2.765&#9;C&#9;B-&#9;C+&#9;Deny&#10;716293840&#9;Harris&#9;Brandon&#9;3.834&#9;A-&#9;A-&#9;A-&#9;Accept&#10;843716290&#9;Martin&#9;Stephanie&#9;3.612&#9;B+&#9;B+&#9;A-&#9;Accept&#10;728493610&#9;Thompson&#9;Nathan&#9;3.147&#9;B&#9;B-&#9;B&#9;Deny&#10;815264930&#9;Lewis&#9;Amanda&#9;3.891&#9;A&#9;A&#9;A&#9;Accept&#10;731846920&#9;Robinson&#9;Justin&#9;3.423&#9;B+&#9;B&#9;B&#9;Accept&#10;824619730&#9;Clark&#9;Samantha&#9;2.914&#9;C+&#9;B-&#9;C&#9;Deny&#10;719283460&#9;Rodriguez&#9;Matthew&#9;3.756&#9;A-&#9;B+&#9;A-&#9;Accept&#10;836142790&#9;Lee&#9;Kayla&#9;3.534&#9;B+&#9;A-&#9;B+&#9;Accept&#10;724891360&#9;Walker&#9;Andrew&#9;3.068&#9;B-&#9;C+&#9;B-&#9;Deny&#10;811364920&#9;Hall&#9;Courtney&#9;3.847&#9;A&#9;A-&#9;A&#9;Accept&#10;738261490&#9;Allen&#9;Christopher&#9;3.389&#9;B&#9;B+&#9;B&#9;Accept&#10;826419730&#9;Young&#9;Melissa&#9;2.831&#9;C&#9;C+&#9;B-&#9;Deny&#10;713849260&#9;Hernandez&#9;Joshua&#9;3.912&#9;A&#9;A&#9;A-&#9;Accept&#10;841263970&#9;King&#9;Tiffany&#9;3.645&#9;B+&#9;A-&#9;B+&#9;Accept&#10;727491360&#9;Wright&#9;Patrick&#9;3.178&#9;B&#9;B-&#9;B&#9;Deny">Copy to Clipboard</button>
+            <table>
+              <thead>
+                <tr>
+                  <th>StudentID</th><th>LastName</th><th>FirstName</th><th>TAMU_GPR</th>
+                  <th>Grade229</th><th>Grade230</th><th>Grade327</th><th>FinalDecision</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>724816395</td><td>Anderson</td><td>Emma</td><td>3.842</td><td>A</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>831924750</td><td>Martinez</td><td>Carlos</td><td>3.156</td><td>B</td><td>B</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>619283740</td><td>Thompson</td><td>Sarah</td><td>3.971</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>748291036</td><td>Nguyen</td><td>Michael</td><td>3.624</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>825163947</td><td>Williams</td><td>Ashley</td><td>2.987</td><td>C+</td><td>B</td><td>C</td><td>Deny</td></tr>
+                <tr><td>736481920</td><td>Brown</td><td>James</td><td>3.745</td><td>A-</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>814729360</td><td>Davis</td><td>Lauren</td><td>3.512</td><td>B+</td><td>B+</td><td>B</td><td>Accept</td></tr>
+                <tr><td>729183640</td><td>Wilson</td><td>Tyler</td><td>2.843</td><td>C</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>836492710</td><td>Johnson</td><td>Megan</td><td>3.889</td><td>A</td><td>A</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>715824930</td><td>Garcia</td><td>Daniel</td><td>3.234</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+                <tr><td>842163950</td><td>Miller</td><td>Rachel</td><td>3.763</td><td>A-</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>726849130</td><td>Moore</td><td>Kevin</td><td>3.091</td><td>B-</td><td>C+</td><td>B</td><td>Deny</td></tr>
+                <tr><td>819374620</td><td>Taylor</td><td>Jessica</td><td>3.956</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>734826190</td><td>Jackson</td><td>Ryan</td><td>3.478</td><td>B+</td><td>B</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>821649370</td><td>White</td><td>Brittany</td><td>2.765</td><td>C</td><td>B-</td><td>C+</td><td>Deny</td></tr>
+                <tr><td>716293840</td><td>Harris</td><td>Brandon</td><td>3.834</td><td>A-</td><td>A-</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>843716290</td><td>Martin</td><td>Stephanie</td><td>3.612</td><td>B+</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>728493610</td><td>Thompson</td><td>Nathan</td><td>3.147</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+                <tr><td>815264930</td><td>Lewis</td><td>Amanda</td><td>3.891</td><td>A</td><td>A</td><td>A</td><td>Accept</td></tr>
+                <tr><td>731846920</td><td>Robinson</td><td>Justin</td><td>3.423</td><td>B+</td><td>B</td><td>B</td><td>Accept</td></tr>
+                <tr><td>824619730</td><td>Clark</td><td>Samantha</td><td>2.914</td><td>C+</td><td>B-</td><td>C</td><td>Deny</td></tr>
+                <tr><td>719283460</td><td>Rodriguez</td><td>Matthew</td><td>3.756</td><td>A-</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>836142790</td><td>Lee</td><td>Kayla</td><td>3.534</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>724891360</td><td>Walker</td><td>Andrew</td><td>3.068</td><td>B-</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>811364920</td><td>Hall</td><td>Courtney</td><td>3.847</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>738261490</td><td>Allen</td><td>Christopher</td><td>3.389</td><td>B</td><td>B+</td><td>B</td><td>Accept</td></tr>
+                <tr><td>826419730</td><td>Young</td><td>Melissa</td><td>2.831</td><td>C</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>713849260</td><td>Hernandez</td><td>Joshua</td><td>3.912</td><td>A</td><td>A</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>841263970</td><td>King</td><td>Tiffany</td><td>3.645</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>727491360</td><td>Wright</td><td>Patrick</td><td>3.178</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="sample-data-exercise">
+          <h3>Navigate to the First Empty Row</h3>
+          <p>Using the Aggie Advisors data, write a macro that navigates to the
+          Student Information sheet and finds the first empty row below the
+          existing data — ready to add a new student.</p>
+          <p><strong>Setup:</strong></p>
+          <ol>
+            <li>Create a new sheet named "Student Information"</li>
+            <li>Add headers in row 1: StudentID | Group | TrackCode | LastName | FirstName | UndergradGPR</li>
+            <li>Copy the first 10 rows of Aggie Advisors student data into rows 2–11
+            (row 12 will be empty — your macro should land there)</li>
+          </ol>
+          <p><strong>What your macro needs to do:</strong></p>
+          <ul>
+            <li>Navigate to the Student Information sheet (absolute reference)</li>
+            <li>Go to cell A2 (absolute — always start here)</li>
+            <li>Use <code>Selection.End(xlDown).Select</code> to jump to the last filled row</li>
+            <li>Use <code>ActiveCell.Offset(1, 0).Select</code> to move to the first empty row</li>
+            <li>Display: "Ready to add student at row " &amp; ActiveCell.Row</li>
+          </ul>
+          <p><strong>Expected result:</strong> "Ready to add student at row 12"</p>
+          <div class="exercise-hint">
+            <button aria-expanded="false">Show Hint</button>
+            <div class="hint-body" hidden>
+<pre class="code-block"><code class="language-vba">Sheets("Student Information").Select
+Range("A2").Select
+Selection.End(xlDown).Select
+ActiveCell.Offset(1, 0).Select
+MsgBox "Ready to add student at row " &amp; ActiveCell.Row</code></pre>
+            </div>
+          </div>
+          <a href="/src/modules/practice-project.html#module-6">See this in the Aggie Advisors project →</a>
+        </div>
+
       </section>
 
       <!-- ── Challenge ─────────────────────────────────────── -->
       <section id="challenge" aria-labelledby="challenge-heading">
+        <span id="exam-challenge" aria-hidden="true"></span>
         <h2 id="challenge-heading">Challenge</h2>
         <p class="challenge-framing">These exercises are perfect preparation for the Sample Exam, which prepares you for the Macro Project Exam itself. Exam format may vary by semester.</p>
-        <!-- TODO: content -->
+
+        <div class="exam-challenge">
+          <h3>Relative vs Absolute References in VBA</h3>
+          <p><strong>No hints. No steps. This is exam level.</strong></p>
+          <p>Use the same Student Information sheet from the Practice Problem
+          (10 rows of data in rows 2–11, first empty row is row 12).
+          Your Aggie Advisors applicant data is on Sheet1.</p>
+          <p>Write a macro that:</p>
+          <ol>
+            <li>Navigates to Sheet1 and reads the first applicant record into variables:
+            StudentID (Long), LastName (String), FirstName (String), GPR (Double)</li>
+            <li>Navigates to the Student Information sheet</li>
+            <li>Goes to cell A2 (absolute reference only)</li>
+            <li>Uses <code>Selection.End(xlDown).Select</code> and <code>ActiveCell.Offset(1, 0).Select</code>
+            to find the first empty row</li>
+            <li>Populates that row using Offset from ActiveCell — no hardcoded cell addresses:
+            StudentID | 35 | U | LastName | FirstName | GPR</li>
+          </ol>
+          <p>Must use <code>Option Explicit</code> with correct data types.
+          Must use relative references (Offset) for all population steps.
+          Must use absolute reference only for the initial A2 navigation.</p>
+          <p><strong>Expected result:</strong> Row 12 of Student Information contains:<br>
+          724816395 | 35 | U | Anderson | Emma | 3.842</p>
+          <a href="/src/modules/practice-project.html#module-6">See this in the Aggie Advisors project →</a>
+        </div>
+
       </section>
 
     </main>
 
     <nav class="module-nav" aria-label="Module navigation">
       <div class="module-nav__inner">
-        <a href="/src/modules/calculations-and-dates.html">← Calculations and Dates</a>
+        <a href="/src/modules/calculations.html">← Calculations and Dates</a>
         <a href="/" class="module-nav__home">All Modules</a>
         <a href="/src/modules/filters.html">Filters &amp; Shortcut Keys →</a>
       </div>
