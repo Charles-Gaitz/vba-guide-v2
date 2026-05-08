@@ -60,13 +60,12 @@ src/
     programming-concepts.html        → /src/modules/programming-concepts.html
     variables.html                   → /src/modules/variables.html
     loops.html                       → /src/modules/loops.html
-    calculations-and-dates.html      → /src/modules/calculations-and-dates.html
+    calculations.html                → /src/modules/calculations.html
     references.html                  → /src/modules/references.html
     filters.html                     → /src/modules/filters.html
     debugging.html                   → /src/modules/debugging.html
     pseudocode.html                  → /src/modules/pseudocode.html
     practice-project.html            → /src/modules/practice-project.html
-    objects.html                     → /src/modules/objects.html
 ```
 
 ### Correct href pattern for all internal links:
@@ -82,23 +81,24 @@ src/
 
 ---
 
-## Module Order (locked)
+## Module Order (locked — matches live site exactly)
 
-| # | Module | URL |
-|---|---|---|
-| 1 | Macro Foundations | `/src/modules/foundations.html` |
-| 2 | Adding Programming Concepts | `/src/modules/programming-concepts.html` |
-| 3 | Variables | `/src/modules/variables.html` |
-| 4 | Loops | `/src/modules/loops.html` |
-| 5 | Calculations and Dates | `/src/modules/calculations-and-dates.html` |
-| 6 | Relative vs Absolute References | `/src/modules/references.html` |
-| 7 | Filters & Shortcut Keys | `/src/modules/filters.html` |
-| 8 | F8 Debugging Practice | `/src/modules/debugging.html` |
-| 9 | Pseudocode | `/src/modules/pseudocode.html` |
+| # | Module | URL | Status |
+|---|---|---|---|
+| 1 | Macro Foundations | `/src/modules/foundations.html` | Coming Soon |
+| 2 | Adding Programming Concepts | `/src/modules/programming-concepts.html` | Coming Soon |
+| 3 | Variables | `/src/modules/variables.html` | Coming Soon |
+| 4 | Loops | `/src/modules/loops.html` | ✅ Built |
+| 5 | Calculations and Dates | `/src/modules/calculations.html` | Coming Soon |
+| 6 | Relative vs Absolute References | `/src/modules/references.html` | Coming Soon |
+| 7 | Filters & Shortcut Keys | `/src/modules/filters.html` | Coming Soon |
+| 8 | F8 Debugging Practice | `/src/modules/debugging.html` | Coming Soon |
+| 9 | Pseudocode | `/src/modules/pseudocode.html` | Coming Soon |
+| — | Practice Project | `/src/modules/practice-project.html` | Coming Soon |
 
-**Practice Project** — full-width feature card on home page, below the 9-card grid. Not a numbered module. URL: `/src/modules/practice-project.html`
-
-**Objects** — file kept (`/src/modules/objects.html`) but not shown in home grid.
+**Total: 9 modules + Practice Project. Loops is the only built module.**
+All module pages say "Module N of 9" in their `.page-subtitle`.
+Prev/next nav links must follow this order exactly.
 
 ---
 
@@ -164,7 +164,7 @@ src/
   --mc-incorrect-text: #3a0000;
 
   /* Layout */
-  --header-height:     72px;
+  --header-height:     96px;
 }
 ```
 
@@ -230,22 +230,15 @@ src/
 ### Site Header
 - Fixed to top, always visible: `position: fixed; top: 0; z-index: 100`
 - Contains: title (home link) + subtitle + `.anchor-nav` pills
-- `--header-height: 72px` — main content has `padding-top: calc(var(--header-height) + var(--space-12))`
+- `--header-height: 96px` — main content has `padding-top: var(--header-height)`
 - Mobile scroll: adds `.header-scrolled` class → hides subtitle, reduces padding
 
 ### Anchor Nav (inside header)
-- Pill-style links in maroon header bar — one per section: Concept, Quick Check, Easy Wins, Sample Data, Practice Problem, Challenge
+- Pill-style links in maroon header bar
 - Default: `rgba(255,255,255,0.12)` bg, `1px solid rgba(255,255,255,0.25)` border
 - Hover: `rgba(255,255,255,0.25)` bg, brighter border
 - Font: `var(--text-xs)`, white, 500 weight
 - Flex wrap on mobile
-
-### Module Nav (`.module-nav`)
-- Fixed to bottom of viewport on desktop (above 640px): `position: fixed; bottom: 0; z-index: 90`
-- Normal page flow on mobile (below 640px): `position: static`
-- Always contains prev/next module links and All Modules center link
-- Links wrapped in `.module-nav__inner` for 960px centering
-- `.module-nav__home` styles the center "All Modules" link
 
 ---
 
@@ -266,13 +259,10 @@ src/
 | `.box-reminder` | Green. Canvas prerequisite warning. Top of every module. |
 | `.box-tip` | Beige. Inline hints. |
 | `.course-tip` | 💡 Beige. Peer-voice callout. One per major section. |
-| `.syntax-box` | Maroon-tinted. Loop/concept skeleton structure. |
+| `.syntax-box` | Maroon-tinted. Loop/concept skeleton structure. NEW. |
 | `.pseudocode-block` | Tan. Pseudocode ONLY. Never for real VBA. |
 | `.code-block` | Dark bg. Actual VBA. Prism-tokenized. |
 | `.ai-compare` | Stacked vertical. Sanders top (green border), AI below (beige border). |
-| `.ai-caution` | Warm sand bg. Warning callout for AI-related cautions. Reusable in all modules. |
-| `.ai-caution-label` | Small uppercase heading inside `.ai-caution`. Use `⚠ Cautions: Relying on AI`. |
-| `.challenge-framing` | Italic muted italic text placed directly after the Challenge `<h2>`. Reusable in all modules. |
 
 ### Interactive
 | Class | Description |
@@ -377,8 +367,7 @@ CONTENT_SPEC.md specifies format per exercise per module.
 
 ## Locked Anchor IDs (never change)
 
-Every module: `#concept` `#quick-check` `#easy-wins` `#sample-data` `#practice-problem` `#challenge`
-- Backward-compat: place `<span id="exam-challenge" aria-hidden="true"></span>` as first child of the `#challenge` section so old deep links still resolve
+Every module: `#concept` `#quick-check` `#easy-wins` `#sample-data` `#exam-challenge`
 Practice Project: `#module-1` through `#module-8`, `#data-table`
 
 ---
@@ -408,13 +397,9 @@ Practice Project: `#module-1` through `#module-8`, `#data-table`
 
   #sample-data
     .data-table-section   collapsed, copy button
-
-  #practice-problem
     .sample-data-exercise
 
-  #challenge
-    <span id="exam-challenge" aria-hidden="true">   ← backward-compat anchor
-    .challenge-framing                               ← italic exam framing sentence
+  #exam-challenge
     .exam-challenge
 
 .module-nav   ← Prev | All Modules | Next →
@@ -467,9 +452,6 @@ import './js/exercise-steps.js';
 - Never add downloadable files
 - Never use Netlify-specific config
 - Never write filler prose — cut anything that restates what was just said
-- Never include Sub/End Sub wrappers in concept section code examples — show only the lines that demonstrate the concept being taught
-- Never include sheet navigation, variable declarations, or setup code in concept examples unless the setup IS the concept being taught
-- Comments in code examples must explain the concept, not describe what the line does mechanically (e.g. "moves down one row" on an Offset line is mechanical — cut it; "Always move to next row — inside or outside the IF" explains a concept — keep it)
 
 ---
 
@@ -480,17 +462,13 @@ import './js/exercise-steps.js';
 3. ✅ vite.config.js multi-page + all CSS/JS files
 4. ✅ Module template + placeholder files
 5. ✅ Loops page — reference implementation
-6. ✅ Update: content width to 960px, syntax-box styles, loops.html prose trim, sticky nav, header height
-7. ✅ Home page: 9-card grid + Practice Project feature card; module sequence corrected
-8. ✅ Stub pages created/updated: foundations, programming-concepts, variables, calculations-and-dates, references, filters, debugging, pseudocode — all with correct prev/next nav
-9. Variables page content
-10. Macro Foundations page content
-11. Adding Programming Concepts page content
-12. Calculations and Dates page content
-13. Relative vs Absolute References page content
-14. Filters & Shortcut Keys page content
-15. F8 Debugging page content
-16. Pseudocode page content
-17. Practice Project page content
-18. Objects placeholder
-19. Polish: Lighthouse, mobile test, cross-links, Canvas URL test
+6. → Update: content width to 960px, syntax-box styles, loops.html prose trim
+7. Variables page
+8. Macro Foundations page
+9. Adding Programming Concepts page
+10. F8 Debugging page
+11. Relative vs Absolute References page
+12. Filters & Shortcut Keys page
+13. Practice Project page
+14. Objects placeholder
+15. Polish: Lighthouse, mobile test, cross-links, Canvas URL test

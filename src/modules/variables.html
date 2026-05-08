@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Practice VBA variables for ACCT 628 — a supplement to your Canvas course materials." />
+  <meta name="description" content="Practice VBA variables for ACCT 628 — data types, Option Explicit, and the three-step pattern with Aggie Advisors exercises." />
   <title>Variables — VBA Practice for ACCT 628</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,7 +25,6 @@
           <a href="#concept">Concept</a>
           <a href="#quick-check">Quick Check</a>
           <a href="#easy-wins">Easy Wins</a>
-          <a href="#sample-data">Sample Data</a>
           <a href="#practice-problem">Practice Problem</a>
           <a href="#challenge">Challenge</a>
         </nav>
@@ -40,44 +39,505 @@
       </div>
 
       <div class="box-reminder">
-        <p><strong>REMINDER:</strong> Watch the associated course video before working through this module.</p>
+        <p>REMINDER: To fully understand Variables, you should have already watched the
+        Variables Video in Canvas and followed along with the Macro Demo file.
+        This practice will build upon that foundation.</p>
       </div>
 
       <!-- ── Concept ─────────────────────────────────────────── -->
       <section id="concept" aria-labelledby="concept-heading">
-        <h2 id="concept-heading">Concepts</h2>
-        <!-- TODO: content -->
+        <h2 id="concept-heading">Working with Variables in VBA</h2>
+
+        <p>A variable is a named storage location in your computer's memory. Instead of
+        hardcoding a value like a group number or GPR directly into your code, you store
+        it in a variable and reference the variable name instead. This makes your macro
+        adaptable — change the value once and it updates everywhere the variable is used.</p>
+
+        <p>Working with variables always follows three steps. Professor Sanders calls them
+        Define, Populate, and Use — and that order is not optional. You must define a
+        variable before you can populate it, and populate it before you can use it.
+        If a value is wrong or blank, the first thing to check is whether these three
+        steps are happening in the right order.</p>
+
+        <div class="course-tip">
+          <p>Variables show up in every exam question in some form. Getting the three steps
+          and data types locked in now means one less thing to think about on exam day.</p>
+        </div>
+
+        <!-- ── The Three Steps ── -->
+        <h3>The Three Steps</h3>
+
+        <p>Defining a variable creates a named slot in memory and tells VBA what kind of
+        data it will hold. Populating it places a value in that slot. Using it means
+        referencing the variable name anywhere you need that value — in a cell assignment,
+        a MsgBox, or a loop condition.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>' Step 1 — DEFINE
+Dim VariableName As DataType
+
+' Step 2 — POPULATE
+VariableName = something
+
+' Step 3 — USE
+ActiveCell = VariableName</pre>
+        </div>
+
+        <p>Here is the three-step pattern in a real macro — prompting for a group number
+        and writing it to a cell:</p>
+
+<pre class="code-block"><code class="language-vba">Dim NewGroup As Integer
+
+NewGroup = InputBox("Enter the new group number")
+
+Selection.End(xlDown).Select
+ActiveCell.Offset(1, 0).Select
+ActiveCell = NewGroup</code></pre>
+
+        <!-- ── Data Types ── -->
+        <h3>Data Types</h3>
+
+        <p>The data type tells VBA how to store the value in memory. Using the wrong type
+        causes silent errors — an Integer silently truncates a decimal, a String won't
+        compare correctly to a number. For this course you need five types: String for
+        text, Integer for small whole numbers, Long for large whole numbers like student
+        IDs, Double for numbers with decimal places like GPR, and Date for dates.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>Dim LastName    As String    ' text
+Dim GroupNumber As Integer   ' whole number up to ~32,000
+Dim StudentID   As Long      ' whole number any size
+Dim GPR         As Double    ' number with decimals
+Dim StartDate   As Date      ' date value</pre>
+        </div>
+
+        <p>These are the actual variable declarations from the Project Demo:</p>
+
+<pre class="code-block"><code class="language-vba">Dim NewGroup       As Integer   ' group number — small whole number
+Dim NumberAccepted As Integer   ' counter — small whole number
+Dim UIN            As Long      ' 9-digit student ID — needs Long
+Dim GPR            As Double    ' GPA with decimals
+Dim Gender         As String    ' text
+Dim Birthdate      As Date      ' date</code></pre>
+
+        <!-- ── Option Explicit ── -->
+        <h3>Option Explicit</h3>
+
+        <p>By default, VBA lets you use any word as a variable without declaring it.
+        This causes three problems: VBA may choose the wrong data type, a misspelled
+        variable name silently creates a new blank variable instead of an error, and
+        your macro runs slower. Adding <code>Option Explicit</code> at the very top of the module
+        — above the first Sub — forces you to declare every variable. If you use an
+        undeclared name, VBA stops and tells you exactly where the problem is.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>Option Explicit          ' ← must be the very first line in the module
+
+Sub YourMacroName()
+    Dim VariableName As DataType
+End Sub</pre>
+        </div>
+
+        <p>This is what the top of every well-written module looks like:</p>
+
+<pre class="code-block"><code class="language-vba">Option Explicit
+' ACCT 628 - Sanders
+
+Sub Option1_Modified()
+
+    Dim NewGroup       As Integer
+    Dim NumberAccepted As Integer
+    Dim UIN            As Long
+    Dim GPR            As Double
+    Dim Gender         As String
+    Dim Birthdate      As Date</code></pre>
+
+        <!-- ── Variables vs Named Ranges ── -->
+        <h3>Variables vs Named Ranges</h3>
+
+        <p>Variables and Named Ranges look similar but behave very differently. A variable
+        exists only while the macro is running — when the macro stops, it's gone.
+        A Named Range exists on the worksheet permanently and can be used in both
+        Excel formulas and VBA. In VBA, Named Ranges always use quotes:
+        <code>Range("GroupData")</code>. Variables never use quotes.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>' Variable — no quotes, exists only while macro runs
+NewGroup = InputBox("Enter group number")
+
+' Named Range — quotes required, exists on worksheet
+Range("LegalDrinkingAge") = LegalDrinkingAge</pre>
+        </div>
+
+        <p>This example from the Macro Handout shows both in the same macro:</p>
+
+<pre class="code-block"><code class="language-vba">Dim LegalDrinkingAge As Integer
+
+LegalDrinkingAge = InputBox("Enter the current legal drinking age")
+
+' Named Range has quotes — Variable does not
+Range("LegalDrinkingAge") = LegalDrinkingAge</code></pre>
+
       </section>
 
       <!-- ── Quick Check ────────────────────────────────────── -->
       <section id="quick-check" aria-labelledby="quick-check-heading">
         <h2 id="quick-check-heading">Quick Check</h2>
-        <!-- TODO: content -->
+
+        <div class="mc-question">
+          <p>1. What are the three steps for working with variables? Use Professor Sanders' exact terms.</p>
+          <button class="mc-option" data-correct="false">A. Create, Assign, Reference</button>
+          <button class="mc-option" data-correct="true">B. Define, Populate, Use</button>
+          <button class="mc-option" data-correct="false">C. Declare, Set, Call</button>
+          <button class="mc-option" data-correct="false">D. Dim, Equal, Run</button>
+          <div class="mc-explanation" hidden>
+            <p>Define (Dim), Populate (VariableName = something), Use (reference it in code).
+            This order is not optional — you must define before you populate, and populate
+            before you use.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>2. A student's UIN is a 9-digit number like 123456789. Which data type should you use?</p>
+          <button class="mc-option" data-correct="false">A. Integer</button>
+          <button class="mc-option" data-correct="false">B. String</button>
+          <button class="mc-option" data-correct="false">C. Double</button>
+          <button class="mc-option" data-correct="true">D. Long</button>
+          <div class="mc-explanation" hidden>
+            <p>Integer only holds numbers up to ~32,000. A 9-digit UIN needs Long,
+            which handles numbers up to ~2 billion. Using Integer would silently
+            overflow and give wrong results.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>3. You declare <code>Dim GPR As Integer</code> and assign it 3.756. What value does GPR contain?</p>
+          <button class="mc-option" data-correct="false">A. 3.756</button>
+          <button class="mc-option" data-correct="false">B. 3</button>
+          <button class="mc-option" data-correct="true">C. 4</button>
+          <button class="mc-option" data-correct="false">D. An error message</button>
+          <div class="mc-explanation" hidden>
+            <p>Integer silently rounds to the nearest whole number — 3.756 becomes 4.
+            No error, no warning. Use Double for any value with decimal places like
+            GPR, dollar amounts, or percentages.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>4. Where must <code>Option Explicit</code> be placed?</p>
+          <button class="mc-option" data-correct="false">A. Inside the Sub, before the Dim statements</button>
+          <button class="mc-option" data-correct="true">B. At the very top of the module, above the first Sub</button>
+          <button class="mc-option" data-correct="false">C. After the last End Sub</button>
+          <button class="mc-option" data-correct="false">D. It can go anywhere</button>
+          <div class="mc-explanation" hidden>
+            <p>Option Explicit must be the first line in the module, above any Sub.
+            If it's inside a Sub it will cause an error. VBA reads the module top
+            to bottom — this declaration applies to the entire module.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>5. In VBA, how do you reference a Named Range called "GroupData"?</p>
+          <button class="mc-option" data-correct="false">A. GroupData</button>
+          <button class="mc-option" data-correct="false">B. Variable("GroupData")</button>
+          <button class="mc-option" data-correct="true">C. Range("GroupData")</button>
+          <button class="mc-option" data-correct="false">D. Named("GroupData")</button>
+          <div class="mc-explanation" hidden>
+            <p>Named Ranges always use <code>Range("name")</code> with quotes in VBA.
+            Variables never use quotes. This distinction shows up on the exam —
+            <code>GroupData</code> alone refers to a variable, never a Named Range.</p>
+          </div>
+        </div>
+
+        <div class="course-tip">
+          <p>Question 3 is the classic trap. Integer looks right until you assign a decimal
+          and it silently rounds. Always ask: could this value have a decimal? If yes, use Double.</p>
+        </div>
+
       </section>
 
       <!-- ── Easy Wins ──────────────────────────────────────── -->
       <section id="easy-wins" aria-labelledby="easy-wins-heading">
         <h2 id="easy-wins-heading">Easy Wins</h2>
-        <!-- TODO: content -->
+
+        <!-- Exercise 1 — Steps Format -->
+        <h3>Your First Variable <span class="coming-soon-badge">Guided</span></h3>
+        <p>Write a macro that asks for a name using InputBox, stores it in a String variable,
+        and displays "Hello, [name]!" in a MsgBox.</p>
+
+        <div class="exercise-steps">
+
+          <div class="exercise-step open">
+            <button class="step-header" aria-expanded="true">Step 1 — Set up your macro</button>
+            <div class="step-body">
+              <p>Open the VBA Editor (Alt+F11). Insert a module (Insert → Module). Type this
+              shell to start:</p>
+<pre class="code-block"><code class="language-vba">Option Explicit
+Sub SayHello()
+
+End Sub</code></pre>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 2 — Define your variable</button>
+            <div class="step-body" hidden>
+              <p>Inside the Sub, add your variable declaration. String is correct because
+              a name is text:</p>
+<pre class="code-block"><code class="language-vba">Dim UserName As String</code></pre>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 3 — Populate the variable</button>
+            <div class="step-body" hidden>
+              <p>Add the InputBox line. This pauses the macro, waits for input, and stores
+              the result in UserName:</p>
+<pre class="code-block"><code class="language-vba">UserName = InputBox("What is your name?")</code></pre>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 4 — Use the variable</button>
+            <div class="step-body" hidden>
+              <p>Add the MsgBox line. The <code>&amp;</code> operator joins text and variable
+              values into one string:</p>
+<pre class="code-block"><code class="language-vba">MsgBox "Hello, " &amp; UserName &amp; "!"</code></pre>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="exercise-solution">
+          <button aria-expanded="false">View Complete Code</button>
+          <div class="solution-body" hidden>
+<pre class="code-block"><code class="language-vba">Option Explicit
+Sub SayHello()
+    Dim UserName As String
+    UserName = InputBox("What is your name?")
+    MsgBox "Hello, " &amp; UserName &amp; "!"
+End Sub</code></pre>
+            <p><strong>Expected result:</strong> MsgBox shows "Hello, [whatever you typed]!"</p>
+          </div>
+        </div>
+
+        <!-- Exercise 2 — Simple Format -->
+        <h3>Data Type Experiment <span class="coming-soon-badge">Observation</span></h3>
+        <p>This is a quick experiment, not a build exercise.</p>
+
+        <div class="exercise-simple">
+          <p>Copy this code into the VBA Editor and run it. Look at what Integer does
+          to 3.7 vs what Double does. What's different and why?</p>
+<pre class="code-block"><code class="language-vba">Dim WholeNumber   As Integer
+Dim DecimalNumber As Double
+
+WholeNumber   = 3.7
+DecimalNumber = 3.7
+
+MsgBox "Integer: " &amp; WholeNumber &amp; " | Double: " &amp; DecimalNumber</code></pre>
+
+          <div class="exercise-hint">
+            <button aria-expanded="false">Show Hint</button>
+            <div class="hint-body" hidden>
+              <p>Run it and look at what Integer does to 3.7. Does it keep the decimal?
+              Does it truncate? Does it round?</p>
+            </div>
+          </div>
+
+          <div class="exercise-solution">
+            <button aria-expanded="false">Show Solution</button>
+            <div class="solution-body" hidden>
+              <p>Integer shows 4 (rounds to the nearest whole number). Double shows 3.7.
+              This is why you always use Double for GPR, dollar amounts, or any decimal value —
+              Integer looks correct until you assign a decimal and it silently rounds.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Exercise 3 — Steps Format -->
+        <h3>Three Steps in Order <span class="coming-soon-badge">Guided</span></h3>
+        <p>Write a macro that reads a student's ID, last name, and GPR from cells A2, B2,
+        and D2, stores them in variables, then displays all three in a MsgBox.</p>
+
+        <div class="exercise-steps">
+
+          <div class="exercise-step open">
+            <button class="step-header" aria-expanded="true">Step 1 — Define three variables</button>
+            <div class="step-body">
+              <p>Open the VBA Editor and create this shell with your three variable
+              declarations. Notice the data types: Long for the ID, String for the name,
+              Double for GPR.</p>
+<pre class="code-block"><code class="language-vba">Option Explicit
+Sub ReadStudent()
+    Dim StudentID As Long
+    Dim LastName  As String
+    Dim GPR       As Double</code></pre>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 2 — Navigate and populate</button>
+            <div class="step-body" hidden>
+              <p>Navigate to A2 and read each column using Offset.
+              Offset(0,1) = one column right. Offset(0,3) = three columns right.</p>
+<pre class="code-block"><code class="language-vba">    Sheets("Sheet1").Select
+    Range("A2").Select
+
+    StudentID = ActiveCell
+    LastName  = ActiveCell.Offset(0, 1)
+    GPR       = ActiveCell.Offset(0, 3)</code></pre>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 3 — Use the variables</button>
+            <div class="step-body" hidden>
+              <p>Display all three in a single MsgBox using <code>&amp;</code> to join the parts:</p>
+<pre class="code-block"><code class="language-vba">    MsgBox "ID: " &amp; StudentID &amp; " | Name: " &amp; LastName &amp; " | GPR: " &amp; GPR
+End Sub</code></pre>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="exercise-solution">
+          <button aria-expanded="false">View Complete Code</button>
+          <div class="solution-body" hidden>
+<pre class="code-block"><code class="language-vba">Option Explicit
+Sub ReadStudent()
+    Dim StudentID As Long
+    Dim LastName  As String
+    Dim GPR       As Double
+
+    Sheets("Sheet1").Select
+    Range("A2").Select
+
+    StudentID = ActiveCell
+    LastName  = ActiveCell.Offset(0, 1)
+    GPR       = ActiveCell.Offset(0, 3)
+
+    MsgBox "ID: " &amp; StudentID &amp; " | Name: " &amp; LastName &amp; " | GPR: " &amp; GPR
+End Sub</code></pre>
+            <p><strong>Expected result:</strong> MsgBox shows values from row 2 of your data.</p>
+          </div>
+        </div>
+
       </section>
 
       <!-- ── Sample Data ────────────────────────────────────── -->
       <section id="sample-data" aria-labelledby="sample-data-heading">
         <h2 id="sample-data-heading">Sample Data</h2>
-        <!-- TODO: content -->
+
+        <div class="data-table-section">
+          <p>Copy this data and paste it into cell A1 of a new Excel worksheet. Use Ctrl+V
+          to paste — Excel will automatically split the columns. This is your practice
+          dataset for the exercises below.</p>
+          <button class="data-table-toggle" aria-expanded="false">📋 Show Data Table</button>
+          <div class="data-table-wrap" hidden>
+            <button class="copy-data-btn" data-tsv="StudentID&#9;LastName&#9;FirstName&#9;TAMU_GPR&#9;Grade229&#9;Grade230&#9;Grade327&#9;FinalDecision&#10;724816395&#9;Anderson&#9;Emma&#9;3.842&#9;A&#9;B+&#9;A-&#9;Accept&#10;831924750&#9;Martinez&#9;Carlos&#9;3.156&#9;B&#9;B&#9;B-&#9;Deny&#10;619283740&#9;Thompson&#9;Sarah&#9;3.971&#9;A&#9;A-&#9;A&#9;Accept&#10;748291036&#9;Nguyen&#9;Michael&#9;3.624&#9;B+&#9;A-&#9;B+&#9;Accept&#10;825163947&#9;Williams&#9;Ashley&#9;2.987&#9;C+&#9;B&#9;C&#9;Deny&#10;736481920&#9;Brown&#9;James&#9;3.745&#9;A-&#9;B+&#9;A-&#9;Accept&#10;814729360&#9;Davis&#9;Lauren&#9;3.512&#9;B+&#9;B+&#9;B&#9;Accept&#10;729183640&#9;Wilson&#9;Tyler&#9;2.843&#9;C&#9;C+&#9;B-&#9;Deny&#10;836492710&#9;Johnson&#9;Megan&#9;3.889&#9;A&#9;A&#9;A-&#9;Accept&#10;715824930&#9;Garcia&#9;Daniel&#9;3.234&#9;B&#9;B-&#9;B&#9;Deny&#10;842163950&#9;Miller&#9;Rachel&#9;3.763&#9;A-&#9;A-&#9;B+&#9;Accept&#10;726849130&#9;Moore&#9;Kevin&#9;3.091&#9;B-&#9;C+&#9;B&#9;Deny&#10;819374620&#9;Taylor&#9;Jessica&#9;3.956&#9;A&#9;A-&#9;A&#9;Accept&#10;734826190&#9;Jackson&#9;Ryan&#9;3.478&#9;B+&#9;B&#9;B+&#9;Accept&#10;821649370&#9;White&#9;Brittany&#9;2.765&#9;C&#9;B-&#9;C+&#9;Deny&#10;716293840&#9;Harris&#9;Brandon&#9;3.834&#9;A-&#9;A-&#9;A-&#9;Accept&#10;843716290&#9;Martin&#9;Stephanie&#9;3.612&#9;B+&#9;B+&#9;A-&#9;Accept&#10;728493610&#9;Thompson&#9;Nathan&#9;3.147&#9;B&#9;B-&#9;B&#9;Deny&#10;815264930&#9;Lewis&#9;Amanda&#9;3.891&#9;A&#9;A&#9;A&#9;Accept&#10;731846920&#9;Robinson&#9;Justin&#9;3.423&#9;B+&#9;B&#9;B&#9;Accept&#10;824619730&#9;Clark&#9;Samantha&#9;2.914&#9;C+&#9;B-&#9;C&#9;Deny&#10;719283460&#9;Rodriguez&#9;Matthew&#9;3.756&#9;A-&#9;B+&#9;A-&#9;Accept&#10;836142790&#9;Lee&#9;Kayla&#9;3.534&#9;B+&#9;A-&#9;B+&#9;Accept&#10;724891360&#9;Walker&#9;Andrew&#9;3.068&#9;B-&#9;C+&#9;B-&#9;Deny&#10;811364920&#9;Hall&#9;Courtney&#9;3.847&#9;A&#9;A-&#9;A&#9;Accept&#10;738261490&#9;Allen&#9;Christopher&#9;3.389&#9;B&#9;B+&#9;B&#9;Accept&#10;826419730&#9;Young&#9;Melissa&#9;2.831&#9;C&#9;C+&#9;B-&#9;Deny&#10;713849260&#9;Hernandez&#9;Joshua&#9;3.912&#9;A&#9;A&#9;A-&#9;Accept&#10;841263970&#9;King&#9;Tiffany&#9;3.645&#9;B+&#9;A-&#9;B+&#9;Accept&#10;727491360&#9;Wright&#9;Patrick&#9;3.178&#9;B&#9;B-&#9;B&#9;Deny">Copy to Clipboard</button>
+            <table>
+              <thead>
+                <tr>
+                  <th>StudentID</th><th>LastName</th><th>FirstName</th><th>TAMU_GPR</th>
+                  <th>Grade229</th><th>Grade230</th><th>Grade327</th><th>FinalDecision</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>724816395</td><td>Anderson</td><td>Emma</td><td>3.842</td><td>A</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>831924750</td><td>Martinez</td><td>Carlos</td><td>3.156</td><td>B</td><td>B</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>619283740</td><td>Thompson</td><td>Sarah</td><td>3.971</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>748291036</td><td>Nguyen</td><td>Michael</td><td>3.624</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>825163947</td><td>Williams</td><td>Ashley</td><td>2.987</td><td>C+</td><td>B</td><td>C</td><td>Deny</td></tr>
+                <tr><td>736481920</td><td>Brown</td><td>James</td><td>3.745</td><td>A-</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>814729360</td><td>Davis</td><td>Lauren</td><td>3.512</td><td>B+</td><td>B+</td><td>B</td><td>Accept</td></tr>
+                <tr><td>729183640</td><td>Wilson</td><td>Tyler</td><td>2.843</td><td>C</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>836492710</td><td>Johnson</td><td>Megan</td><td>3.889</td><td>A</td><td>A</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>715824930</td><td>Garcia</td><td>Daniel</td><td>3.234</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+                <tr><td>842163950</td><td>Miller</td><td>Rachel</td><td>3.763</td><td>A-</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>726849130</td><td>Moore</td><td>Kevin</td><td>3.091</td><td>B-</td><td>C+</td><td>B</td><td>Deny</td></tr>
+                <tr><td>819374620</td><td>Taylor</td><td>Jessica</td><td>3.956</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>734826190</td><td>Jackson</td><td>Ryan</td><td>3.478</td><td>B+</td><td>B</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>821649370</td><td>White</td><td>Brittany</td><td>2.765</td><td>C</td><td>B-</td><td>C+</td><td>Deny</td></tr>
+                <tr><td>716293840</td><td>Harris</td><td>Brandon</td><td>3.834</td><td>A-</td><td>A-</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>843716290</td><td>Martin</td><td>Stephanie</td><td>3.612</td><td>B+</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>728493610</td><td>Thompson</td><td>Nathan</td><td>3.147</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+                <tr><td>815264930</td><td>Lewis</td><td>Amanda</td><td>3.891</td><td>A</td><td>A</td><td>A</td><td>Accept</td></tr>
+                <tr><td>731846920</td><td>Robinson</td><td>Justin</td><td>3.423</td><td>B+</td><td>B</td><td>B</td><td>Accept</td></tr>
+                <tr><td>824619730</td><td>Clark</td><td>Samantha</td><td>2.914</td><td>C+</td><td>B-</td><td>C</td><td>Deny</td></tr>
+                <tr><td>719283460</td><td>Rodriguez</td><td>Matthew</td><td>3.756</td><td>A-</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>836142790</td><td>Lee</td><td>Kayla</td><td>3.534</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>724891360</td><td>Walker</td><td>Andrew</td><td>3.068</td><td>B-</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>811364920</td><td>Hall</td><td>Courtney</td><td>3.847</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>738261490</td><td>Allen</td><td>Christopher</td><td>3.389</td><td>B</td><td>B+</td><td>B</td><td>Accept</td></tr>
+                <tr><td>826419730</td><td>Young</td><td>Melissa</td><td>2.831</td><td>C</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>713849260</td><td>Hernandez</td><td>Joshua</td><td>3.912</td><td>A</td><td>A</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>841263970</td><td>King</td><td>Tiffany</td><td>3.645</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>727491360</td><td>Wright</td><td>Patrick</td><td>3.178</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </section>
 
       <!-- ── Practice Problem ──────────────────────────────── -->
       <section id="practice-problem" aria-labelledby="practice-problem-heading">
         <h2 id="practice-problem-heading">Practice Problem</h2>
-        <!-- TODO: content -->
+
+        <div class="sample-data-exercise">
+          <h3>Read the First Applicant</h3>
+          <p>Using the Aggie Advisors data you just pasted into Excel, write a macro that
+          reads the first applicant record and displays their information in a MsgBox.</p>
+          <p><strong>What your macro needs to do:</strong></p>
+          <ul>
+            <li>Declare four variables with correct data types:
+              StudentID (Long), LastName (String), FirstName (String), GPR (Double)</li>
+            <li>Navigate to cell A2 (row 1 is the header)</li>
+            <li>Populate each variable using Offset:
+              StudentID = ActiveCell (column A),
+              LastName = Offset(0, 1) (column B),
+              FirstName = Offset(0, 2) (column C),
+              GPR = Offset(0, 3) (column D)</li>
+            <li>Display: "ID: [X] | Name: [Last], [First] | GPR: [X.XXX]"</li>
+          </ul>
+          <p><strong>Expected result for row 2:</strong>
+          "ID: 724816395 | Name: Anderson, Emma | GPR: 3.842"</p>
+          <p><strong>Hint:</strong></p>
+<pre class="code-block"><code class="language-vba">MsgBox "ID: " &amp; StudentID &amp; " | Name: " &amp; LastName &amp; ", " &amp; FirstName &amp; " | GPR: " &amp; GPR</code></pre>
+          <!-- TODO: Uncomment when practice-project.html is built
+          <a href="/src/modules/practice-project.html#module-3">See this in the Aggie Advisors project →</a>
+          -->
+        </div>
+
       </section>
 
       <!-- ── Challenge ─────────────────────────────────────── -->
       <section id="challenge" aria-labelledby="challenge-heading">
+        <span id="exam-challenge" aria-hidden="true"></span>
         <h2 id="challenge-heading">Challenge</h2>
         <p class="challenge-framing">These exercises are perfect preparation for the Sample Exam, which prepares you for the Macro Project Exam itself. Exam format may vary by semester.</p>
-        <!-- TODO: content -->
+
+        <div class="exam-challenge">
+          <h3>Read and Classify All Applicants</h3>
+          <p>Using the Aggie Advisors dataset, write a macro that:</p>
+          <ol>
+            <li>Uses <code>Option Explicit</code> with all variables declared and correct data types</li>
+            <li>Loops through all 30 applicant records using <code>Do Until</code> with a blank cell check</li>
+            <li>For each record, reads StudentID, LastName, and FinalDecision into variables</li>
+            <li>Counts how many students have FinalDecision = "Accept"</li>
+            <li>After the loop, displays: "Accepted: [X] of [Total] applicants"
+            where Total comes from your loop counter, not a hardcoded 30</li>
+          </ol>
+          <p><strong>Expected answer:</strong> "Accepted: 20 of 30 applicants"</p>
+          <!-- TODO: Uncomment when practice-project.html is built
+          <a href="/src/modules/practice-project.html#module-3">See this in the Aggie Advisors project →</a>
+          -->
+        </div>
+
       </section>
 
     </main>
