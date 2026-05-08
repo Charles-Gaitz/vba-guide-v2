@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Practice adding programming concepts in VBA for ACCT 628 — a supplement to your Canvas course materials." />
+  <meta name="description" content="Practice adding programming concepts to VBA macros for ACCT 628 — Option Explicit, InputBox, speed settings, and the guard check pattern." />
   <title>Adding Programming Concepts — VBA Practice for ACCT 628</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,7 +25,6 @@
           <a href="#concept">Concept</a>
           <a href="#quick-check">Quick Check</a>
           <a href="#easy-wins">Easy Wins</a>
-          <a href="#sample-data">Sample Data</a>
           <a href="#practice-problem">Practice Problem</a>
           <a href="#challenge">Challenge</a>
         </nav>
@@ -40,44 +39,438 @@
       </div>
 
       <div class="box-reminder">
-        <p><strong>REMINDER:</strong> Watch the associated course video before working through this module.</p>
+        <p><strong>REMINDER:</strong> To fully understand Adding Programming Concepts, you should have
+        already watched the Adding Programming Concepts Video in Canvas and followed
+        along with the Macro Demo file. This practice will build upon that foundation.</p>
       </div>
 
       <!-- ── Concept ─────────────────────────────────────────── -->
       <section id="concept" aria-labelledby="concept-heading">
-        <h2 id="concept-heading">Concepts</h2>
-        <!-- TODO: content -->
+        <h2 id="concept-heading">Beyond Recording</h2>
+
+        <p>Recording captures actions — clicking, typing, navigating. But macros become
+        truly useful when they can make decisions, ask the user for input, and handle
+        different situations automatically. These capabilities can't be recorded. They
+        have to be typed. This module covers the three essentials: Option Explicit,
+        InputBox, and the guard check pattern.</p>
+
+        <p>The workflow from here forward is always the same: record the parts you can,
+        open the code, and add the typed logic around it. You're not writing everything
+        from scratch — you're extending what the recorder gives you.</p>
+
+        <div class="course-tip">
+          <p>"The record → open → add workflow is exactly how the project is built.
+          Practice this rhythm now and the project will feel familiar rather than overwhelming."</p>
+        </div>
+
+        <!-- ── Option Explicit ── -->
+        <h3>Option Explicit</h3>
+
+        <p>Option Explicit forces you to declare every variable before using it. Without it,
+        VBA silently creates a new variable any time it sees an unrecognized word —
+        including when you misspell a variable name. That misspelled variable gets a blank
+        value and your macro produces wrong results with no error message. Option Explicit
+        must be the very first line in the module, above the first Sub.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>Option Explicit     ← first line in the module, above everything
+
+Sub MacroName()
+    Dim VariableName As DataType
+    ' ...
+End Sub</pre>
+        </div>
+
+        <p>This is what every module in this course should start with:</p>
+
+        <pre class="code-block"><code class="language-vba">Option Explicit
+' ACCT 628 - Sanders
+
+Sub AddNewStudents()
+
+    Dim NewGroup       As Integer
+    Dim NumberAccepted As Integer
+
+End Sub
+</code></pre>
+
+        <!-- ── InputBox ── -->
+        <h3>InputBox</h3>
+
+        <p>An InputBox pauses the macro and displays a dialog asking the user to type
+        something. Whatever they type gets stored in a variable. This is how macros
+        become adaptable — instead of hardcoding a group number or a date, you ask
+        for it at runtime. InputBox is always typed, never recorded.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>VariableName = InputBox("Message to display to the user")</pre>
+        </div>
+
+        <p>This example asks for a group number and stores it in a variable:</p>
+
+        <pre class="code-block"><code class="language-vba">Dim NewGroup As Integer
+
+NewGroup = InputBox("Enter the new group number")
+</code></pre>
+
+        <!-- ── Speed Settings ── -->
+        <h3>Speed Settings</h3>
+
+        <p>Two settings slow macros down significantly when left on: automatic calculation
+        and screen updating. Turning them off at the start of a macro and back on at the
+        end is standard practice for any macro that processes a large number of rows.
+        Always add them as a pair — if you turn calculation off and forget to turn it
+        back on, formulas in the workbook will stop updating until you fix it manually.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>' At the start of your macro
+Application.Calculation = xlCalculationManual
+Application.ScreenUpdating = False
+
+' At the end of your macro
+Application.Calculation = xlCalculationAutomatic
+Application.ScreenUpdating = True</pre>
+        </div>
+
+        <!-- ── Guard Check Pattern ── -->
+        <h3>The Guard Check Pattern</h3>
+
+        <p>Before a macro processes data, it should verify that data actually exists.
+        If the table is empty and the macro tries to loop through it, you'll get
+        unexpected results. The guard check is a simple IF statement at the top of
+        the macro: if the first data cell is blank, show a message and stop. If it
+        has data, continue. This one pattern prevents a whole category of errors.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Pattern</p>
+          <pre>IF first data cell is empty THEN
+    DISPLAY message and stop
+ELSE
+    run the rest of the macro
+END IF</pre>
+        </div>
+
+        <p>Here is what the guard check looks like in VBA:</p>
+
+        <pre class="code-block"><code class="language-vba">Sheets("Applicant Information").Select
+Range("A2").Select
+
+If ActiveCell = "" Then
+    MsgBox "No applicants found. Please enter data first."
+    Exit Sub
+Else
+    ' rest of macro goes here
+End If
+</code></pre>
+
       </section>
 
       <!-- ── Quick Check ────────────────────────────────────── -->
       <section id="quick-check" aria-labelledby="quick-check-heading">
         <h2 id="quick-check-heading">Quick Check</h2>
-        <!-- TODO: content -->
+
+        <div class="quick-check">
+
+          <div class="mc-question">
+            <p class="mc-prompt">1. What does Option Explicit do?</p>
+            <div class="mc-options">
+              <button class="mc-option" data-correct="false">A. Makes your macro run faster</button>
+              <button class="mc-option" data-correct="true">B. Forces you to declare all variables before using them</button>
+              <button class="mc-option" data-correct="false">C. Turns off screen updating</button>
+              <button class="mc-option" data-correct="false">D. Opens the VBA Editor automatically</button>
+            </div>
+            <div class="mc-explanation" hidden>Option Explicit catches misspelled variable names by requiring every variable to be declared with Dim. Without it, a typo silently creates a blank variable and produces wrong results.</div>
+          </div>
+
+          <div class="mc-question">
+            <p class="mc-prompt">2. Where must Option Explicit be placed?</p>
+            <div class="mc-options">
+              <button class="mc-option" data-correct="false">A. Inside the Sub, before the Dim statements</button>
+              <button class="mc-option" data-correct="false">B. After the last End Sub in the module</button>
+              <button class="mc-option" data-correct="true">C. At the very top of the module, above the first Sub</button>
+              <button class="mc-option" data-correct="false">D. It can go anywhere</button>
+            </div>
+            <div class="mc-explanation" hidden>Option Explicit must be the very first line in the module. If it's inside a Sub it will cause an error.</div>
+          </div>
+
+          <div class="mc-question">
+            <p class="mc-prompt">3. What does this line do? <code>NewGroup = InputBox("Enter the new group number")</code></p>
+            <div class="mc-options">
+              <button class="mc-option" data-correct="false">A. Displays a message and continues</button>
+              <button class="mc-option" data-correct="true">B. Pauses the macro and stores whatever the user types into NewGroup</button>
+              <button class="mc-option" data-correct="false">C. Populates a cell with the text "Enter the new group number"</button>
+              <button class="mc-option" data-correct="false">D. Declares a variable named NewGroup</button>
+            </div>
+            <div class="mc-explanation" hidden>InputBox pauses the macro, shows the message to the user, and stores their input in the variable on the left side of the equals sign.</div>
+          </div>
+
+          <div class="mc-question">
+            <p class="mc-prompt">4. You turn off Application.Calculation at the start of your macro but forget to turn it back on. What happens?</p>
+            <div class="mc-options">
+              <button class="mc-option" data-correct="false">A. Nothing — it resets automatically when the macro ends</button>
+              <button class="mc-option" data-correct="false">B. The macro throws an error</button>
+              <button class="mc-option" data-correct="true">C. Formulas in the workbook stop recalculating until you fix it manually</button>
+              <button class="mc-option" data-correct="false">D. Excel saves the file automatically to compensate</button>
+            </div>
+            <div class="mc-explanation" hidden>Calculation stays off until you explicitly set it back to xlCalculationAutomatic. Fix it in Excel via Formulas → Calculation Options → Automatic.</div>
+          </div>
+
+          <div class="mc-question">
+            <p class="mc-prompt">5. In the guard check pattern, what is <code>Exit Sub</code> used for?</p>
+            <div class="mc-options">
+              <button class="mc-option" data-correct="false">A. It closes the VBA Editor</button>
+              <button class="mc-option" data-correct="true">B. It stops the macro from running any further</button>
+              <button class="mc-option" data-correct="false">C. It exits the current IF block only</button>
+              <button class="mc-option" data-correct="false">D. It saves the workbook</button>
+            </div>
+            <div class="mc-explanation" hidden>Exit Sub stops the macro immediately and exits the Sub. In the guard check, it's used to stop the macro gracefully when the data table is empty instead of letting it run and produce wrong results.</div>
+          </div>
+
+        </div><!-- .quick-check -->
+
+        <div class="course-tip">
+          <p>"The guard check and the Calculation on/off pair both show up on the exam
+          in the form of 'what's wrong with this code' questions. Know what happens
+          when each one is missing."</p>
+        </div>
+
       </section>
 
       <!-- ── Easy Wins ──────────────────────────────────────── -->
       <section id="easy-wins" aria-labelledby="easy-wins-heading">
         <h2 id="easy-wins-heading">Easy Wins</h2>
-        <!-- TODO: content -->
+
+        <!-- Exercise 1 — steps format, 4 steps -->
+        <div class="easy-win">
+          <h3>Exercise 1 — Add Option Explicit and See What Happens</h3>
+          <p>Add Option Explicit to an existing macro and intentionally misspell a variable
+          name to see exactly what error you get and why it helps.</p>
+
+          <div class="exercise-steps">
+
+            <div class="exercise-step open">
+              <button class="step-header" aria-expanded="true">
+                <span class="step-number">Step 1</span>
+                <span class="step-title">Open a macro from the previous module</span>
+              </button>
+              <div class="step-body">
+                <p>Open the workbook from Module 1 (or any workbook with a macro).
+                Press <strong>Alt+F11</strong> to open the VBA Editor.</p>
+              </div>
+            </div>
+
+            <div class="exercise-step">
+              <button class="step-header" aria-expanded="false">
+                <span class="step-number">Step 2</span>
+                <span class="step-title">Add Option Explicit</span>
+              </button>
+              <div class="step-body" hidden>
+                <p>At the very top of the module — above the Sub line — type:</p>
+                <pre class="code-block"><code class="language-vba">Option Explicit</code></pre>
+                <p>Nothing should break yet.</p>
+              </div>
+            </div>
+
+            <div class="exercise-step">
+              <button class="step-header" aria-expanded="false">
+                <span class="step-number">Step 3</span>
+                <span class="step-title">Add a variable and misspell it</span>
+              </button>
+              <div class="step-body" hidden>
+                <p>Inside your existing Sub, add these two lines:</p>
+                <pre class="code-block"><code class="language-vba">Dim MyValue As Integer
+MyVlaue = 10</code></pre>
+                <p>Notice the deliberate misspelling: <code>MyVlaue</code> instead of <code>MyValue</code>.</p>
+              </div>
+            </div>
+
+            <div class="exercise-step">
+              <button class="step-header" aria-expanded="false">
+                <span class="step-number">Step 4</span>
+                <span class="step-title">Run the macro</span>
+              </button>
+              <div class="step-body" hidden>
+                <p>Press <strong>F5</strong>. VBA will stop and highlight the misspelled line with an error:
+                "Variable not defined."</p>
+                <p>Without Option Explicit, VBA would have silently created a new blank variable
+                called <code>MyVlaue</code> and <code>MyValue</code> would have stayed 0. No error,
+                just wrong results. Option Explicit caught it immediately.</p>
+                <p><strong>Fix:</strong> Correct the spelling to <code>MyValue = 10</code>. Run again — no error.</p>
+              </div>
+            </div>
+
+          </div><!-- .exercise-steps -->
+        </div><!-- .easy-win -->
+
+        <!-- Exercise 2 — simple format -->
+        <div class="easy-win">
+          <h3>Exercise 2 — Add an InputBox</h3>
+
+          <div class="exercise-simple">
+            <p>Add an InputBox to the macro from Exercise 1. Ask the user for a number,
+            store it in a variable, and display it back in a MsgBox.</p>
+
+            <pre class="code-block"><code class="language-vba">Option Explicit
+Sub InputBoxDemo()
+    Dim UserNumber As Integer
+    UserNumber = InputBox("Enter a number:")
+    MsgBox "You entered: " &amp; UserNumber
+End Sub
+</code></pre>
+
+            <div class="exercise-hint">
+              <button aria-expanded="false">Show Hint</button>
+              <div class="hint-body" hidden>
+                <p>Run it. Type a number. See what the MsgBox shows. Then run it again
+                and type a word instead of a number. What happens? Integer can't store
+                text — VBA will show a type mismatch error. This is why data types matter.</p>
+              </div>
+            </div>
+
+            <div class="exercise-solution">
+              <button aria-expanded="false">Show Solution</button>
+              <div class="solution-body" hidden>
+                <p>The macro works correctly when you enter a number. When you type text
+                into an Integer variable, VBA throws a Type Mismatch error. This demonstrates
+                why choosing the right data type is important — and why String is safer when
+                you're not sure what the user will type.</p>
+              </div>
+            </div>
+          </div>
+        </div><!-- .easy-win -->
+
       </section>
 
       <!-- ── Sample Data ────────────────────────────────────── -->
       <section id="sample-data" aria-labelledby="sample-data-heading">
         <h2 id="sample-data-heading">Sample Data</h2>
-        <!-- TODO: content -->
+
+        <div class="data-table-section">
+          <p>Copy this data and paste it into cell A1 of a new Excel worksheet.
+          Use Ctrl+V to paste — Excel will automatically split the columns.
+          Rename the sheet "Applicant Information" to match the macro below.</p>
+          <button class="data-table-toggle" aria-expanded="false">📋 Show Data Table</button>
+          <div class="data-table-wrap" hidden>
+            <button class="copy-data-btn" data-tsv="StudentID&#9;LastName&#9;FirstName&#9;TAMU_GPR&#9;Grade229&#9;Grade230&#9;Grade327&#9;FinalDecision&#10;724816395&#9;Anderson&#9;Emma&#9;3.842&#9;A&#9;B+&#9;A-&#9;Accept&#10;831924750&#9;Martinez&#9;Carlos&#9;3.156&#9;B&#9;B&#9;B-&#9;Deny&#10;619283740&#9;Thompson&#9;Sarah&#9;3.971&#9;A&#9;A-&#9;A&#9;Accept&#10;748291036&#9;Nguyen&#9;Michael&#9;3.624&#9;B+&#9;A-&#9;B+&#9;Accept&#10;825163947&#9;Williams&#9;Ashley&#9;2.987&#9;C+&#9;B&#9;C&#9;Deny&#10;736481920&#9;Brown&#9;James&#9;3.745&#9;A-&#9;B+&#9;A-&#9;Accept&#10;814729360&#9;Davis&#9;Lauren&#9;3.512&#9;B+&#9;B+&#9;B&#9;Accept&#10;729183640&#9;Wilson&#9;Tyler&#9;2.843&#9;C&#9;C+&#9;B-&#9;Deny&#10;836492710&#9;Johnson&#9;Megan&#9;3.889&#9;A&#9;A&#9;A-&#9;Accept&#10;715824930&#9;Garcia&#9;Daniel&#9;3.234&#9;B&#9;B-&#9;B&#9;Deny&#10;842163950&#9;Miller&#9;Rachel&#9;3.763&#9;A-&#9;A-&#9;B+&#9;Accept&#10;726849130&#9;Moore&#9;Kevin&#9;3.091&#9;B-&#9;C+&#9;B&#9;Deny&#10;819374620&#9;Taylor&#9;Jessica&#9;3.956&#9;A&#9;A-&#9;A&#9;Accept&#10;734826190&#9;Jackson&#9;Ryan&#9;3.478&#9;B+&#9;B&#9;B+&#9;Accept&#10;821649370&#9;White&#9;Brittany&#9;2.765&#9;C&#9;B-&#9;C+&#9;Deny&#10;716293840&#9;Harris&#9;Brandon&#9;3.834&#9;A-&#9;A-&#9;A-&#9;Accept&#10;843716290&#9;Martin&#9;Stephanie&#9;3.612&#9;B+&#9;B+&#9;A-&#9;Accept&#10;728493610&#9;Thompson&#9;Nathan&#9;3.147&#9;B&#9;B-&#9;B&#9;Deny&#10;815264930&#9;Lewis&#9;Amanda&#9;3.891&#9;A&#9;A&#9;A&#9;Accept&#10;731846920&#9;Robinson&#9;Justin&#9;3.423&#9;B+&#9;B&#9;B&#9;Accept&#10;824619730&#9;Clark&#9;Samantha&#9;2.914&#9;C+&#9;B-&#9;C&#9;Deny&#10;719283460&#9;Rodriguez&#9;Matthew&#9;3.756&#9;A-&#9;B+&#9;A-&#9;Accept&#10;836142790&#9;Lee&#9;Kayla&#9;3.534&#9;B+&#9;A-&#9;B+&#9;Accept&#10;724891360&#9;Walker&#9;Andrew&#9;3.068&#9;B-&#9;C+&#9;B-&#9;Deny&#10;811364920&#9;Hall&#9;Courtney&#9;3.847&#9;A&#9;A-&#9;A&#9;Accept&#10;738261490&#9;Allen&#9;Christopher&#9;3.389&#9;B&#9;B+&#9;B&#9;Accept&#10;826419730&#9;Young&#9;Melissa&#9;2.831&#9;C&#9;C+&#9;B-&#9;Deny&#10;713849260&#9;Hernandez&#9;Joshua&#9;3.912&#9;A&#9;A&#9;A-&#9;Accept&#10;841263970&#9;King&#9;Tiffany&#9;3.645&#9;B+&#9;A-&#9;B+&#9;Accept&#10;727491360&#9;Wright&#9;Patrick&#9;3.178&#9;B&#9;B-&#9;B&#9;Deny">Copy to Clipboard</button>
+            <table>
+              <thead>
+                <tr>
+                  <th>StudentID</th><th>LastName</th><th>FirstName</th><th>TAMU_GPR</th>
+                  <th>Grade229</th><th>Grade230</th><th>Grade327</th><th>FinalDecision</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>724816395</td><td>Anderson</td><td>Emma</td><td>3.842</td><td>A</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>831924750</td><td>Martinez</td><td>Carlos</td><td>3.156</td><td>B</td><td>B</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>619283740</td><td>Thompson</td><td>Sarah</td><td>3.971</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>748291036</td><td>Nguyen</td><td>Michael</td><td>3.624</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>825163947</td><td>Williams</td><td>Ashley</td><td>2.987</td><td>C+</td><td>B</td><td>C</td><td>Deny</td></tr>
+                <tr><td>736481920</td><td>Brown</td><td>James</td><td>3.745</td><td>A-</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>814729360</td><td>Davis</td><td>Lauren</td><td>3.512</td><td>B+</td><td>B+</td><td>B</td><td>Accept</td></tr>
+                <tr><td>729183640</td><td>Wilson</td><td>Tyler</td><td>2.843</td><td>C</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>836492710</td><td>Johnson</td><td>Megan</td><td>3.889</td><td>A</td><td>A</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>715824930</td><td>Garcia</td><td>Daniel</td><td>3.234</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+                <tr><td>842163950</td><td>Miller</td><td>Rachel</td><td>3.763</td><td>A-</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>726849130</td><td>Moore</td><td>Kevin</td><td>3.091</td><td>B-</td><td>C+</td><td>B</td><td>Deny</td></tr>
+                <tr><td>819374620</td><td>Taylor</td><td>Jessica</td><td>3.956</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>734826190</td><td>Jackson</td><td>Ryan</td><td>3.478</td><td>B+</td><td>B</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>821649370</td><td>White</td><td>Brittany</td><td>2.765</td><td>C</td><td>B-</td><td>C+</td><td>Deny</td></tr>
+                <tr><td>716293840</td><td>Harris</td><td>Brandon</td><td>3.834</td><td>A-</td><td>A-</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>843716290</td><td>Martin</td><td>Stephanie</td><td>3.612</td><td>B+</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>728493610</td><td>Thompson</td><td>Nathan</td><td>3.147</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+                <tr><td>815264930</td><td>Lewis</td><td>Amanda</td><td>3.891</td><td>A</td><td>A</td><td>A</td><td>Accept</td></tr>
+                <tr><td>731846920</td><td>Robinson</td><td>Justin</td><td>3.423</td><td>B+</td><td>B</td><td>B</td><td>Accept</td></tr>
+                <tr><td>824619730</td><td>Clark</td><td>Samantha</td><td>2.914</td><td>C+</td><td>B-</td><td>C</td><td>Deny</td></tr>
+                <tr><td>719283460</td><td>Rodriguez</td><td>Matthew</td><td>3.756</td><td>A-</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>836142790</td><td>Lee</td><td>Kayla</td><td>3.534</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>724891360</td><td>Walker</td><td>Andrew</td><td>3.068</td><td>B-</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>811364920</td><td>Hall</td><td>Courtney</td><td>3.847</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>738261490</td><td>Allen</td><td>Christopher</td><td>3.389</td><td>B</td><td>B+</td><td>B</td><td>Accept</td></tr>
+                <tr><td>826419730</td><td>Young</td><td>Melissa</td><td>2.831</td><td>C</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>713849260</td><td>Hernandez</td><td>Joshua</td><td>3.912</td><td>A</td><td>A</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>841263970</td><td>King</td><td>Tiffany</td><td>3.645</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>727491360</td><td>Wright</td><td>Patrick</td><td>3.178</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </section>
 
       <!-- ── Practice Problem ──────────────────────────────── -->
       <section id="practice-problem" aria-labelledby="practice-problem-heading">
         <h2 id="practice-problem-heading">Practice Problem</h2>
-        <!-- TODO: content -->
+
+        <div class="sample-data-exercise">
+          <h3>Add a Guard Check</h3>
+          <p>Using the Aggie Advisors data, write a macro that checks whether the
+          Applicant Information sheet has any records before doing anything else.</p>
+
+          <p><strong>What your macro needs to do:</strong></p>
+          <ul>
+            <li>Use <code>Option Explicit</code></li>
+            <li>Navigate to the Applicant Information sheet and select cell A2</li>
+            <li>Check if A2 is empty using an IF statement</li>
+            <li>If empty: display "No applicants found." and stop with <code>Exit Sub</code></li>
+            <li>If not empty: prompt the user for a group number using InputBox,
+              store it in an Integer variable, and display:
+              "Group [X] is ready to process" where X is the number entered</li>
+          </ul>
+
+          <p><strong>Test it both ways:</strong></p>
+          <ol>
+            <li>Run it with data in A2 — you should get the InputBox and then the message</li>
+            <li>Clear cell A2, run it again — you should get "No applicants found."</li>
+          </ol>
+
+          <p><strong>Expected results:</strong></p>
+          <ul>
+            <li>With data: InputBox appears, then "Group [X] is ready to process"</li>
+            <li>Without data: "No applicants found." and macro stops</li>
+          </ul>
+
+          <!-- <a href="/src/modules/practice-project.html#module-2">See this in the Aggie Advisors project →</a> -->
+        </div>
+
       </section>
 
       <!-- ── Challenge ─────────────────────────────────────── -->
       <section id="challenge" aria-labelledby="challenge-heading">
+        <span id="exam-challenge" aria-hidden="true"></span>
         <h2 id="challenge-heading">Challenge</h2>
         <p class="challenge-framing">These exercises are perfect preparation for the Sample Exam, which prepares you for the Macro Project Exam itself. Exam format may vary by semester.</p>
-        <!-- TODO: content -->
+
+        <div class="exam-challenge">
+          <h3>Complete Macro Setup</h3>
+          <p>No hints. Exam level.</p>
+
+          <p>Write a macro from scratch that includes all of the following:</p>
+          <ol>
+            <li><code>Option Explicit</code> at the top of the module</li>
+            <li>Speed settings turned off at the start and back on at the end</li>
+            <li>A guard check that stops with an appropriate message if A2 on
+              the Applicant Information sheet is empty</li>
+            <li>An InputBox that asks for a group number (Integer)</li>
+            <li>A MsgBox at the end that displays:
+              "Setup complete. Ready to process Group [X]"
+              where X is the number from the InputBox</li>
+          </ol>
+
+          <p>The macro must handle both cases cleanly — empty table stops gracefully,
+          data present continues to the completion message.</p>
+
+          <p><strong>Expected behavior:</strong></p>
+          <ul>
+            <li>Empty table: "No applicants found." — macro stops, speed settings restored</li>
+            <li>Data present: InputBox → "Setup complete. Ready to process Group [X]"</li>
+          </ul>
+
+          <!-- <a href="/src/modules/practice-project.html#module-2">See this in the Aggie Advisors project →</a> -->
+        </div>
+
       </section>
 
     </main>

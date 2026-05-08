@@ -540,10 +540,642 @@ that module's task file is created. Never build a module page without the
 full practice content being specified first.
 
 ### Module 1 — Macro Foundations
-[To be written before foundations.html is built]
+
+## Canvas prerequisite (.box-reminder):
+"REMINDER: To fully understand Macro Foundations, you should have already watched
+the Macro Foundations Video in Canvas and followed along with the Macro Demo file.
+This practice will build upon that foundation."
+
+---
+
+## CONCEPT SECTION (id="concept")
+
+### Opening — What a Macro Is
+
+**Paragraph 1:**
+A macro is a set of instructions that performs tasks in the order you specify.
+Instead of clicking through the same sequence of actions every time, you record
+or write those actions once and run them with a single click. Excel translates
+each action into Visual Basic for Applications (VBA) code that you can view,
+edit, and build on.
+
+**Paragraph 2:**
+You create macros in two ways: recording actions in Excel, or typing code
+directly in the VBA Editor. Recording is how you start — it generates the
+basic structure automatically. Typing is how you extend it with logic that
+can't be recorded, like IF statements, variables, and loops. Most macros
+in this course use both.
+
+**course-tip (concept):**
+"The recorder is your starting point, not your limitation. Record the actions,
+then open the code and understand what it generated. That's the workflow
+everything else builds on."
+
+---
+
+#### The VBA Editor
+
+**Paragraph 1:**
+The VBA Editor is where your macro code lives. Press **Alt+F11** to open it.
+You'll see a Project panel on the left showing your workbook and its modules —
+modules are where macros are stored. Double-click a module to see its code.
+The code window is where you read, write, and edit macros.
+
+**.syntax-box:**
+```
+Alt+F11          → Open/close the VBA Editor
+F5               → Run the current macro
+F8               → Step through code one line at a time
+Alt+F11 again    → Switch back to Excel
+```
+
+**Introduction sentence before code:**
+"Every macro follows this basic structure:"
+
+```vba
+Sub MacroName()
+    ' Your recorded or typed code goes here
+End Sub
+```
+
+---
+
+#### Recorded vs Typed Code
+
+**Paragraph 1:**
+Actions you perform in Excel — selecting cells, formatting, copying, navigating —
+can be recorded. Programming concepts that extend what Excel can do — IF statements,
+variables, loops, and InputBoxes — must be typed. Understanding which is which
+helps you know when to hit Record and when to open the editor and write.
+
+**.syntax-box:**
+```
+Recorded (actions in Excel):
+  Range("A1").Select
+  Selection.Font.Bold = True
+  ActiveSheet.Name = "Report"
+
+Typed (programming concepts):
+  If ActiveCell = "" Then ...
+  Dim Counter As Integer
+  Do Until ActiveCell = ""
+  InputBox("Enter a value")
+```
+
+---
+
+#### Saving Your File
+
+**Paragraph 1:**
+A regular Excel file (.xlsx) cannot save macros. When you close the file,
+any macros you recorded are gone. You must save as a **Macro-Enabled Workbook
+(.xlsm)** to keep your code. Excel will warn you if you try to save a file
+with macros as .xlsx — always choose to keep the macro-enabled format.
+
+**.syntax-box:**
+```
+File → Save As → Excel Macro-Enabled Workbook (.xlsm)
+```
+
+**One more thing:** You cannot undo (Ctrl+Z) changes made by a macro.
+Before running a new or untested macro, save a backup of your file.
+
+---
+
+### QUICK CHECK SECTION (id="quick-check")
+
+**Format:** Multiple choice. Lock on click. Immediate feedback.
+
+**Question 1:**
+What keyboard shortcut opens the VBA Editor?
+- A. Ctrl+V
+- B. Alt+F8
+- C. Alt+F11 ← CORRECT
+- D. Ctrl+F11
+**Explanation:** Alt+F11 opens and closes the VBA Editor. Alt+F8 opens
+the macro list where you can run existing macros.
+
+**Question 2:**
+Which of the following must be TYPED and cannot be recorded?
+- A. Selecting a cell
+- B. Bolding a row
+- C. Renaming a worksheet
+- D. An IF statement ← CORRECT
+**Explanation:** IF statements, variables, loops, and InputBoxes are
+programming concepts — they must be typed. Actions you perform in Excel
+(selecting, formatting, navigating) can be recorded.
+
+**Question 3:**
+You record a macro in an .xlsx file and close Excel. What happens to the macro?
+- A. It is saved with the file
+- B. It is lost — .xlsx cannot save macros ← CORRECT
+- C. It moves to the Personal Workbook automatically
+- D. Excel converts the file to .xlsm automatically
+**Explanation:** .xlsx files cannot store macros. Always save as .xlsm
+(Excel Macro-Enabled Workbook) before closing if you want to keep your code.
+
+**Question 4:**
+You run a macro that accidentally deletes some data. You press Ctrl+Z. What happens?
+- A. The data is restored
+- B. Nothing — macro changes cannot be undone ← CORRECT
+- C. The macro runs again in reverse
+- D. Excel asks if you want to restore the data
+**Explanation:** Ctrl+Z does not work on macro changes. Always keep a
+backup before running a new or untested macro.
+
+**Question 5:**
+Where are macros stored inside a workbook?
+- A. In a hidden worksheet
+- B. In the cell comments
+- C. In modules inside the VBA Editor ← CORRECT
+- D. In the file properties
+**Explanation:** Macros live in modules, which you can see in the Project
+panel on the left side of the VBA Editor. Double-click a module to view its code.
+
+**course-tip after quick check:**
+"Questions 3 and 4 are the ones students learn the hard way — losing a macro
+because they saved as .xlsx, or losing data because Ctrl+Z didn't work.
+Both are easy to avoid once you know."
+
+---
+
+### EASY WINS SECTION (id="easy-wins")
+
+#### Exercise 1 — Record Your First Macro (STEPS FORMAT)
+**Difficulty:** Guided
+
+Record a macro that types your name into cell A1 and bolds it.
+This is the simplest possible macro — the goal is just to see
+the whole process from recording to running to viewing the code.
+
+**Step 1 — Set up a new workbook**
+Open Excel. Create a new blank workbook. Save it immediately as
+an .xlsm file: File → Save As → Excel Macro-Enabled Workbook.
+Name it whatever you like. If you skip this step and save as .xlsx
+later, your macro will be lost.
+
+**Step 2 — Start recording**
+Go to the **Developer** tab → **Record Macro**.
+(If you don't see the Developer tab: File → Options → Customize Ribbon
+→ check Developer → OK)
+
+In the dialog box:
+- Macro name: TypeMyName (no spaces allowed in macro names)
+- Store macro in: This Workbook
+- Click OK — recording has started
+
+**Step 3 — Perform the actions**
+Click cell A1. Type your name. Press Enter.
+Click cell A1 again. Press Ctrl+B to bold it.
+That's it — keep it simple.
+
+**Step 4 — Stop recording**
+Go to Developer → **Stop Recording**.
+Your macro is now saved.
+
+**Step 5 — View the code**
+Press Alt+F11 to open the VBA Editor.
+In the Project panel, expand your workbook → Modules → Module1.
+Double-click it. You should see the code Excel generated.
+
+**Step 6 — Run it on a new cell**
+Close the VBA Editor (Alt+F11). Click cell B1. Delete cell A1's content.
+Go to Developer → Macros → TypeMyName → Run.
+Watch what happens.
+
+**Complete Code (what you should see — yours may vary slightly):**
+```vba
+Sub TypeMyName()
+    Range("A1").Select
+    ActiveCell.FormulaR1C1 = "Your Name"
+    Range("A1").Select
+    Selection.Font.Bold = True
+End Sub
+```
+**What to notice:** Excel always records a Select first, then performs
+the action on the Selection. Later modules will show you how to clean
+this up — for now, just observe what the recorder generated.
+
+---
+
+#### Exercise 2 — Break It and Fix It (SIMPLE FORMAT)
+**Difficulty:** Observation
+
+Open the macro you just recorded. Change the cell reference from
+`Range("A1")` to `Range("C3")` in both places. Run it. What happens?
+
+**Hint:** You're editing the hardcoded cell address. This is what
+"absolute reference" means in recorded code — it always goes to
+the same cell no matter where you are when you run it.
+
+**Solution:** The macro now types your name in C3 and bolds it,
+regardless of which cell was selected before you ran it. The reference
+is hardcoded — it doesn't adapt to your position. This is the difference
+between absolute and relative references, which gets its own module later.
+
+---
+
+### PRACTICE PROBLEM SECTION (id="practice-problem")
+
+#### Data Table
+No data table needed for this module — the practice problem uses
+the student's own Excel file from the Easy Wins exercise.
+
+#### Practice Problem — Record a Useful Macro
+**No data table toggle needed. Use .sample-data-exercise directly.**
+
+Think of something repetitive you do in Excel — even something small.
+Record a macro that does it. Some ideas if you're not sure:
+
+- Navigate to a specific sheet and select cell A1
+- Bold the first row and autofit all columns
+- Add today's date to a specific cell
+- Clear the contents of a range
+
+**What your macro needs to do:**
+- Be recorded using Developer → Record Macro
+- Be saved in This Workbook
+- Actually run and do what you intended when you press Play
+
+**After recording:**
+- Open the VBA Editor and look at the code
+- Find at least one line you can explain in plain English
+- Find at least one line you're not sure about — note it down
+  for when you get to later modules
+
+There is no single correct answer here. The goal is to get comfortable
+with the record → view → run cycle before adding any complexity.
+
+**Link:** See this in the Aggie Advisors project →
+`href="/src/modules/practice-project.html#module-1"`
+
+---
+
+### EXAM CHALLENGE SECTION (id="challenge")
+
+**Title:** Record, View, and Describe
+**No hints. Exam level.**
+
+Record a macro that does ALL of the following in one recording:
+1. Navigates to Sheet2 (create it if it doesn't exist)
+2. Types "Sales Report" into cell A1
+3. Bolds cell A1
+4. Types today's date into cell A2
+5. Returns to Sheet1
+
+After recording, open the VBA Editor and answer these questions
+by looking at the generated code:
+
+- How many times does the word "Select" appear?
+- What line puts the text "Sales Report" into the cell?
+- What does `ActiveCell.FormulaR1C1` mean based on what you see?
+- Is the cell reference in your code absolute or relative?
+  How can you tell?
+
+Write your answers in a comment block at the top of the macro
+using the VBA comment format (apostrophe at the start of each line).
+
+**Expected result:** A working macro that performs all 5 steps,
+with a comment block at the top showing your answers.
+
+**Link:** See this in the Aggie Advisors project →
+`href="/src/modules/practice-project.html#module-1"`
 
 ### Module 2 — Adding Programming Concepts
-[To be written before programming-concepts.html is built]
+
+## Canvas prerequisite (.box-reminder):
+"REMINDER: To fully understand Adding Programming Concepts, you should have
+already watched the Adding Programming Concepts Video in Canvas and followed
+along with the Macro Demo file. This practice will build upon that foundation."
+
+---
+
+## CONCEPT SECTION (id="concept")
+
+### Opening — Beyond Recording
+
+**Paragraph 1:**
+Recording captures actions — clicking, typing, navigating. But macros become
+truly useful when they can make decisions, ask the user for input, and handle
+different situations automatically. These capabilities can't be recorded. They
+have to be typed. This module covers the three essentials: Option Explicit,
+InputBox, and the guard check pattern.
+
+**Paragraph 2:**
+The workflow from here forward is always the same: record the parts you can,
+open the code, and add the typed logic around it. You're not writing everything
+from scratch — you're extending what the recorder gives you.
+
+**course-tip (concept):**
+"The record → open → add workflow is exactly how the project is built.
+Practice this rhythm now and the project will feel familiar rather than overwhelming."
+
+---
+
+#### Option Explicit
+
+**Paragraph 1:**
+Option Explicit forces you to declare every variable before using it. Without it,
+VBA silently creates a new variable any time it sees an unrecognized word —
+including when you misspell a variable name. That misspelled variable gets a blank
+value and your macro produces wrong results with no error message. Option Explicit
+must be the very first line in the module, above the first Sub.
+
+**.syntax-box:**
+```
+Option Explicit     ← first line in the module, above everything
+
+Sub MacroName()
+    Dim VariableName As DataType
+    ' ...
+End Sub
+```
+
+**Introduction sentence before code:**
+"This is what every module in this course should start with:"
+
+```vba
+Option Explicit
+' ACCT 628 - Sanders
+
+Sub AddNewStudents()
+
+    Dim NewGroup       As Integer
+    Dim NumberAccepted As Integer
+
+End Sub
+```
+
+---
+
+#### InputBox
+
+**Paragraph 1:**
+An InputBox pauses the macro and displays a dialog asking the user to type
+something. Whatever they type gets stored in a variable. This is how macros
+become adaptable — instead of hardcoding a group number or a date, you ask
+for it at runtime. InputBox is always typed, never recorded.
+
+**.syntax-box:**
+```
+VariableName = InputBox("Message to display to the user")
+```
+
+**Introduction sentence before code:**
+"This example asks for a group number and stores it in a variable:"
+
+```vba
+Dim NewGroup As Integer
+
+NewGroup = InputBox("Enter the new group number")
+```
+
+---
+
+#### Speed Settings
+
+**Paragraph 1:**
+Two settings slow macros down significantly when left on: automatic calculation
+and screen updating. Turning them off at the start of a macro and back on at the
+end is standard practice for any macro that processes a large number of rows.
+Always add them as a pair — if you turn calculation off and forget to turn it
+back on, formulas in the workbook will stop updating until you fix it manually.
+
+**.syntax-box:**
+```
+' At the start of your macro
+Application.Calculation = xlCalculationManual
+Application.ScreenUpdating = False
+
+' At the end of your macro
+Application.Calculation = xlCalculationAutomatic
+Application.ScreenUpdating = True
+```
+
+---
+
+#### The Guard Check Pattern
+
+**Paragraph 1:**
+Before a macro processes data, it should verify that data actually exists.
+If the table is empty and the macro tries to loop through it, you'll get
+unexpected results. The guard check is a simple IF statement at the top of
+the macro: if the first data cell is blank, show a message and stop. If it
+has data, continue. This one pattern prevents a whole category of errors.
+
+**.syntax-box:**
+```
+IF first data cell is empty THEN
+    DISPLAY message and stop
+ELSE
+    run the rest of the macro
+END IF
+```
+
+**Introduction sentence before code:**
+"Here is what the guard check looks like in VBA:"
+
+```vba
+Sheets("Applicant Information").Select
+Range("A2").Select
+
+If ActiveCell = "" Then
+    MsgBox "No applicants found. Please enter data first."
+    Exit Sub
+Else
+    ' rest of macro goes here
+End If
+```
+
+---
+
+### QUICK CHECK SECTION (id="quick-check")
+
+**Format:** Multiple choice. Lock on click. Immediate feedback.
+
+**Question 1:**
+What does Option Explicit do?
+- A. Makes your macro run faster
+- B. Forces you to declare all variables before using them ← CORRECT
+- C. Turns off screen updating
+- D. Opens the VBA Editor automatically
+**Explanation:** Option Explicit catches misspelled variable names by
+requiring every variable to be declared with Dim. Without it, a typo
+silently creates a blank variable and produces wrong results.
+
+**Question 2:**
+Where must Option Explicit be placed?
+- A. Inside the Sub, before the Dim statements
+- B. After the last End Sub in the module
+- C. At the very top of the module, above the first Sub ← CORRECT
+- D. It can go anywhere
+**Explanation:** Option Explicit must be the very first line in the module.
+If it's inside a Sub it will cause an error.
+
+**Question 3:**
+What does this line do?
+`NewGroup = InputBox("Enter the new group number")`
+- A. Displays a message and continues
+- B. Pauses the macro and stores whatever the user types into NewGroup ← CORRECT
+- C. Populates a cell with the text "Enter the new group number"
+- D. Declares a variable named NewGroup
+**Explanation:** InputBox pauses the macro, shows the message to the user,
+and stores their input in the variable on the left side of the equals sign.
+
+**Question 4:**
+You turn off Application.Calculation at the start of your macro but forget
+to turn it back on. What happens?
+- A. Nothing — it resets automatically when the macro ends
+- B. The macro throws an error
+- C. Formulas in the workbook stop recalculating until you fix it manually ← CORRECT
+- D. Excel saves the file automatically to compensate
+**Explanation:** Calculation stays off until you explicitly set it back to
+xlCalculationAutomatic. Formulas will show a strikethrough. Fix it in Excel
+via Formulas → Calculation Options → Automatic.
+
+**Question 5:**
+In the guard check pattern, what is `Exit Sub` used for?
+- A. It closes the VBA Editor
+- B. It stops the macro from running any further ← CORRECT
+- C. It exits the current IF block only
+- D. It saves the workbook
+**Explanation:** Exit Sub stops the macro immediately and exits the Sub.
+In the guard check, it's used to stop the macro gracefully when the data
+table is empty instead of letting it run and produce wrong results.
+
+**course-tip after quick check:**
+"The guard check and the Calculation on/off pair both show up on the exam
+in the form of 'what's wrong with this code' questions. Know what happens
+when each one is missing."
+
+---
+
+### EASY WINS SECTION (id="easy-wins")
+
+#### Exercise 1 — Add Option Explicit and See What Happens (STEPS FORMAT)
+**Difficulty:** Guided
+
+Add Option Explicit to an existing macro and intentionally misspell a
+variable name to see exactly what error you get and why it helps.
+
+**Step 1 — Open a macro from the previous module**
+Open the workbook from Module 1 (or any workbook with a macro).
+Press Alt+F11 to open the VBA Editor.
+
+**Step 2 — Add Option Explicit**
+At the very top of the module — above the Sub line — type:
+```vba
+Option Explicit
+```
+Nothing should break yet.
+
+**Step 3 — Add a variable and misspell it**
+Inside your existing Sub, add these two lines:
+```vba
+Dim MyValue As Integer
+MyVlaue = 10
+```
+Notice the deliberate misspelling: MyVlaue instead of MyValue.
+
+**Step 4 — Run the macro**
+Press F5. VBA will stop and highlight the misspelled line with an error:
+"Variable not defined."
+
+Without Option Explicit, VBA would have silently created a new blank
+variable called MyVlaue and MyValue would have stayed 0. No error,
+just wrong results. Option Explicit caught it immediately.
+
+Fix: Correct the spelling to MyValue = 10. Run again — no error.
+
+---
+
+#### Exercise 2 — Add an InputBox (SIMPLE FORMAT)
+**Difficulty:** Guided
+
+Add an InputBox to the macro from Exercise 1. Ask the user for a number,
+store it in a variable, and display it back in a MsgBox.
+
+```vba
+Option Explicit
+Sub InputBoxDemo()
+    Dim UserNumber As Integer
+    UserNumber = InputBox("Enter a number:")
+    MsgBox "You entered: " & UserNumber
+End Sub
+```
+
+**Hint:** Run it. Type a number. See what the MsgBox shows.
+Then run it again and type a word instead of a number. What happens?
+(Integer can't store text — VBA will show a type mismatch error.
+This is why data types matter.)
+
+**Solution:** The macro works correctly when you enter a number.
+When you type text into an Integer variable, VBA throws a Type Mismatch
+error. This demonstrates why choosing the right data type is important —
+and why String is safer when you're not sure what the user will type.
+
+---
+
+### PRACTICE PROBLEM SECTION (id="practice-problem")
+
+#### Data Table (Aggie Advisors — 30 records)
+**Instructions above toggle:**
+"Copy this data and paste it into cell A1 of a new Excel worksheet.
+Press Ctrl+V — Excel will split the columns automatically."
+
+Full 30-record dataset from PRACTICE_PROJECT.md:
+StudentID | LastName | FirstName | TAMU_GPR | Grade229 | Grade230 | Grade327 | FinalDecision
+
+#### Practice Problem — Add a Guard Check
+Using the Aggie Advisors data, write a macro that checks whether the
+Applicant Information sheet has any records before doing anything else.
+
+**What your macro needs to do:**
+- Use Option Explicit
+- Navigate to the Applicant Information sheet and select cell A2
+- Check if A2 is empty using an IF statement
+- If empty: display "No applicants found." and stop with Exit Sub
+- If not empty: prompt the user for a group number using InputBox,
+  store it in an Integer variable, and display:
+  "Group [X] is ready to process" where X is the number entered
+
+**Test it both ways:**
+1. Run it with data in A2 — you should get the InputBox and then the message
+2. Clear cell A2, run it again — you should get "No applicants found."
+
+**Expected results:**
+- With data: InputBox appears, then "Group [X] is ready to process"
+- Without data: "No applicants found." and macro stops
+
+**Link:** See this in the Aggie Advisors project →
+`href="/src/modules/practice-project.html#module-2"`
+
+---
+
+### EXAM CHALLENGE SECTION (id="challenge")
+
+**Title:** Complete Macro Setup
+**No hints. Exam level.**
+
+Write a macro from scratch that includes all of the following:
+1. Option Explicit at the top of the module
+2. Speed settings turned off at the start and back on at the end
+3. A guard check that stops with an appropriate message if A2 on
+   the Applicant Information sheet is empty
+4. An InputBox that asks for a group number (Integer)
+5. A MsgBox at the end that displays:
+   "Setup complete. Ready to process Group [X]"
+   where X is the number from the InputBox
+
+The macro must handle both cases cleanly — empty table stops gracefully,
+data present continues to the completion message.
+
+**Expected behavior:**
+- Empty table: "No applicants found." — macro stops, speed settings restored
+- Data present: InputBox → "Setup complete. Ready to process Group [X]"
+
+**Link:** See this in the Aggie Advisors project →
+`href="/src/modules/practice-project.html#module-2"`
 
 ### Module 3 — Variables
 
