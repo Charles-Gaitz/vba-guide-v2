@@ -60,9 +60,11 @@ src/
     programming-concepts.html        → /src/modules/programming-concepts.html
     variables.html                   → /src/modules/variables.html
     loops.html                       → /src/modules/loops.html
+    calculations-and-dates.html      → /src/modules/calculations-and-dates.html
     references.html                  → /src/modules/references.html
     filters.html                     → /src/modules/filters.html
     debugging.html                   → /src/modules/debugging.html
+    pseudocode.html                  → /src/modules/pseudocode.html
     practice-project.html            → /src/modules/practice-project.html
     objects.html                     → /src/modules/objects.html
 ```
@@ -88,11 +90,15 @@ src/
 | 2 | Adding Programming Concepts | `/src/modules/programming-concepts.html` |
 | 3 | Variables | `/src/modules/variables.html` |
 | 4 | Loops | `/src/modules/loops.html` |
-| 5 | Relative vs Absolute References | `/src/modules/references.html` |
-| 6 | Filters & Shortcut Keys | `/src/modules/filters.html` |
-| 7 | F8 Debugging Practice | `/src/modules/debugging.html` |
-| 8 | Practice Project | `/src/modules/practice-project.html` |
-| 9 | Objects *(Coming Soon)* | `/src/modules/objects.html` |
+| 5 | Calculations and Dates | `/src/modules/calculations-and-dates.html` |
+| 6 | Relative vs Absolute References | `/src/modules/references.html` |
+| 7 | Filters & Shortcut Keys | `/src/modules/filters.html` |
+| 8 | F8 Debugging Practice | `/src/modules/debugging.html` |
+| 9 | Pseudocode | `/src/modules/pseudocode.html` |
+
+**Practice Project** — full-width feature card on home page, below the 9-card grid. Not a numbered module. URL: `/src/modules/practice-project.html`
+
+**Objects** — file kept (`/src/modules/objects.html`) but not shown in home grid.
 
 ---
 
@@ -228,7 +234,7 @@ src/
 - Mobile scroll: adds `.header-scrolled` class → hides subtitle, reduces padding
 
 ### Anchor Nav (inside header)
-- Pill-style links in maroon header bar
+- Pill-style links in maroon header bar — one per section: Concept, Quick Check, Easy Wins, Sample Data, Practice Problem, Challenge
 - Default: `rgba(255,255,255,0.12)` bg, `1px solid rgba(255,255,255,0.25)` border
 - Hover: `rgba(255,255,255,0.25)` bg, brighter border
 - Font: `var(--text-xs)`, white, 500 weight
@@ -260,10 +266,13 @@ src/
 | `.box-reminder` | Green. Canvas prerequisite warning. Top of every module. |
 | `.box-tip` | Beige. Inline hints. |
 | `.course-tip` | 💡 Beige. Peer-voice callout. One per major section. |
-| `.syntax-box` | Maroon-tinted. Loop/concept skeleton structure. NEW. |
+| `.syntax-box` | Maroon-tinted. Loop/concept skeleton structure. |
 | `.pseudocode-block` | Tan. Pseudocode ONLY. Never for real VBA. |
 | `.code-block` | Dark bg. Actual VBA. Prism-tokenized. |
 | `.ai-compare` | Stacked vertical. Sanders top (green border), AI below (beige border). |
+| `.ai-caution` | Warm sand bg. Warning callout for AI-related cautions. Reusable in all modules. |
+| `.ai-caution-label` | Small uppercase heading inside `.ai-caution`. Use `⚠ Cautions: Relying on AI`. |
+| `.challenge-framing` | Italic muted italic text placed directly after the Challenge `<h2>`. Reusable in all modules. |
 
 ### Interactive
 | Class | Description |
@@ -368,7 +377,8 @@ CONTENT_SPEC.md specifies format per exercise per module.
 
 ## Locked Anchor IDs (never change)
 
-Every module: `#concept` `#quick-check` `#easy-wins` `#sample-data` `#exam-challenge`
+Every module: `#concept` `#quick-check` `#easy-wins` `#sample-data` `#practice-problem` `#challenge`
+- Backward-compat: place `<span id="exam-challenge" aria-hidden="true"></span>` as first child of the `#challenge` section so old deep links still resolve
 Practice Project: `#module-1` through `#module-8`, `#data-table`
 
 ---
@@ -398,9 +408,13 @@ Practice Project: `#module-1` through `#module-8`, `#data-table`
 
   #sample-data
     .data-table-section   collapsed, copy button
+
+  #practice-problem
     .sample-data-exercise
 
-  #exam-challenge
+  #challenge
+    <span id="exam-challenge" aria-hidden="true">   ← backward-compat anchor
+    .challenge-framing                               ← italic exam framing sentence
     .exam-challenge
 
 .module-nav   ← Prev | All Modules | Next →
@@ -467,12 +481,16 @@ import './js/exercise-steps.js';
 4. ✅ Module template + placeholder files
 5. ✅ Loops page — reference implementation
 6. ✅ Update: content width to 960px, syntax-box styles, loops.html prose trim, sticky nav, header height
-7. Variables page
-8. Macro Foundations page
-9. Adding Programming Concepts page
-10. F8 Debugging page
-11. Relative vs Absolute References page
-12. Filters & Shortcut Keys page
-13. Practice Project page
-14. Objects placeholder
-15. Polish: Lighthouse, mobile test, cross-links, Canvas URL test
+7. ✅ Home page: 9-card grid + Practice Project feature card; module sequence corrected
+8. ✅ Stub pages created/updated: foundations, programming-concepts, variables, calculations-and-dates, references, filters, debugging, pseudocode — all with correct prev/next nav
+9. Variables page content
+10. Macro Foundations page content
+11. Adding Programming Concepts page content
+12. Calculations and Dates page content
+13. Relative vs Absolute References page content
+14. Filters & Shortcut Keys page content
+15. F8 Debugging page content
+16. Pseudocode page content
+17. Practice Project page content
+18. Objects placeholder
+19. Polish: Lighthouse, mobile test, cross-links, Canvas URL test

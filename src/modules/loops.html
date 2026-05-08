@@ -26,7 +26,8 @@
           <a href="#quick-check">Quick Check</a>
           <a href="#easy-wins">Easy Wins</a>
           <a href="#sample-data">Sample Data</a>
-          <a href="#exam-challenge">Exam Challenge</a>
+          <a href="#practice-problem">Practice Problem</a>
+          <a href="#challenge">Challenge</a>
         </nav>
       </div>
     </header>
@@ -36,7 +37,7 @@
       <!-- ── Page intro ─────────────────────────────────────────── -->
       <div class="page-intro">
         <h1 class="page-title">Loops</h1>
-        <p class="page-subtitle">Module 4 of 8</p>
+        <p class="page-subtitle">Module 4 of 9</p>
       </div>
 
       <!-- ── Reminder box ─────────────────────────────────────── -->
@@ -179,6 +180,10 @@ Do Until ActiveCell = ""
 
 Loop</code></pre>
 
+        <div class="box-tip">
+          <p><strong>Primary key column:</strong> When using <code>Do Until ActiveCell = ""</code>, you must be in a column where every record has a value. A primary key column (like UIN or StudentID) is the safest choice — if any cell in your loop column is blank, the loop will exit early and miss records.</p>
+        </div>
+
         <!-- ── Cautions ── -->
         <h3>Cautions: Endless Loops</h3>
 
@@ -190,9 +195,30 @@ Loop</code></pre>
           <li>The condition MUST involve at least one variable</li>
           <li>That variable MUST change value somewhere inside the loop body</li>
           <li>The "move to next record" line must be OUTSIDE any IF block — it should
-          always execute, whether the IF condition is true or false</li>
-          <li>If you get stuck in an endless loop: press <strong>Ctrl+Break</strong> to stop it</li>
+          always execute, whether the IF condition is true or false, resulting in an endless loop</li>
         </ul>
+
+        <p>Here is what a loop looks like when the move line is missing:</p>
+
+<pre class="code-block"><code class="language-vba">Range("A2").Select
+
+Do Until ActiveCell = ""
+
+    UIN = ActiveCell
+
+    ' MISSING: MOVE to next record — without this, endless loop
+
+Loop</code></pre>
+
+        <div class="ai-caution">
+          <p class="ai-caution-label">⚠ Cautions: Relying on AI</p>
+          <p>AI-generated loop code often looks correct but skips the iteration step or uses the wrong exit condition. Always trace the loop by hand or step through with F8 before trusting it.</p>
+          <p>Sanders-style code makes the iteration explicit; AI patterns often hide it inside a function call.</p>
+        </div>
+
+        <div class="box-tip">
+          <p><strong>Ctrl+Break / saving:</strong> If you get stuck in an endless loop, press Ctrl+Break to stop it. Ctrl+Break does not always work — you may need to force-quit Excel. Always save your file before running a macro so you don't lose your code if Excel has to be restarted.</p>
+        </div>
 
         <!-- ── AI Compare ── -->
         <div class="ai-compare">
@@ -371,10 +397,9 @@ Next i</code></pre>
           </div>
 
           <div class="exercise-step">
-            <button class="step-header" aria-expanded="false">Step 4 — Run it</button>
+            <button class="step-header" aria-expanded="false">Step 4 — Step through with F8</button>
             <div class="step-body" hidden>
-              <p>Press F5 or click the green Play button. Switch to Excel and check
-              column A. You should see 1, 2, 3, 4, 5 in cells A1 through A5.</p>
+              <p>Step through the code with F8 and watch what happens in Excel as each line executes. Each pass through the loop puts one number into the active cell, then moves down. You should see 1, 2, 3, 4, 5 fill into A1 through A5 one at a time.</p>
             </div>
           </div>
 
@@ -403,8 +428,9 @@ End Sub</code></pre>
 
         <div class="exercise-simple">
           <p>Go back to the <code>ChkFirstUntil</code> example from the concept section above.
-          Change <code>myNum = 20</code> to <code>myNum = 9</code>. Run the macro.</p>
-          <p>What happens? Why?</p>
+          Change <code>myNum = 20</code> to <code>myNum = 9</code>. Step through the code with F8
+          and watch what happens as each line executes — press Ctrl+Break when you've seen enough.</p>
+          <p>What do you notice? Why?</p>
 
           <div class="exercise-hint">
             <button aria-expanded="false">Show Hint</button>
@@ -515,7 +541,7 @@ End Sub</code></pre>
 
       <!-- ── Sample Data ────────────────────────────────────── -->
       <section id="sample-data" aria-labelledby="sample-data-heading">
-        <h2 id="sample-data-heading">Sample Data Exercise</h2>
+        <h2 id="sample-data-heading">Sample Data</h2>
 
         <div class="data-table-section">
           <p>Copy this data and paste it into cell A1 of a new Excel worksheet. Use Ctrl+V
@@ -567,6 +593,12 @@ End Sub</code></pre>
           </div>
         </div>
 
+      </section>
+
+      <!-- ── Practice Problem ──────────────────────────────── -->
+      <section id="practice-problem" aria-labelledby="practice-problem-heading">
+        <h2 id="practice-problem-heading">Practice Problem</h2>
+
         <div class="sample-data-exercise">
           <h3>Count Accepted Applicants</h3>
           <p>Using the Aggie Advisors data you just pasted into Excel,
@@ -590,14 +622,18 @@ End Sub</code></pre>
     AcceptCount = AcceptCount + 1
 End If</code></pre>
           <p>The move line goes AFTER the End If, not inside it.</p>
+          <!-- TODO: Uncomment when practice-project.html is built
           <a href="/src/modules/practice-project.html#module-4">See this in the Aggie Advisors project →</a>
+          -->
         </div>
 
       </section>
 
-      <!-- ── Exam Challenge ─────────────────────────────────── -->
-      <section id="exam-challenge" aria-labelledby="exam-challenge-heading">
-        <h2 id="exam-challenge-heading">Exam Challenge</h2>
+      <!-- ── Challenge ─────────────────────────────────────── -->
+      <section id="challenge" aria-labelledby="challenge-heading">
+        <span id="exam-challenge" aria-hidden="true"></span>
+        <h2 id="challenge-heading">Challenge</h2>
+        <p class="challenge-framing">These exercises are perfect preparation for the Sample Exam, which prepares you for the Macro Project Exam itself. Exam format may vary by semester.</p>
 
         <div class="exam-challenge">
           <h3>Accepted and Denied GPR Averages</h3>
@@ -621,7 +657,9 @@ End If</code></pre>
           </ul>
           <p>If your numbers don't match, use F8 and the Watch Window to step through
           the first few records and check what your IF condition is actually comparing.</p>
+          <!-- TODO: Uncomment when practice-project.html is built
           <a href="/src/modules/practice-project.html#module-4">See this in the Aggie Advisors project →</a>
+          -->
         </div>
 
       </section>
@@ -632,7 +670,7 @@ End If</code></pre>
       <div class="module-nav__inner">
         <a href="/src/modules/variables.html">← Variables</a>
         <a href="/" class="module-nav__home">All Modules</a>
-        <a href="/src/modules/references.html">Relative vs Absolute References →</a>
+        <a href="/src/modules/calculations-and-dates.html">Calculations and Dates →</a>
       </div>
     </nav>
 

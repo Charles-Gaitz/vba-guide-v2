@@ -11,6 +11,8 @@ export default {
         references:          resolve(__dirname, 'src/modules/references.html'),
         filters:             resolve(__dirname, 'src/modules/filters.html'),
         debugging:           resolve(__dirname, 'src/modules/debugging.html'),
+        calculationsAndDates: resolve(__dirname, 'src/modules/calculations-and-dates.html'),
+        pseudocode:          resolve(__dirname, 'src/modules/pseudocode.html'),
         practiceProject:     resolve(__dirname, 'src/modules/practice-project.html'),
         objects:             resolve(__dirname, 'src/modules/objects.html'),
       }

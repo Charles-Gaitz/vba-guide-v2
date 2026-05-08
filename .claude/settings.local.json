@@ -7,7 +7,9 @@
       "PowerShell($bytes = [System.IO.File]::ReadAllBytes\\(\"C:\\\\Users\\\\cegai\\\\vba-guide-v2\\\\CLAUDE.md\"\\); $encoding = [System.Text.Encoding]::UTF8; $encoding.GetString\\($bytes\\) | Out-String)",
       "PowerShell(New-Item *)",
       "Bash(npm run *)",
-      "Bash(curl -s http://localhost:5173/src/modules/loops.html)"
+      "Bash(curl -s http://localhost:5173/src/modules/loops.html)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\cegai\\\\Desktop\\\\vba-guide-v3\" -Recurse -File | Select-Object FullName, @{Name='SizeBytes';Expression={$_.Length}} | Sort-Object FullName | Format-Table -AutoSize)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\cegai\\\\Desktop\\\\vba-guide-v3\" -Exclude node_modules -Recurse -File | Select-Object FullName, @{Name='SizeBytes';Expression={$_.Length}} | Sort-Object FullName | Format-Table -AutoSize -Wrap)"
     ]
   }
 }

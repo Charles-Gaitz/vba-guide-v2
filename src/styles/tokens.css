@@ -19,6 +19,12 @@
   --tip-border:       #a0845c;
   --tip-text:         #5c3a1e;  /* 9.3:1 on --tip-bg ✓ */
 
+  /* AI Caution boxes (muted warm warning — distinct from tip) */
+  --caution-bg:       #f5ede0;  /* warm sand */
+  --caution-border:   #9a7855;  /* muted warm brown */
+  --caution-text:     #3d2500;  /* 12.6:1 on --caution-bg ✓ */
+  --caution-label:    #6b4a20;  /* 6.8:1 on --caution-bg ✓ */
+
   /* Syntax boxes (maroon-tinted) */
   --syntax-bg:        #fce8e8;  /* var(--accent-light) */
   --syntax-border:    #500000;  /* var(--accent) */
