@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Practice VBA calculations and date functions for ACCT 628 — a supplement to your Canvas course materials." />
+  <meta name="description" content="Practice calculations and date functions in VBA for ACCT 628 — WorksheetFunction, accumulating totals, formatting, and DateAdd." />
   <title>Calculations and Dates — VBA Practice for ACCT 628</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,7 +25,6 @@
           <a href="#concept">Concept</a>
           <a href="#quick-check">Quick Check</a>
           <a href="#easy-wins">Easy Wins</a>
-          <a href="#sample-data">Sample Data</a>
           <a href="#practice-problem">Practice Problem</a>
           <a href="#challenge">Challenge</a>
         </nav>
@@ -40,37 +39,440 @@
       </div>
 
       <div class="box-reminder">
-        <p><strong>REMINDER:</strong> Watch the associated course video before working through this module.</p>
+        <p><strong>REMINDER:</strong> To fully understand Calculations and Dates, you should have already watched the Calculations and Dates Video in Canvas and followed along with the Macro Demo file. This practice will build upon that foundation.</p>
       </div>
 
       <!-- ── Concept ─────────────────────────────────────────── -->
       <section id="concept" aria-labelledby="concept-heading">
-        <h2 id="concept-heading">Concepts</h2>
-        <!-- TODO: content -->
+        <h2 id="concept-heading">Calculations and Dates in VBA</h2>
+
+        <p>VBA can perform calculations three ways: store the result in a variable,
+        place a formula in a cell so Excel calculates it, or place the result of
+        the calculation directly in a cell. Each approach has its place. Variables
+        are used when you need the value mid-macro. Formulas in cells let Excel
+        recalculate automatically. Results in cells are faster and don't depend
+        on Excel's calculation engine.</p>
+
+        <p>For this course, the most common pattern is calculating into a variable
+        and then displaying or storing the result. Functions like Count, Sum, and
+        Average are available through Application.WorksheetFunction and work
+        exactly like their Excel equivalents.</p>
+
+        <div class="course-tip">
+          <p>If a function works in Excel, it almost certainly works in VBA through
+          Application.WorksheetFunction. When in doubt, try it — if it doesn't work
+          without the prefix, add it.</p>
+        </div>
+
+        <!-- ── Basic Math and WorksheetFunction ── -->
+        <h3>Basic Math and WorksheetFunction</h3>
+
+        <p>Basic arithmetic in VBA uses the same operators as Excel: +, -, *, /.
+        You can calculate directly into a variable or into a cell. To use Excel
+        functions like Count, Sum, or Average in VBA, prefix them with
+        Application.WorksheetFunction. Some functions work without the prefix
+        — but when in doubt, include it.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>' Basic math into a variable
+AverageGPR = TotalGPR / StudentCount
+
+' WorksheetFunction into a variable
+NoRecords = Application.WorksheetFunction.Count(Range("A:A"))
+TotalSales = Application.WorksheetFunction.Sum(Range("H:H"))
+
+' Place formula in a cell (Excel calculates)
+Range("K2") = "=Count(A:A)"
+
+' Place result in a cell (VBA calculates)
+Range("K3") = Application.WorksheetFunction.Count(Range("A:A"))</pre>
+        </div>
+
+        <p>This example from the Macro Handout shows all three approaches for Count:</p>
+
+<pre class="code-block"><code class="language-vba">Dim NoRecords As Integer
+
+' Places the actual count formula in the cell
+Range("K2") = "=Count(A:A)"
+
+' Places the result into a cell
+Range("K3") = Application.WorksheetFunction.Count(Range("A:A"))
+
+' Places the result into a variable
+NoRecords = Application.WorksheetFunction.Count(Range("A:A"))</code></pre>
+
+        <!-- ── Accumulating a Total in a Loop ── -->
+        <h3>Accumulating a Total in a Loop</h3>
+
+        <p>When you need a running total across multiple records, you accumulate it
+        inside a loop using a variable. Start the variable at 0 before the loop,
+        add to it on each pass, then use or display it after the loop ends.
+        This is the same pattern whether you're summing sales, counting records,
+        or calculating an average.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>Dim CumulativeTotal As Double
+CumulativeTotal = 0              ' reset before loop
+
+Do Until ActiveCell = ""
+    CumulativeTotal = CumulativeTotal + ActiveCell.Offset(0, 5)
+    ActiveCell.Offset(1, 0).Select
+Loop
+
+MsgBox "Total: " &amp; CumulativeTotal</pre>
+        </div>
+
+        <p>This is the CumulativeTotal example from the Macro Handout:</p>
+
+<pre class="code-block"><code class="language-vba">Dim CumulativeTotal As Double
+
+Range("A2").Select
+CumulativeTotal = 0
+
+Do Until ActiveCell = ""
+    CumulativeTotal = CumulativeTotal + ActiveCell.Offset(0, 5)
+    ActiveCell.Offset(1, 0).Select
+Loop
+
+MsgBox "The cumulative total is " &amp; _
+       Application.WorksheetFunction.Dollar(CumulativeTotal, 0)</code></pre>
+
+        <!-- ── Formatting Numbers and Dates ── -->
+        <h3>Formatting Numbers and Dates</h3>
+
+        <p>Formatting affects what is displayed in a cell — it does not change what
+        is stored in a variable. A Double variable holding 3.756 stays 3.756
+        regardless of how the cell displays it. The Dollar function formats a
+        number as currency for display in a MsgBox. For worksheet cells, use
+        the NumberFormat property.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>' Format a cell as currency
+Range("H2").NumberFormat = "$#,##0.00"
+
+' Format a cell as percentage with 2 decimal places
+Range("B2").NumberFormat = "0.00%"
+
+' Dollar function for MsgBox display only
+MsgBox Application.WorksheetFunction.Dollar(AverageVariable, 2)</pre>
+        </div>
+
+        <!-- ── Date Functions ── -->
+        <h3>Date Functions</h3>
+
+        <p>VBA has built-in date functions for adding time intervals and finding
+        end-of-month dates. DateAdd takes an interval code, a number, and a
+        starting date and returns a new date. EoMonth returns the last day of
+        a month and requires Application.WorksheetFunction. Year, Month, and
+        Day extract parts of a date and work directly without any prefix.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>' Add 1 month to a date
+DateAdd("m", 1, StartDate)
+
+' Add 1 day
+DateAdd("d", 1, StartDate)
+
+' Add 1 year
+DateAdd("yyyy", 1, StartDate)
+
+' Last day of the month
+Application.WorksheetFunction.EoMonth(StartDate, 0)
+
+' Extract year, month, day
+Year(StartDate)
+Month(StartDate)
+Day(StartDate)</pre>
+        </div>
+
+        <p>These are the date examples from the Macro Handout:</p>
+
+<pre class="code-block"><code class="language-vba">Dim StartDate As Date
+StartDate = Range("B2")
+
+' Add 1 month
+Range("B4") = DateAdd("m", 1, StartDate)
+
+' End of month
+Range("B7") = Application.WorksheetFunction.EoMonth(StartDate, 0)
+
+' Compare year to current year
+If Year(Range("B7")) = Year(Now()) Then
+    MsgBox "You are in the current year"
+End If</code></pre>
+
       </section>
 
       <!-- ── Quick Check ────────────────────────────────────── -->
       <section id="quick-check" aria-labelledby="quick-check-heading">
         <h2 id="quick-check-heading">Quick Check</h2>
-        <!-- TODO: content -->
+
+        <div class="mc-question">
+          <p>1. You want to count the number of records in column A using VBA and store
+          the result in a variable. Which line is correct?</p>
+          <button class="mc-option" data-correct="false">A. <code>NoRecords = Count(Range("A:A"))</code></button>
+          <button class="mc-option" data-correct="false">B. <code>NoRecords = Range("A:A").Count</code></button>
+          <button class="mc-option" data-correct="true">C. <code>NoRecords = Application.WorksheetFunction.Count(Range("A:A"))</code></button>
+          <button class="mc-option" data-correct="false">D. <code>NoRecords = "=Count(A:A)"</code></button>
+          <div class="mc-explanation" hidden>
+            <p>WorksheetFunction functions that store into a variable require the
+            Application.WorksheetFunction prefix. Option D places a formula string in a
+            variable, not the result. Option B counts all cells including empty ones —
+            not what you want.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>2. You format a cell as currency using NumberFormat. Your variable GPR still
+          holds 3.756. What does the variable contain after the formatting?</p>
+          <button class="mc-option" data-correct="false">A. "$3.76"</button>
+          <button class="mc-option" data-correct="true">B. 3.756</button>
+          <button class="mc-option" data-correct="false">C. 3.76</button>
+          <button class="mc-option" data-correct="false">D. The variable is cleared</button>
+          <div class="mc-explanation" hidden>
+            <p>Formatting affects display only — it never changes what is stored in a
+            variable. GPR remains 3.756 as a Double regardless of how the cell is formatted.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>3. What does <code>DateAdd("m", 3, StartDate)</code> return?</p>
+          <button class="mc-option" data-correct="false">A. The date 3 days after StartDate</button>
+          <button class="mc-option" data-correct="true">B. The date 3 months after StartDate</button>
+          <button class="mc-option" data-correct="false">C. The date 3 years after StartDate</button>
+          <button class="mc-option" data-correct="false">D. The last day of the month 3 months from StartDate</button>
+          <div class="mc-explanation" hidden>
+            <p>"m" is the interval code for months. "d" is days, "yyyy" is years.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>4. You need to accumulate a total inside a loop. Before the loop starts,
+          you should:</p>
+          <button class="mc-option" data-correct="false">A. Set the variable to 1</button>
+          <button class="mc-option" data-correct="false">B. Not initialize it — VBA starts variables at 0 automatically</button>
+          <button class="mc-option" data-correct="true">C. Set the variable to 0 explicitly</button>
+          <button class="mc-option" data-correct="false">D. Declare it inside the loop</button>
+          <div class="mc-explanation" hidden>
+            <p>While VBA does initialize numeric variables to 0, explicitly setting it to
+            0 before the loop is best practice — it makes your intent clear and prevents
+            bugs if the macro runs more than once in the same session.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>5. Which function requires Application.WorksheetFunction in VBA?</p>
+          <button class="mc-option" data-correct="false">A. DateAdd</button>
+          <button class="mc-option" data-correct="false">B. Year</button>
+          <button class="mc-option" data-correct="false">C. Month</button>
+          <button class="mc-option" data-correct="true">D. EoMonth</button>
+          <div class="mc-explanation" hidden>
+            <p>DateAdd, Year, Month, and Day are native VBA functions and work without any
+            prefix. EoMonth is an Excel worksheet function and requires
+            Application.WorksheetFunction.</p>
+          </div>
+        </div>
+
+        <div class="course-tip">
+          <p>Question 5 comes up on the exam in the form of code that doesn't work —
+          you'll be asked to fix it. EoMonth without the prefix is a classic error.</p>
+        </div>
+
       </section>
 
       <!-- ── Easy Wins ──────────────────────────────────────── -->
       <section id="easy-wins" aria-labelledby="easy-wins-heading">
         <h2 id="easy-wins-heading">Easy Wins</h2>
-        <!-- TODO: content -->
-      </section>
 
-      <!-- ── Sample Data ────────────────────────────────────── -->
-      <section id="sample-data" aria-labelledby="sample-data-heading">
-        <h2 id="sample-data-heading">Sample Data</h2>
-        <!-- TODO: content -->
+        <!-- Exercise 1 — Steps Format -->
+        <div class="exercise-steps">
+          <div class="exercise-header">
+            <span class="exercise-title">Calculate and Display</span>
+            <span class="exercise-badge">Guided</span>
+          </div>
+          <p>Write a macro that counts the records in a column and calculates
+          the sum of a numeric column, then displays both in a MsgBox.</p>
+
+          <div class="exercise-step open">
+            <button class="step-header" aria-expanded="true">Step 1 — Set up your macro shell</button>
+            <div class="step-body">
+              <p>Open the VBA Editor (Alt+F11). Insert a module (Insert → Module). Type this
+              shell to start — Steps 2 and 3 will fill in the lines between the Dim statements
+              and End Sub:</p>
+<pre class="code-block"><code class="language-vba">Option Explicit
+Sub CalculateTotals()
+    Dim RecordCount As Integer
+    Dim TotalGPR    As Double
+
+End Sub</code></pre>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 2 — Navigate and calculate</button>
+            <div class="step-body" hidden>
+              <p>Add these lines inside your Sub, after the Dim statements. WorksheetFunction
+              calculates both values directly — no loop needed:</p>
+<pre class="code-block"><code class="language-vba">    Sheets("Sheet1").Select
+    Range("A1").Select
+
+    RecordCount = Application.WorksheetFunction.Count(Range("A:A"))
+    TotalGPR    = Application.WorksheetFunction.Sum(Range("D:D"))</code></pre>
+              <p><code>Count(Range("A:A"))</code> counts non-empty cells in column A.
+              <code>Sum(Range("D:D"))</code> adds all values in column D.</p>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 3 — Display the results</button>
+            <div class="step-body" hidden>
+              <p>Add the MsgBox line after your calculations, before End Sub. The Dollar
+              function formats the total as currency with 3 decimal places:</p>
+<pre class="code-block"><code class="language-vba">    MsgBox "Records: " &amp; RecordCount &amp; " | Total GPR: " &amp; _
+           Application.WorksheetFunction.Dollar(TotalGPR, 3)</code></pre>
+              <p>Press F5 to run. With the 30-record Aggie Advisors dataset in column A
+              and GPR values in column D, you should see both totals in the MsgBox.</p>
+            </div>
+          </div>
+
+          <div class="exercise-solution">
+            <button aria-expanded="false">View Complete Code</button>
+            <div class="solution-body" hidden>
+<pre class="code-block"><code class="language-vba">Option Explicit
+Sub CalculateTotals()
+    Dim RecordCount As Integer
+    Dim TotalGPR    As Double
+
+    Sheets("Sheet1").Select
+    RecordCount = Application.WorksheetFunction.Count(Range("A:A"))
+    TotalGPR    = Application.WorksheetFunction.Sum(Range("D:D"))
+
+    MsgBox "Records: " &amp; RecordCount &amp; " | Total GPR: " &amp; _
+           Application.WorksheetFunction.Dollar(TotalGPR, 3)
+End Sub</code></pre>
+              <p><strong>Expected result:</strong> Records: 30 | Total GPR: $111.435</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Exercise 2 — Simple Format -->
+        <div class="exercise-simple">
+          <div class="exercise-header">
+            <span class="exercise-title">Date Experiment</span>
+            <span class="exercise-badge">Observation</span>
+          </div>
+          <p>Type any date into cell B2 of a worksheet. Then run this macro
+          and observe what each line puts into the cells:</p>
+
+<pre class="code-block"><code class="language-vba">Option Explicit
+Sub DateDemo()
+    Dim StartDate As Date
+    StartDate = Range("B2")
+
+    Range("C2") = DateAdd("m", 1, StartDate)
+    Range("C3") = DateAdd("d", 1, StartDate)
+    Range("C4") = DateAdd("yyyy", 1, StartDate)
+    Range("C5") = Application.WorksheetFunction.EoMonth(StartDate, 0)
+    Range("C6") = Year(StartDate)
+End Sub</code></pre>
+
+          <div class="exercise-hint">
+            <button aria-expanded="false">Show Hint</button>
+            <div class="hint-body" hidden>
+              <p>C5 may display as a number instead of a date. Why?</p>
+            </div>
+          </div>
+
+          <div class="exercise-solution">
+            <button aria-expanded="false">Show Solution</button>
+            <div class="solution-body" hidden>
+              <p>EoMonth returns a date serial number. The cell needs to be formatted as a
+              date to display correctly. This is the difference between what VBA stores
+              (a number) and what Excel displays (a date).
+              Fix: <code>Range("C5").NumberFormat = "mm/dd/yyyy"</code></p>
+            </div>
+          </div>
+        </div>
+
       </section>
 
       <!-- ── Practice Problem ──────────────────────────────── -->
       <section id="practice-problem" aria-labelledby="practice-problem-heading">
         <h2 id="practice-problem-heading">Practice Problem</h2>
-        <!-- TODO: content -->
+
+        <div class="data-table-section">
+          <p>Copy this data and paste it into cell A1 of a new Excel worksheet.
+          Press Ctrl+V — Excel will split the columns automatically.</p>
+          <button class="data-table-toggle" aria-expanded="false">📋 Show Data Table</button>
+          <div class="data-table-wrap" hidden>
+            <button class="copy-data-btn" data-tsv="StudentID&#9;LastName&#9;FirstName&#9;TAMU_GPR&#9;Grade229&#9;Grade230&#9;Grade327&#9;FinalDecision&#10;724816395&#9;Anderson&#9;Emma&#9;3.842&#9;A&#9;B+&#9;A-&#9;Accept&#10;831924750&#9;Martinez&#9;Carlos&#9;3.156&#9;B&#9;B&#9;B-&#9;Deny&#10;619283740&#9;Thompson&#9;Sarah&#9;3.971&#9;A&#9;A-&#9;A&#9;Accept&#10;748291036&#9;Nguyen&#9;Michael&#9;3.624&#9;B+&#9;A-&#9;B+&#9;Accept&#10;825163947&#9;Williams&#9;Ashley&#9;2.987&#9;C+&#9;B&#9;C&#9;Deny&#10;736481920&#9;Brown&#9;James&#9;3.745&#9;A-&#9;B+&#9;A-&#9;Accept&#10;814729360&#9;Davis&#9;Lauren&#9;3.512&#9;B+&#9;B+&#9;B&#9;Accept&#10;729183640&#9;Wilson&#9;Tyler&#9;2.843&#9;C&#9;C+&#9;B-&#9;Deny&#10;836492710&#9;Johnson&#9;Megan&#9;3.889&#9;A&#9;A&#9;A-&#9;Accept&#10;715824930&#9;Garcia&#9;Daniel&#9;3.234&#9;B&#9;B-&#9;B&#9;Deny&#10;842163950&#9;Miller&#9;Rachel&#9;3.763&#9;A-&#9;A-&#9;B+&#9;Accept&#10;726849130&#9;Moore&#9;Kevin&#9;3.091&#9;B-&#9;C+&#9;B&#9;Deny&#10;819374620&#9;Taylor&#9;Jessica&#9;3.956&#9;A&#9;A-&#9;A&#9;Accept&#10;734826190&#9;Jackson&#9;Ryan&#9;3.478&#9;B+&#9;B&#9;B+&#9;Accept&#10;821649370&#9;White&#9;Brittany&#9;2.765&#9;C&#9;B-&#9;C+&#9;Deny&#10;716293840&#9;Harris&#9;Brandon&#9;3.834&#9;A-&#9;A-&#9;A-&#9;Accept&#10;843716290&#9;Martin&#9;Stephanie&#9;3.612&#9;B+&#9;B+&#9;A-&#9;Accept&#10;728493610&#9;Thompson&#9;Nathan&#9;3.147&#9;B&#9;B-&#9;B&#9;Deny&#10;815264930&#9;Lewis&#9;Amanda&#9;3.891&#9;A&#9;A&#9;A&#9;Accept&#10;731846920&#9;Robinson&#9;Justin&#9;3.423&#9;B+&#9;B&#9;B&#9;Accept&#10;824619730&#9;Clark&#9;Samantha&#9;2.914&#9;C+&#9;B-&#9;C&#9;Deny&#10;719283460&#9;Rodriguez&#9;Matthew&#9;3.756&#9;A-&#9;B+&#9;A-&#9;Accept&#10;836142790&#9;Lee&#9;Kayla&#9;3.534&#9;B+&#9;A-&#9;B+&#9;Accept&#10;724891360&#9;Walker&#9;Andrew&#9;3.068&#9;B-&#9;C+&#9;B-&#9;Deny&#10;811364920&#9;Hall&#9;Courtney&#9;3.847&#9;A&#9;A-&#9;A&#9;Accept&#10;738261490&#9;Allen&#9;Christopher&#9;3.389&#9;B&#9;B+&#9;B&#9;Accept&#10;826419730&#9;Young&#9;Melissa&#9;2.831&#9;C&#9;C+&#9;B-&#9;Deny&#10;713849260&#9;Hernandez&#9;Joshua&#9;3.912&#9;A&#9;A&#9;A-&#9;Accept&#10;841263970&#9;King&#9;Tiffany&#9;3.645&#9;B+&#9;A-&#9;B+&#9;Accept&#10;727491360&#9;Wright&#9;Patrick&#9;3.178&#9;B&#9;B-&#9;B&#9;Deny">Copy to Clipboard</button>
+            <table>
+              <thead>
+                <tr>
+                  <th>StudentID</th><th>LastName</th><th>FirstName</th><th>TAMU_GPR</th>
+                  <th>Grade229</th><th>Grade230</th><th>Grade327</th><th>FinalDecision</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>724816395</td><td>Anderson</td><td>Emma</td><td>3.842</td><td>A</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>831924750</td><td>Martinez</td><td>Carlos</td><td>3.156</td><td>B</td><td>B</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>619283740</td><td>Thompson</td><td>Sarah</td><td>3.971</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>748291036</td><td>Nguyen</td><td>Michael</td><td>3.624</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>825163947</td><td>Williams</td><td>Ashley</td><td>2.987</td><td>C+</td><td>B</td><td>C</td><td>Deny</td></tr>
+                <tr><td>736481920</td><td>Brown</td><td>James</td><td>3.745</td><td>A-</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>814729360</td><td>Davis</td><td>Lauren</td><td>3.512</td><td>B+</td><td>B+</td><td>B</td><td>Accept</td></tr>
+                <tr><td>729183640</td><td>Wilson</td><td>Tyler</td><td>2.843</td><td>C</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>836492710</td><td>Johnson</td><td>Megan</td><td>3.889</td><td>A</td><td>A</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>715824930</td><td>Garcia</td><td>Daniel</td><td>3.234</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+                <tr><td>842163950</td><td>Miller</td><td>Rachel</td><td>3.763</td><td>A-</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>726849130</td><td>Moore</td><td>Kevin</td><td>3.091</td><td>B-</td><td>C+</td><td>B</td><td>Deny</td></tr>
+                <tr><td>819374620</td><td>Taylor</td><td>Jessica</td><td>3.956</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>734826190</td><td>Jackson</td><td>Ryan</td><td>3.478</td><td>B+</td><td>B</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>821649370</td><td>White</td><td>Brittany</td><td>2.765</td><td>C</td><td>B-</td><td>C+</td><td>Deny</td></tr>
+                <tr><td>716293840</td><td>Harris</td><td>Brandon</td><td>3.834</td><td>A-</td><td>A-</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>843716290</td><td>Martin</td><td>Stephanie</td><td>3.612</td><td>B+</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>728493610</td><td>Thompson</td><td>Nathan</td><td>3.147</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+                <tr><td>815264930</td><td>Lewis</td><td>Amanda</td><td>3.891</td><td>A</td><td>A</td><td>A</td><td>Accept</td></tr>
+                <tr><td>731846920</td><td>Robinson</td><td>Justin</td><td>3.423</td><td>B+</td><td>B</td><td>B</td><td>Accept</td></tr>
+                <tr><td>824619730</td><td>Clark</td><td>Samantha</td><td>2.914</td><td>C+</td><td>B-</td><td>C</td><td>Deny</td></tr>
+                <tr><td>719283460</td><td>Rodriguez</td><td>Matthew</td><td>3.756</td><td>A-</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>836142790</td><td>Lee</td><td>Kayla</td><td>3.534</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>724891360</td><td>Walker</td><td>Andrew</td><td>3.068</td><td>B-</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>811364920</td><td>Hall</td><td>Courtney</td><td>3.847</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>738261490</td><td>Allen</td><td>Christopher</td><td>3.389</td><td>B</td><td>B+</td><td>B</td><td>Accept</td></tr>
+                <tr><td>826419730</td><td>Young</td><td>Melissa</td><td>2.831</td><td>C</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>713849260</td><td>Hernandez</td><td>Joshua</td><td>3.912</td><td>A</td><td>A</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>841263970</td><td>King</td><td>Tiffany</td><td>3.645</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>727491360</td><td>Wright</td><td>Patrick</td><td>3.178</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="sample-data-exercise">
+          <h3>Calculate Average GPR of Accepted Students</h3>
+          <p>Using the Aggie Advisors data, write a macro that loops through all
+          30 records, accumulates the total GPR of accepted students, counts
+          them, calculates the average, and displays it formatted to 3 decimal places.</p>
+          <p><strong>What your macro needs to do:</strong></p>
+          <ul>
+            <li>Declare variables: AcceptCount (Integer), TotalGPR (Double), AverageGPR (Double)</li>
+            <li>Loop through all records using Do Until blank cell</li>
+            <li>Check if FinalDecision = "Accept" (column H, <code>Offset(0, 7)</code>)</li>
+            <li>If Accept: add GPR (column D, <code>Offset(0, 3)</code>) to TotalGPR and add 1 to AcceptCount</li>
+            <li>After loop: calculate AverageGPR = TotalGPR / AcceptCount</li>
+            <li>Display: "Accepted: [X] | Avg GPR: [X.XXX]"</li>
+          </ul>
+          <p><strong>Expected result:</strong> Accepted: 20 | Avg GPR: 3.718</p>
+          <p><strong>Hint:</strong> Calculate the average AFTER the loop ends, not inside it.</p>
+          <p>Use <code>Format(AverageGPR, "0.000")</code> to display exactly 3 decimal places.</p>
+          <a href="/src/modules/practice-project.html#module-5">See this in the Aggie Advisors project →</a>
+        </div>
+
       </section>
 
       <!-- ── Challenge ─────────────────────────────────────── -->
@@ -78,7 +480,26 @@
         <span id="exam-challenge" aria-hidden="true"></span>
         <h2 id="challenge-heading">Challenge</h2>
         <p class="challenge-framing">These exercises are perfect preparation for the Sample Exam, which prepares you for the Macro Project Exam itself. Exam format may vary by semester.</p>
-        <!-- TODO: content -->
+
+        <div class="exam-challenge">
+          <h3>Calculations and Dates Summary</h3>
+          <p><strong>No hints. No steps. This is exam level.</strong></p>
+          <p>Using the Aggie Advisors dataset, write a macro that produces a
+          complete summary in a MsgBox showing:</p>
+          <ul>
+            <li>Total applicants (all 30)</li>
+            <li>Number accepted and their average GPR</li>
+            <li>Number denied and their average GPR</li>
+            <li>The month and year of today's date formatted as "Month: [X] Year: [X]"</li>
+          </ul>
+          <p>All values must come from variables — no hardcoded numbers.
+          Use <code>Format(value, "0.000")</code> for GPR averages.
+          Month and year from <code>Month(Now())</code> and <code>Year(Now())</code>.</p>
+          <p><strong>Expected output format:</strong><br>
+          "Total: 30 | Accepted: 20 (Avg GPR: 3.718) | Denied: 10 (Avg GPR: 3.001) | Month: 5 Year: 2026"</p>
+          <a href="/src/modules/practice-project.html#module-5">See this in the Aggie Advisors project →</a>
+        </div>
+
       </section>
 
     </main>
