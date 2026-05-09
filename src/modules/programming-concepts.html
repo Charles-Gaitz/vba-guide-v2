@@ -166,6 +166,10 @@ Else
 End If
 </code></pre>
 
+        <div class="course-tip">
+          <p>If you turn speed settings off at the start of your macro, you must restore them before every Exit Sub — not just at the end. Otherwise the workbook is left with calculation paused. The exam will test this: if the guard check fires and the macro exits, <code>Application.Calculation = xlCalculationAutomatic</code> and <code>Application.ScreenUpdating = True</code> must run before Exit Sub.</p>
+        </div>
+
       </section>
 
       <!-- ── Quick Check ────────────────────────────────────── -->
@@ -461,6 +465,8 @@ End Sub
 
           <p>The macro must handle both cases cleanly — empty table stops gracefully,
           data present continues to the completion message.</p>
+
+          <p>Remember: speed settings must be restored before Exit Sub, not just at the end of the macro.</p>
 
           <p><strong>Expected behavior:</strong></p>
           <ul>

@@ -153,7 +153,9 @@ Sub Option1_Modified()
     Dim UIN            As Long
     Dim GPR            As Double
     Dim Gender         As String
-    Dim Birthdate      As Date</code></pre>
+    Dim Birthdate      As Date
+
+End Sub</code></pre>
 
         <!-- ── Variables vs Named Ranges ── -->
         <h3>Variables vs Named Ranges</h3>
@@ -326,10 +328,11 @@ End Sub</code></pre>
         </div>
 
         <!-- Exercise 2 — Simple Format -->
-        <h3>Data Type Experiment <span class="coming-soon-badge">Observation</span></h3>
-        <p>This is a quick experiment, not a build exercise.</p>
-
         <div class="exercise-simple">
+          <div class="exercise-header">
+            <span class="exercise-title">Data Type Experiment</span>
+            <span class="exercise-badge">Observation</span>
+          </div>
           <p>Copy this code into the VBA Editor and run it. Look at what Integer does
           to 3.7 vs what Double does. What's different and why?</p>
 <pre class="code-block"><code class="language-vba">Dim WholeNumber   As Integer
@@ -508,9 +511,7 @@ End Sub</code></pre>
           "ID: 724816395 | Name: Anderson, Emma | GPR: 3.842"</p>
           <p><strong>Hint:</strong></p>
 <pre class="code-block"><code class="language-vba">MsgBox "ID: " &amp; StudentID &amp; " | Name: " &amp; LastName &amp; ", " &amp; FirstName &amp; " | GPR: " &amp; GPR</code></pre>
-          <!-- TODO: Uncomment when practice-project.html is built
           <a href="/src/modules/practice-project.html#module-3">See this in the Aggie Advisors project →</a>
-          -->
         </div>
 
       </section>
@@ -522,20 +523,28 @@ End Sub</code></pre>
         <p class="challenge-framing">These exercises are perfect preparation for the Sample Exam, which prepares you for the Macro Project Exam itself. Exam format may vary by semester.</p>
 
         <div class="exam-challenge">
-          <h3>Read and Classify All Applicants</h3>
-          <p>Using the Aggie Advisors dataset, write a macro that:</p>
-          <ol>
-            <li>Uses <code>Option Explicit</code> with all variables declared and correct data types</li>
-            <li>Loops through all 30 applicant records using <code>Do Until</code> with a blank cell check</li>
-            <li>For each record, reads StudentID, LastName, and FinalDecision into variables</li>
-            <li>Counts how many students have FinalDecision = "Accept"</li>
-            <li>After the loop, displays: "Accepted: [X] of [Total] applicants"
-            where Total comes from your loop counter, not a hardcoded 30</li>
-          </ol>
-          <p><strong>Expected answer:</strong> "Accepted: 20 of 30 applicants"</p>
-          <!-- TODO: Uncomment when practice-project.html is built
+          <h3>Read and Display the First Applicant</h3>
+          <p><strong>No hints. No steps. This is exam level.</strong></p>
+          <p>Using the Aggie Advisors dataset, write a macro that demonstrates all
+          three steps of working with variables — Define, Populate, and Use.
+          Your macro must:</p>
+          <ul>
+            <li>Use <code>Option Explicit</code> at the top of the module</li>
+            <li>Declare four variables with the correct data types:
+            <code>StudentID</code> as Long, <code>LastName</code> as String,
+            <code>FirstName</code> as String, <code>GPR</code> as Double</li>
+            <li>Navigate to cell A2 on your Applicant Information sheet</li>
+            <li>Populate each variable from the correct column using Offset:
+            StudentID from column A (ActiveCell),
+            LastName from column B (Offset 0,1),
+            FirstName from column C (Offset 0,2),
+            GPR from column D (Offset 0,3)</li>
+            <li>Display all four in a single MsgBox formatted exactly as:<br>
+            <code>ID: [StudentID] | Name: [LastName], [FirstName] | GPR: [GPR]</code></li>
+          </ul>
+          <p>No loops. No IF statements. Variables only — this is a Module 3 challenge.</p>
+          <p><strong>Expected result:</strong> ID: 724816395 | Name: Anderson, Emma | GPR: 3.842</p>
           <a href="/src/modules/practice-project.html#module-3">See this in the Aggie Advisors project →</a>
-          -->
         </div>
 
       </section>

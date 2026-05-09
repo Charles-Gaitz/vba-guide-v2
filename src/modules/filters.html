@@ -207,13 +207,20 @@ NumberAccepted = Application.WorksheetFunction.CountA(Range("A2:A1000"))</pre>
         </div>
 
         <div class="mc-question">
-          <p>4. You use CountA on column A after pasting filtered data. Your data has 30 records plus a header row. What does <code>CountA(Range("A:A"))</code> return?</p>
-          <button class="mc-option" data-correct="false">A. 30</button>
-          <button class="mc-option" data-correct="true">B. 31</button>
-          <button class="mc-option" data-correct="false">C. 29</button>
-          <button class="mc-option" data-correct="false">D. It depends on the filter</button>
+          <p>4. You filter the ApplicantData table for "Accept" and copy the 20 visible
+          rows to a new sheet named "Accepted Students". On that new sheet, what does
+          <code>Application.WorksheetFunction.CountA(Range("A:A"))</code> return?</p>
+          <button class="mc-option" data-correct="false">A. 20</button>
+          <button class="mc-option" data-correct="true">B. 21</button>
+          <button class="mc-option" data-correct="false">C. 30</button>
+          <button class="mc-option" data-correct="false">D. 31</button>
           <div class="mc-explanation" hidden>
-            <p>CountA counts all non-blank cells including the header. With 30 data rows and 1 header, it returns 31. Subtract 1 to get the record count.</p>
+            <p>CountA counts all non-blank cells in column A of the destination sheet.
+            The pasted data has 1 header row plus 20 accepted student rows = 21
+            non-blank cells total. Subtract 1 from CountA's result to get the 20
+            accepted students. Note: if you ran CountA on the source sheet after
+            filtering (without copying), it would return 31 — CountA ignores
+            AutoFilter and counts all 30 original rows plus the header.</p>
           </div>
         </div>
 
@@ -455,7 +462,7 @@ Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, _
       <!-- ── Challenge ─────────────────────────────────────── -->
       <section id="challenge" aria-labelledby="challenge-heading">
         <span id="exam-challenge" aria-hidden="true"></span>
-        <h2 id="challenge-heading">Exam Challenge</h2>
+        <h2 id="challenge-heading">Challenge</h2>
 
         <div class="exam-challenge">
           <h3>Compare Both Approaches</h3>

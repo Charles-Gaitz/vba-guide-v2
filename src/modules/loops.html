@@ -194,7 +194,8 @@ Loop</code></pre>
           <li>The condition MUST involve at least one variable</li>
           <li>That variable MUST change value somewhere inside the loop body</li>
           <li>The "move to next record" line must be OUTSIDE any IF block — it should
-          always execute, whether the IF condition is true or false, resulting in an endless loop</li>
+          always execute, whether the IF condition is true or false. Placing it
+          INSIDE the IF block causes an endless loop whenever the condition is false.</li>
         </ul>
 
         <p>Here is what a loop looks like when the move line is missing:</p>

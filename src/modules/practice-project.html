@@ -243,6 +243,7 @@
           <h3>Module 6 — Relative vs Absolute References</h3>
           <p><strong>What this piece does:</strong> Navigates to the first empty row on Student Information using End(xlDown) + Offset(1,0), and populates each field using Offset from ActiveCell.</p>
           <p><strong>Your task:</strong> Navigate to the correct empty row using absolute reference to A2, then End(xlDown) and Offset(1,0) to find the first empty row. Expected: row 87 (with 85 existing records + header).</p>
+          <p>Note: The references.html Exam Challenge uses a simplified 10-row teaching setup where the expected result is row 12. This Practice Project uses the full workbook setup with 85 existing records where the expected result is row 87. Both exercises teach the same End(xlDown) + Offset(1,0) pattern — the row number differs only because of the dataset size.</p>
           <a href="/src/modules/references.html#challenge">← Back to Relative vs Absolute References</a>
         </div>
 
@@ -260,11 +261,10 @@
           <p><strong>What this piece does:</strong> A broken version of the complete AddNewStudents macro. Use F8 and the Watch Window to find and fix all bugs.</p>
           <p><strong>The bugs to find:</strong></p>
           <ol>
-            <li>Wrong column offset in the IF statement (checks column A instead of column H)</li>
-            <li>Move to next record inside the IF block instead of outside</li>
-            <li>Missing NumberAccepted = 0 initialization</li>
+            <li>Wrong column offset in the IF statement — checks the wrong column, so no students pass the IF check</li>
+            <li>Navigation error in Student Information — after populating each student's data, the macro overwrites the same row instead of moving to the next empty row</li>
           </ol>
-          <p><strong>Your task:</strong> Use F8 and Watch Window to find all three bugs. Fix each with the minimum change — one line per bug. Expected: corrected macro adds exactly 20 students.</p>
+          <p><strong>Your task:</strong> Use F8 and Watch Window to find both bugs. Fix each with the minimum change — one line per bug. Expected: corrected macro adds exactly 20 students.</p>
           <a href="/src/modules/debugging.html#challenge">← Back to F8 Debugging Practice</a>
         </div>
 
@@ -334,7 +334,7 @@ Sub AddNewStudents()
     Sheets("Applicant Information").Copy Before:=Sheets(6)
     ActiveSheet.Name = "Applicant Information Group " &amp; NewGroup
 
-    ' ── MODULE 5 ────────────────────────────────────────────────
+    ' ── MODULE 6 ────────────────────────────────────────────────
     ' Navigate to first empty row on Student Information
     Sheets("Student Information").Select
     Range("A2").Select
@@ -349,7 +349,7 @@ Sub AddNewStudents()
     ' Loop through all applicants
     Do Until ActiveCell = ""
 
-        ' ── MODULE 6 ──────────────────────────────────────────
+        ' ── MODULE 7 ──────────────────────────────────────────
         ' Only process accepted students
         If ActiveCell.Offset(0, 7) = Range("AcceptValue") Then
 
@@ -360,7 +360,7 @@ Sub AddNewStudents()
             FirstName = ActiveCell.Offset(0, 2)
             GPR       = ActiveCell.Offset(0, 3)
 
-            ' ── MODULE 5 ──────────────────────────────────────
+            ' ── MODULE 6 ──────────────────────────────────────
             ' SELECT Student Information and DISPLAY
             Sheets("Student Information").Select
 
@@ -376,6 +376,7 @@ Sub AddNewStudents()
             ActiveCell.Offset(0, 9) = "Unknown"
             ActiveCell.Offset(0, 10) = "Unknown"
 
+            ' ── MODULE 4 ──────────────────────────────────────
             NumberAccepted = NumberAccepted + 1
 
             ' MOVE to next empty student row

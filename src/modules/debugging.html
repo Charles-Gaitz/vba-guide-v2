@@ -26,7 +26,7 @@
           <a href="#setup">Setup</a>
           <a href="#walkthrough">Walkthrough</a>
           <a href="#on-your-own">On Your Own</a>
-          <a href="#challenge">Aggie Advisors</a>
+          <a href="#challenge">Challenge</a>
         </nav>
       </div>
     </header>
@@ -125,12 +125,13 @@
 
         <p>Copy this macro into a new module in Excel. This is a modified version of the
         CumulativeTotal macro from the Macro Handout. It should add up all the values in
-        column F and display the total — but it gives the wrong answer. Don't try to spot
+        column A and display the total — but it gives the wrong answer. Don't try to spot
         the bug by reading. Follow the steps.</p>
 
-        <p>Assume your data is in a worksheet named "Totals" with numeric values in column F
-        starting at row 2. Use any numeric data you have, or create 5 rows with values
-        like 100, 200, 300, 400, 500 in column F.</p>
+        <p>Assume your data is in a worksheet named "Totals" with numeric values
+        in column A starting at row 2. Create 5 rows with the values 100, 200,
+        300, 400, 500 in cells A2:A6. Column A must have the data — this is
+        where the macro starts and loops through records.</p>
 
 <pre class="code-block"><code class="language-vba">Option Explicit
 Sub CumulativeTotal_Broken()
@@ -141,7 +142,7 @@ Sub CumulativeTotal_Broken()
     Range("A2").Select
 
     Do Until ActiveCell = ""
-        CumulativeTotal = ActiveCell.Offset(0, 5)
+        CumulativeTotal = ActiveCell
         ActiveCell.Offset(1, 0).Select
     Loop
 
@@ -155,8 +156,9 @@ End Sub</code></pre>
             <button class="step-header" aria-expanded="true">Step 1 — Run it first and note the wrong answer</button>
             <div class="step-body">
               <p>Press <strong>F5</strong> to run the macro normally. Write down the number in the MsgBox.
-              If your column F has 100, 200, 300, 400, 500 — the correct total is 1500.
-              The macro will show 500 instead. Now you know what you're looking for.</p>
+              If your column A has 100, 200, 300, 400, 500 — the correct total is 1500.
+              The macro will show 500 instead (only the last value, not the accumulated sum).
+              Now you know what you're looking for.</p>
             </div>
           </div>
 
@@ -183,7 +185,7 @@ End Sub</code></pre>
               <p>Press <strong>F5</strong>. The macro pauses at your breakpoint. Now press <strong>F8</strong> three times slowly:</p>
               <ul>
                 <li>First F8: the Do Until condition evaluates — watch the cursor jump to Excel</li>
-                <li>Second F8: the <code>CumulativeTotal = ActiveCell.Offset(0, 5)</code> line executes —
+                <li>Second F8: the <code>CumulativeTotal = ActiveCell</code> line executes —
                 look at the Watch Window. What is CumulativeTotal now?</li>
                 <li>Third F8: <code>ActiveCell.Offset(1, 0).Select</code> executes — the cursor moves down</li>
               </ul>
@@ -200,9 +202,9 @@ End Sub</code></pre>
               after iteration 2 = 200 — not 300. It's replacing the total each time instead
               of adding to it.</p>
               <p>The bug is on this line:</p>
-<pre class="code-block"><code class="language-vba">CumulativeTotal = ActiveCell.Offset(0, 5)</code></pre>
+<pre class="code-block"><code class="language-vba">CumulativeTotal = ActiveCell</code></pre>
               <p>It should be:</p>
-<pre class="code-block"><code class="language-vba">CumulativeTotal = CumulativeTotal + ActiveCell.Offset(0, 5)</code></pre>
+<pre class="code-block"><code class="language-vba">CumulativeTotal = CumulativeTotal + ActiveCell</code></pre>
               <p>Make that one change. Clear the breakpoint (click the red dot). Press F5.
               The MsgBox should now show 1500.</p>
               <p><strong>Complete Fixed Code:</strong></p>
@@ -217,7 +219,7 @@ Sub CumulativeTotal_Fixed()
     CumulativeTotal = 0
 
     Do Until ActiveCell = ""
-        CumulativeTotal = CumulativeTotal + ActiveCell.Offset(0, 5)
+        CumulativeTotal = CumulativeTotal + ActiveCell
         ActiveCell.Offset(1, 0).Select
     Loop
 
@@ -300,7 +302,7 @@ End Sub</code></pre>
       <!-- ── Challenge ─────────────────────────────────────── -->
       <section id="challenge" aria-labelledby="challenge-heading">
         <span id="exam-challenge" aria-hidden="true"></span>
-        <h2 id="challenge-heading">Exam Challenge — Debug the Aggie Advisors Macro</h2>
+        <h2 id="challenge-heading">Challenge</h2>
         <p class="challenge-framing">This is exam level. The macro below is a broken version of the AddNewStudents
         macro from the Aggie Advisors project. It runs without an error but produces
         wrong results — it adds the wrong number of students and the count in the

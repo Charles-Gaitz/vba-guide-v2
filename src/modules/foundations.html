@@ -374,34 +374,27 @@ End Sub
         <p class="challenge-framing">These exercises are perfect preparation for the Sample Exam, which prepares you for the Macro Project Exam itself. Exam format may vary by semester.</p>
 
         <div class="exam-challenge">
-          <h3>Record, View, and Describe</h3>
+          <h3>Set Up the Student Information Sheet</h3>
           <p>No hints. Exam level.</p>
 
           <p>Record a macro that does ALL of the following in one recording:</p>
           <ol>
-            <li>Navigates to Sheet2 (create it if it doesn't exist)</li>
-            <li>Types "Sales Report" into cell A1</li>
-            <li>Bolds cell A1</li>
-            <li>Types today's date into cell A2</li>
-            <li>Returns to Sheet1</li>
+            <li>Navigates to the Student Information sheet</li>
+            <li>Bolds row 1 (the header row)</li>
+            <li>Autofits all columns on Student Information</li>
+            <li>Navigates back to the Applicant Information sheet</li>
           </ol>
 
-          <p>After recording, open the VBA Editor and answer these questions by looking
-          at the generated code:</p>
+          <p>After recording, open the VBA Editor and clean up the code:</p>
           <ul>
-            <li>How many times does the word "Select" appear?</li>
-            <li>What line puts the text "Sales Report" into the cell?</li>
-            <li>What does <code>ActiveCell.FormulaR1C1</code> mean based on what you see?</li>
-            <li>Is the cell reference in your code absolute or relative? How can you tell?</li>
+            <li>Remove every line that contains <code>Select</code> or <code>Selection</code></li>
+            <li>Rewrite the bold step so it acts directly on the row without selecting first — use <code>Rows("1:1").Font.Bold = True</code></li>
+            <li>Confirm the macro still runs correctly after your edits</li>
           </ul>
 
-          <p>Write your answers in a comment block at the top of the macro using the VBA
-          comment format (apostrophe at the start of each line).</p>
+          <p><strong>Expected result:</strong> Row 1 of Student Information is bold. All columns are autofitted. Active sheet is Applicant Information.</p>
 
-          <p><strong>Expected result:</strong> A working macro that performs all 5 steps,
-          with a comment block at the top showing your answers.</p>
-
-          <!-- <a href="/src/modules/practice-project.html#module-1">See this in the Aggie Advisors project →</a> -->
+          <a href="/src/modules/practice-project.html#module-1">See this in the Aggie Advisors project →</a>
         </div>
 
       </section>

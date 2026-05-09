@@ -496,7 +496,9 @@ End Sub</code></pre>
           Use <code>Format(value, "0.000")</code> for GPR averages.
           Month and year from <code>Month(Now())</code> and <code>Year(Now())</code>.</p>
           <p><strong>Expected output format:</strong><br>
-          "Total: 30 | Accepted: 20 (Avg GPR: 3.718) | Denied: 10 (Avg GPR: 3.001) | Month: 5 Year: 2026"</p>
+          "Total: 30 | Accepted: 20 (Avg GPR: 3.718) | Denied: 10 (Avg GPR: 3.001) | Month: [current month] Year: [current year]"</p>
+          <p>The month and year values will match the date when you run the macro —
+          use <code>Month(Now())</code> and <code>Year(Now())</code> in your code, not hardcoded numbers.</p>
           <a href="/src/modules/practice-project.html#module-5">See this in the Aggie Advisors project →</a>
         </div>
 
