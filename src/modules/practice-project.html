@@ -3,8 +3,451 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="The Aggie Advisors practice project for ACCT 628 — build the complete AddNewStudents macro one module at a time using the full Aggie Advisors scenario." />
   <title>Practice Project — VBA Practice for ACCT 628</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script type="module" src="/src/module.js"></script>
 </head>
 <body>
+  <div class="site-wrapper">
+
+    <header class="site-header" role="banner">
+      <div class="site-header__inner">
+        <h1 class="site-header__title">
+          <a href="/" class="site-header__home-link">VBA Practice for ACCT 628</a>
+        </h1>
+        <p class="site-header__subtitle">
+          Watch. Review. Practice.
+        </p>
+        <nav class="anchor-nav" aria-label="Page sections">
+          <a href="#scenario">Scenario</a>
+          <a href="#setup">Workbook Setup</a>
+          <a href="#data">Data Table</a>
+          <a href="#modules">Module Guide</a>
+          <a href="#complete-macro">Complete Macro</a>
+          <a href="#final-run">Final Run</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="site-main" id="main-content">
+
+      <div class="page-intro">
+        <h1 class="page-title">Practice Project</h1>
+        <p class="page-subtitle">Aggie Advisors: New Student Onboarding</p>
+      </div>
+
+      <div class="box-reminder">
+        <p><strong>REMINDER:</strong> This practice project runs throughout all 9 modules. Each module's Exam Challenge is one piece of the complete AddNewStudents macro. Work through the modules in order — by the time you finish, you will have built the entire macro yourself.</p>
+      </div>
+
+      <!-- ── Scenario ─────────────────────────────────────────── -->
+      <section id="scenario" aria-labelledby="scenario-heading">
+        <h2 id="scenario-heading">The Aggie Advisors Scenario</h2>
+
+        <p>You work in the advising office at Mays Business School. Each semester a new group of students is accepted into the Professional Program in Accountancy (PPA). Your job is to build a macro that processes the incoming applicant list, adds accepted students to the master student roster, and updates the summary reports.</p>
+
+        <p>This scenario mirrors the Project Demo from class intentionally. The difference is that you build it one module at a time — each module's Exam Challenge is one piece of the complete macro. By the time you finish all nine modules, you have built the whole thing yourself.</p>
+
+        <p>No downloadable file is provided. Copy the data tables below and paste them into your own Excel workbook following the worksheet setup instructions.</p>
+
+      </section>
+
+      <!-- ── Workbook Setup ──────────────────────────────────── -->
+      <section id="setup" aria-labelledby="setup-heading">
+        <h2 id="setup-heading">Workbook Setup Instructions</h2>
+
+        <p>Create a new Excel file and save it as <code>Aggie_Advisors_Practice.xlsm</code> (macro-enabled workbook). Create the following sheets in this order:</p>
+
+        <h3>Sheet 1 — Instructions</h3>
+        <p>Leave this sheet for your own notes about the project.</p>
+
+        <h3>Sheet 2 — Applicant Information</h3>
+        <ul>
+          <li>Table name: <code>ApplicantData</code></li>
+          <li>Column headers (row 1): StudentID | LastName | FirstName | TAMU_GPR | Grade229 | Grade230 | Grade327 | FinalDecision</li>
+          <li>Copy the 30 applicant records from the data table below into rows 2–31</li>
+        </ul>
+
+        <h3>Sheet 3 — Student Information</h3>
+        <ul>
+          <li>Table name: <code>PPAData</code></li>
+          <li>Column headers (row 1): StudentID | Group | TrackCode | LastName | FirstName | UndergradGPR | GradGPR | Advisor | Employer1 | Employer2 | RecruitingStatus</li>
+          <li>This sheet will have 85 existing student records when fully set up. For exercises, you can start with just the header row and add records as needed.</li>
+        </ul>
+
+        <h3>Sheet 4 — Advisor Data</h3>
+        <ul>
+          <li>Table name: <code>AdvisorData</code></li>
+          <li>Column headers: TrackCode | TrackName | Advisor</li>
+          <li>Enter these 4 rows:</li>
+        </ul>
+        <table>
+          <thead>
+            <tr><th>TrackCode</th><th>TrackName</th><th>Advisor</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>FI</td><td>Finance</td><td>Dr. Martinez</td></tr>
+            <tr><td>TX</td><td>Taxation</td><td>Dr. Patel</td></tr>
+            <tr><td>AC</td><td>Accounting</td><td>Dr. Johnson</td></tr>
+            <tr><td>U</td><td>Undecided</td><td>Dr. Williams</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Sheet 5 — Group Summary</h3>
+        <ul>
+          <li>Leave blank for now</li>
+          <li>Create a Named Range: select cell B2, name it <code>CurrentGroup</code></li>
+        </ul>
+
+        <h3>Sheet 6 — Valid Values</h3>
+        <ul>
+          <li>Column A header: Group Number</li>
+          <li>Enter groups 30 through 34 in rows 2–6</li>
+          <li>Create a Named Range: select cell D2, name it <code>AcceptValue</code>, value = "Accept"</li>
+        </ul>
+
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Points To</th><th>Initial Value</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>AcceptValue</code></td><td>Valid Values!D2</td><td>Accept</td></tr>
+            <tr><td><code>CurrentGroup</code></td><td>Group Summary!B2</td><td>30</td></tr>
+          </tbody>
+        </table>
+
+      </section>
+
+      <!-- ── Data Table ─────────────────────────────────────── -->
+      <section id="data" aria-labelledby="data-heading">
+        <h2 id="data-heading">Applicant Information Data</h2>
+
+        <p>Copy this data and paste it into cell A1 of your Applicant Information sheet. Press Ctrl+V — Excel will split the columns automatically. Then format the data as a table named <code>ApplicantData</code>.</p>
+
+        <div class="data-table-section">
+          <button class="data-table-toggle" aria-expanded="false">📋 Show Data Table</button>
+          <div class="data-table-wrap" hidden>
+            <button class="copy-data-btn" data-tsv="StudentID&#9;LastName&#9;FirstName&#9;TAMU_GPR&#9;Grade229&#9;Grade230&#9;Grade327&#9;FinalDecision&#10;724816395&#9;Anderson&#9;Emma&#9;3.842&#9;A&#9;B+&#9;A-&#9;Accept&#10;831924750&#9;Martinez&#9;Carlos&#9;3.156&#9;B&#9;B&#9;B-&#9;Deny&#10;619283740&#9;Thompson&#9;Sarah&#9;3.971&#9;A&#9;A-&#9;A&#9;Accept&#10;748291036&#9;Nguyen&#9;Michael&#9;3.624&#9;B+&#9;A-&#9;B+&#9;Accept&#10;825163947&#9;Williams&#9;Ashley&#9;2.987&#9;C+&#9;B&#9;C&#9;Deny&#10;736481920&#9;Brown&#9;James&#9;3.745&#9;A-&#9;B+&#9;A-&#9;Accept&#10;814729360&#9;Davis&#9;Lauren&#9;3.512&#9;B+&#9;B+&#9;B&#9;Accept&#10;729183640&#9;Wilson&#9;Tyler&#9;2.843&#9;C&#9;C+&#9;B-&#9;Deny&#10;836492710&#9;Johnson&#9;Megan&#9;3.889&#9;A&#9;A&#9;A-&#9;Accept&#10;715824930&#9;Garcia&#9;Daniel&#9;3.234&#9;B&#9;B-&#9;B&#9;Deny&#10;842163950&#9;Miller&#9;Rachel&#9;3.763&#9;A-&#9;A-&#9;B+&#9;Accept&#10;726849130&#9;Moore&#9;Kevin&#9;3.091&#9;B-&#9;C+&#9;B&#9;Deny&#10;819374620&#9;Taylor&#9;Jessica&#9;3.956&#9;A&#9;A-&#9;A&#9;Accept&#10;734826190&#9;Jackson&#9;Ryan&#9;3.478&#9;B+&#9;B&#9;B+&#9;Accept&#10;821649370&#9;White&#9;Brittany&#9;2.765&#9;C&#9;B-&#9;C+&#9;Deny&#10;716293840&#9;Harris&#9;Brandon&#9;3.834&#9;A-&#9;A-&#9;A-&#9;Accept&#10;843716290&#9;Martin&#9;Stephanie&#9;3.612&#9;B+&#9;B+&#9;A-&#9;Accept&#10;728493610&#9;Thompson&#9;Nathan&#9;3.147&#9;B&#9;B-&#9;B&#9;Deny&#10;815264930&#9;Lewis&#9;Amanda&#9;3.891&#9;A&#9;A&#9;A&#9;Accept&#10;731846920&#9;Robinson&#9;Justin&#9;3.423&#9;B+&#9;B&#9;B&#9;Accept&#10;824619730&#9;Clark&#9;Samantha&#9;2.914&#9;C+&#9;B-&#9;C&#9;Deny&#10;719283460&#9;Rodriguez&#9;Matthew&#9;3.756&#9;A-&#9;B+&#9;A-&#9;Accept&#10;836142790&#9;Lee&#9;Kayla&#9;3.534&#9;B+&#9;A-&#9;B+&#9;Accept&#10;724891360&#9;Walker&#9;Andrew&#9;3.068&#9;B-&#9;C+&#9;B-&#9;Deny&#10;811364920&#9;Hall&#9;Courtney&#9;3.847&#9;A&#9;A-&#9;A&#9;Accept&#10;738261490&#9;Allen&#9;Christopher&#9;3.389&#9;B&#9;B+&#9;B&#9;Accept&#10;826419730&#9;Young&#9;Melissa&#9;2.831&#9;C&#9;C+&#9;B-&#9;Deny&#10;713849260&#9;Hernandez&#9;Joshua&#9;3.912&#9;A&#9;A&#9;A-&#9;Accept&#10;841263970&#9;King&#9;Tiffany&#9;3.645&#9;B+&#9;A-&#9;B+&#9;Accept&#10;727491360&#9;Wright&#9;Patrick&#9;3.178&#9;B&#9;B-&#9;B&#9;Deny">Copy to Clipboard</button>
+            <table>
+              <thead>
+                <tr>
+                  <th>StudentID</th>
+                  <th>LastName</th>
+                  <th>FirstName</th>
+                  <th>TAMU_GPR</th>
+                  <th>Grade229</th>
+                  <th>Grade230</th>
+                  <th>Grade327</th>
+                  <th>FinalDecision</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>724816395</td><td>Anderson</td><td>Emma</td><td>3.842</td><td>A</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>831924750</td><td>Martinez</td><td>Carlos</td><td>3.156</td><td>B</td><td>B</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>619283740</td><td>Thompson</td><td>Sarah</td><td>3.971</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>748291036</td><td>Nguyen</td><td>Michael</td><td>3.624</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>825163947</td><td>Williams</td><td>Ashley</td><td>2.987</td><td>C+</td><td>B</td><td>C</td><td>Deny</td></tr>
+                <tr><td>736481920</td><td>Brown</td><td>James</td><td>3.745</td><td>A-</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>814729360</td><td>Davis</td><td>Lauren</td><td>3.512</td><td>B+</td><td>B+</td><td>B</td><td>Accept</td></tr>
+                <tr><td>729183640</td><td>Wilson</td><td>Tyler</td><td>2.843</td><td>C</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>836492710</td><td>Johnson</td><td>Megan</td><td>3.889</td><td>A</td><td>A</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>715824930</td><td>Garcia</td><td>Daniel</td><td>3.234</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+                <tr><td>842163950</td><td>Miller</td><td>Rachel</td><td>3.763</td><td>A-</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>726849130</td><td>Moore</td><td>Kevin</td><td>3.091</td><td>B-</td><td>C+</td><td>B</td><td>Deny</td></tr>
+                <tr><td>819374620</td><td>Taylor</td><td>Jessica</td><td>3.956</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>734826190</td><td>Jackson</td><td>Ryan</td><td>3.478</td><td>B+</td><td>B</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>821649370</td><td>White</td><td>Brittany</td><td>2.765</td><td>C</td><td>B-</td><td>C+</td><td>Deny</td></tr>
+                <tr><td>716293840</td><td>Harris</td><td>Brandon</td><td>3.834</td><td>A-</td><td>A-</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>843716290</td><td>Martin</td><td>Stephanie</td><td>3.612</td><td>B+</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>728493610</td><td>Thompson</td><td>Nathan</td><td>3.147</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+                <tr><td>815264930</td><td>Lewis</td><td>Amanda</td><td>3.891</td><td>A</td><td>A</td><td>A</td><td>Accept</td></tr>
+                <tr><td>731846920</td><td>Robinson</td><td>Justin</td><td>3.423</td><td>B+</td><td>B</td><td>B</td><td>Accept</td></tr>
+                <tr><td>824619730</td><td>Clark</td><td>Samantha</td><td>2.914</td><td>C+</td><td>B-</td><td>C</td><td>Deny</td></tr>
+                <tr><td>719283460</td><td>Rodriguez</td><td>Matthew</td><td>3.756</td><td>A-</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>836142790</td><td>Lee</td><td>Kayla</td><td>3.534</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>724891360</td><td>Walker</td><td>Andrew</td><td>3.068</td><td>B-</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>811364920</td><td>Hall</td><td>Courtney</td><td>3.847</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>738261490</td><td>Allen</td><td>Christopher</td><td>3.389</td><td>B</td><td>B+</td><td>B</td><td>Accept</td></tr>
+                <tr><td>826419730</td><td>Young</td><td>Melissa</td><td>2.831</td><td>C</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>713849260</td><td>Hernandez</td><td>Joshua</td><td>3.912</td><td>A</td><td>A</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>841263970</td><td>King</td><td>Tiffany</td><td>3.645</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>727491360</td><td>Wright</td><td>Patrick</td><td>3.178</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <p>Verification totals — use these to check your macro answers:
+        Total applicants: 30 | Accepted: 20 | Denied: 10 |
+        Average GPR accepted: 3.7175 | Average GPR denied: 3.0014</p>
+
+      </section>
+
+      <!-- ── Module Guide ────────────────────────────────────── -->
+      <section id="modules" aria-labelledby="modules-heading">
+        <h2 id="modules-heading">Module-by-Module Guide</h2>
+
+        <p>Each module's Exam Challenge adds one piece to the complete macro. Click any module below to jump to its section, or go directly to the module page to review the concept.</p>
+
+        <!-- module-1 -->
+        <div id="module-1">
+          <h3>Module 1 — Macro Foundations</h3>
+          <p><strong>What this piece does:</strong> Navigates the workbook, copies the Applicant Information sheet as a backup, and adds the new group number to Valid Values.</p>
+          <p><strong>Your task:</strong> Record and modify a macro that:</p>
+          <ol>
+            <li>Navigates to Student Information and bolds row 1 without SELECT/SELECTION</li>
+            <li>Autofits all columns on Student Information</li>
+            <li>Navigates back to Applicant Information</li>
+          </ol>
+          <p><strong>Expected result:</strong> Headers bolded, columns autofitted.</p>
+          <a href="/src/modules/foundations.html#challenge">← Back to Macro Foundations</a>
+        </div>
+
+        <!-- module-2 -->
+        <div id="module-2">
+          <h3>Module 2 — Adding Programming Concepts</h3>
+          <p><strong>What this piece does:</strong> Adds Option Explicit, variable declarations, the guard check for empty applicant list, the InputBox for group number, and speed settings.</p>
+          <p><strong>Your task:</strong> Write a macro that checks for records and prompts for group number. Expected: displays "Group [X] is ready to process" — stops gracefully if no records.</p>
+          <a href="/src/modules/programming-concepts.html#challenge">← Back to Adding Programming Concepts</a>
+        </div>
+
+        <!-- module-3 -->
+        <div id="module-3">
+          <h3>Module 3 — Variables</h3>
+          <p><strong>What this piece does:</strong> Declares the variables that hold each student's data (StudentID, LastName, FirstName, GPR) and populates them from each applicant row.</p>
+          <p><strong>Your task:</strong> Declare correct data types and populate from Offset navigation. Expected: MsgBox shows "ID: 724816395 | Name: Anderson, Emma | GPR: 3.842" for row 2.</p>
+          <a href="/src/modules/variables.html#challenge">← Back to Variables</a>
+        </div>
+
+        <!-- module-4 -->
+        <div id="module-4">
+          <h3>Module 4 — Loops</h3>
+          <p><strong>What this piece does:</strong> The Do Until loop that processes every applicant, the IF that checks FinalDecision, and the NumberAccepted counter.</p>
+          <p><strong>Your task:</strong> Loop through all 30 applicants, count accepted, calculate average GPR. Expected: 20 accepted, average GPR 3.7175.</p>
+          <a href="/src/modules/loops.html#challenge">← Back to Loops</a>
+        </div>
+
+        <!-- module-5 -->
+        <div id="module-5">
+          <h3>Module 5 — Calculations and Dates</h3>
+          <p><strong>What this piece does:</strong> Accumulates GPR totals, calculates averages using WorksheetFunction, and formats results for display.</p>
+          <p><strong>Your task:</strong> Loop through all 30 records, accumulate total GPR for accepted students, calculate average after the loop using <code>Format(value, "0.000")</code>. Expected: Accepted: 20 | Avg GPR: 3.718</p>
+          <a href="/src/modules/calculations.html#challenge">← Back to Calculations and Dates</a>
+        </div>
+
+        <!-- module-6 -->
+        <div id="module-6">
+          <h3>Module 6 — Relative vs Absolute References</h3>
+          <p><strong>What this piece does:</strong> Navigates to the first empty row on Student Information using End(xlDown) + Offset(1,0), and populates each field using Offset from ActiveCell.</p>
+          <p><strong>Your task:</strong> Navigate to the correct empty row using absolute reference to A2, then End(xlDown) and Offset(1,0) to find the first empty row. Expected: row 87 (with 85 existing records + header).</p>
+          <a href="/src/modules/references.html#challenge">← Back to Relative vs Absolute References</a>
+        </div>
+
+        <!-- module-7 -->
+        <div id="module-7">
+          <h3>Module 7 — Filters &amp; Shortcut Keys</h3>
+          <p><strong>What this piece does:</strong> The IF statement inside the loop that checks FinalDecision = Range("AcceptValue") before processing — plus the Option 2 AutoFilter approach for isolating accepted students.</p>
+          <p><strong>Your task:</strong> Use AutoFilter to isolate accepted students and copy them to a new sheet. Expected: 20 rows on "Accepted Students" sheet, count matches Module 4.</p>
+          <a href="/src/modules/filters.html#challenge">← Back to Filters &amp; Shortcut Keys</a>
+        </div>
+
+        <!-- module-8 -->
+        <div id="module-8">
+          <h3>Module 8 — F8 Debugging Practice</h3>
+          <p><strong>What this piece does:</strong> A broken version of the complete AddNewStudents macro. Use F8 and the Watch Window to find and fix all bugs.</p>
+          <p><strong>The bugs to find:</strong></p>
+          <ol>
+            <li>Wrong column offset in the IF statement (checks column A instead of column H)</li>
+            <li>Move to next record inside the IF block instead of outside</li>
+            <li>Missing NumberAccepted = 0 initialization</li>
+          </ol>
+          <p><strong>Your task:</strong> Use F8 and Watch Window to find all three bugs. Fix each with the minimum change — one line per bug. Expected: corrected macro adds exactly 20 students.</p>
+          <a href="/src/modules/debugging.html#challenge">← Back to F8 Debugging Practice</a>
+        </div>
+
+        <!-- module-9 -->
+        <div id="module-9">
+          <h3>Module 9 — Pseudocode</h3>
+          <p><strong>What this piece does:</strong> Write complete pseudocode for the full AddNewStudents macro using Sanders format — this is the planning document you would write BEFORE building the macro.</p>
+          <p><strong>Your task:</strong> Write pseudocode covering all 7 sections: variable definitions, guard check, user prompt, backup copy, main loop, refresh reports, completion message. Your pseudocode should be detailed enough that someone who doesn't know VBA could understand exactly what the macro does.</p>
+          <a href="/src/modules/pseudocode.html#challenge">← Back to Pseudocode</a>
+        </div>
+
+      </section>
+
+      <!-- ── Complete Macro ─────────────────────────────────── -->
+      <section id="complete-macro" aria-labelledby="complete-macro-heading">
+        <h2 id="complete-macro-heading">The Complete Macro</h2>
+
+        <p>Once you have completed all nine modules, here is the complete AddNewStudents macro you will have built. Each section is labeled with which module introduced it.</p>
+
+        <pre class="code-block"><code class="language-vba">Option Explicit
+' ACCT 628 - Sanders
+' Aggie Advisors: New Student Onboarding
+' Module: Onboarding
+
+Sub AddNewStudents()
+
+    ' ── MODULE 2 ────────────────────────────────────────────────
+    ' Speed settings
+    Application.Calculation = xlCalculationManual
+    Application.ScreenUpdating = False
+
+    ' ── MODULE 3 ────────────────────────────────────────────────
+    ' DEFINE Variables
+    Dim NewGroup As Integer
+    Dim NumberAccepted As Integer
+    Dim StudentID As Long
+    Dim GPR As Double
+    Dim LastName As String
+    Dim FirstName As String
+
+    ' ── MODULE 2 ────────────────────────────────────────────────
+    ' Check for records
+    Sheets("Applicant Information").Select
+    Range("A2").Select
+
+    If ActiveCell = "" Then
+        MsgBox "No applicants found. Please enter applicant data first."
+        Application.Calculation = xlCalculationAutomatic
+        Application.ScreenUpdating = True
+        Exit Sub
+    End If
+
+    ' Prompt for group number
+    NewGroup = InputBox("Enter the new group number:")
+
+    ' ── MODULE 1 ────────────────────────────────────────────────
+    ' Add NewGroup to Valid Values
+    Sheets("Valid Values").Select
+    Range("A2").Select
+    Selection.End(xlDown).Select
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell = NewGroup
+    ActiveCell.Offset(1, 0).Select
+
+    ' Copy Applicant Information as backup
+    Sheets("Applicant Information").Select
+    Sheets("Applicant Information").Copy Before:=Sheets(6)
+    ActiveSheet.Name = "Applicant Information Group " &amp; NewGroup
+
+    ' ── MODULE 5 ────────────────────────────────────────────────
+    ' Navigate to first empty row on Student Information
+    Sheets("Student Information").Select
+    Range("A2").Select
+    Selection.End(xlDown).Select
+    ActiveCell.Offset(1, 0).Range("PPAData[[#Headers],[StudentID]]").Select
+
+    ' Navigate to first applicant record
+    Sheets("Applicant Information").Select
+    Range("A2").Select
+
+    ' ── MODULE 4 ────────────────────────────────────────────────
+    ' Loop through all applicants
+    Do Until ActiveCell = ""
+
+        ' ── MODULE 6 ──────────────────────────────────────────
+        ' Only process accepted students
+        If ActiveCell.Offset(0, 7) = Range("AcceptValue") Then
+
+            ' ── MODULE 3 ──────────────────────────────────────
+            ' POPULATE variables
+            StudentID = ActiveCell
+            LastName  = ActiveCell.Offset(0, 1)
+            FirstName = ActiveCell.Offset(0, 2)
+            GPR       = ActiveCell.Offset(0, 3)
+
+            ' ── MODULE 5 ──────────────────────────────────────
+            ' SELECT Student Information and DISPLAY
+            Sheets("Student Information").Select
+
+            ActiveCell            = StudentID
+            ActiveCell.Offset(0, 1) = NewGroup
+            ActiveCell.Offset(0, 2) = "U"
+            ActiveCell.Offset(0, 3) = LastName
+            ActiveCell.Offset(0, 4) = FirstName
+            ActiveCell.Offset(0, 5) = GPR
+            ActiveCell.Offset(0, 6) = 0
+            ActiveCell.Offset(0, 7) = "Dr. Williams"
+            ActiveCell.Offset(0, 8) = "Unknown"
+            ActiveCell.Offset(0, 9) = "Unknown"
+            ActiveCell.Offset(0, 10) = "Unknown"
+
+            NumberAccepted = NumberAccepted + 1
+
+            ' MOVE to next empty student row
+            ActiveCell.Offset(1, 0).Range("PPAData[[#Headers],[StudentID]]").Select
+
+            ' RETURN to applicant list
+            Sheets("Applicant Information").Select
+
+        End If
+
+        ' ALWAYS move to next applicant (accepted or denied)
+        ActiveCell.Offset(1, 0).Range("ApplicantData[[#Headers],[StudentID]]").Select
+
+    Loop
+
+    ' ── MODULE 1 ────────────────────────────────────────────────
+    ' Update Group Summary and refresh
+    Sheets("Group Summary").Select
+    Range("CurrentGroup") = NewGroup
+    ActiveWorkbook.RefreshAll
+
+    ' ── MODULE 2 ────────────────────────────────────────────────
+    ' Restore settings and display completion message
+    Application.Calculation = xlCalculationAutomatic
+    Application.ScreenUpdating = True
+
+    MsgBox NumberAccepted &amp; " students added and reports updated for Group " &amp; NewGroup
+
+End Sub</code></pre>
+
+      </section>
+
+      <!-- ── Final Run ────────────────────────────────────── -->
+      <section id="final-run" aria-labelledby="final-run-heading">
+        <h2 id="final-run-heading">Putting It All Together</h2>
+
+        <p>Once you've completed all nine modules, you have built the complete AddNewStudents macro. Run the full macro with group number 35.</p>
+
+        <p><strong>Expected result:</strong></p>
+        <ul>
+          <li>20 new students added to Student Information (rows 87–106)</li>
+          <li>All new students: TrackCode = "U", Advisor = "Dr. Williams", GradGPR = 0</li>
+          <li>Group Summary updated: CurrentGroup = 35</li>
+          <li>MsgBox: "20 students added and reports updated for Group 35"</li>
+        </ul>
+
+        <p>If your results differ, return to the module that covers the section that's wrong and use F8 to debug it. The module guide above links directly to each module's Exam Challenge.</p>
+
+      </section>
+
+    </main>
+
+    <nav class="module-nav" aria-label="Module navigation">
+      <div class="module-nav__inner">
+        <a href="/src/modules/pseudocode.html">← Pseudocode</a>
+        <a href="/" class="module-nav__home">All Modules</a>
+        <span aria-hidden="true"></span>
+      </div>
+    </nav>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer__inner">
+        <p>
+          VBA Practice for ACCT 628 &mdash; Mays Business School, Texas A&amp;M University.
+          Built by CE Gaitz in collaboration with Professor Joan Sanders.
+        </p>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-vba.min.js"></script>
 </body>
 </html>
