@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Practice planning VBA macros with pseudocode for ACCT 628 — a supplement to your Canvas course materials." />
+  <meta name="description" content="Practice pseudocode for ACCT 628 — plan your macro logic in plain language using Professor Sanders format before writing VBA." />
   <title>Pseudocode — VBA Practice for ACCT 628</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,7 +25,6 @@
           <a href="#concept">Concept</a>
           <a href="#quick-check">Quick Check</a>
           <a href="#easy-wins">Easy Wins</a>
-          <a href="#sample-data">Sample Data</a>
           <a href="#practice-problem">Practice Problem</a>
           <a href="#challenge">Challenge</a>
         </nav>
@@ -36,48 +35,406 @@
 
       <div class="page-intro">
         <h1 class="page-title">Pseudocode</h1>
-        <p class="page-subtitle">Module 9 of 9 — Follow the plan!</p>
+        <p class="page-subtitle">Module 9 of 9</p>
       </div>
 
       <div class="box-reminder">
-        <p><strong>REMINDER:</strong> Watch the associated course video before working through this module.</p>
+        <p><strong>REMINDER:</strong> To fully understand Pseudocode, you should have already watched the Pseudocode Video in Canvas and followed along with the Macro Demo file. This practice will build upon that foundation.</p>
       </div>
 
       <!-- ── Concept ─────────────────────────────────────────── -->
       <section id="concept" aria-labelledby="concept-heading">
-        <h2 id="concept-heading">Concepts</h2>
-        <!-- TODO: content -->
+        <h2 id="concept-heading">Pseudocode in VBA</h2>
+
+        <p>Pseudocode is plain-language logic written before you write any code.
+        It's not VBA — it has no syntax rules, it won't compile, and Excel
+        can't run it. Its only job is to help you think through the logic of
+        a macro before you start recording or typing. A well-written pseudocode
+        is like an outline for an essay: if the outline is clear, the writing
+        goes much faster and stays on track.</p>
+
+        <p>Professor Sanders requires pseudocode as the first step of the macro
+        project for a reason. Students who skip it and go straight to code
+        spend far more time debugging than students who plan first. Pseudocode
+        forces you to identify what programming concepts you need — IF statements,
+        variables, loops — before you're in the middle of writing code and
+        second-guessing yourself.</p>
+
+        <div class="course-tip">
+          <p>The pseudocode assignment is graded on communication, not syntax.
+          Ask yourself: if someone who doesn't know VBA read this, would they
+          understand what the macro does? If yes, it's good pseudocode.</p>
+        </div>
+
+        <!-- ── Sanders Pseudocode Format ── -->
+        <h3>Sanders Pseudocode Format</h3>
+
+        <p>Professor Sanders uses a specific pseudocode format in this course.
+        Keywords are CAPITALIZED. Logic inside IF blocks and loops is indented.
+        Every IF ends with END IF. Every loop starts with a loop instruction
+        and ends with ENDLOOP or NEXT. Variable names and field names are
+        used consistently throughout — not "the student" in one place and
+        "applicant" in another.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>DEFINE Variables: VariableName1, VariableName2
+
+IF condition THEN
+    PERFORM action
+    DISPLAY result
+ELSE
+    DISPLAY alternate message
+END IF
+
+SELECT first record
+DO UNTIL End_of_File
+    PERFORM action on current record
+    MOVE to next record
+ENDLOOP</pre>
+        </div>
+
+        <p>This is the pseudocode structure from the Project Demo — the logic
+        for adding accepted students to the roster:</p>
+
+        <div class="pseudocode-block">
+          <pre>DEFINE Variables: NewGroup, NumberAccepted, UIN, GPR
+
+IF Applicant Records is Empty THEN
+    DISPLAY Message "No applicants found"
+ELSE
+    PROMPT user for NewGroup
+    DISPLAY NewGroup on Valid Values
+    COPY Applicant Information sheet as backup
+
+    SELECT first Applicant record
+
+    DO UNTIL End_of_File
+        IF FinalDecision = Accept THEN
+            POPULATE variables for UIN, GPR
+            SELECT Student Information
+            DISPLAY UIN, GPR, NewGroup, TrackCode
+            ADD 1 to NumberAccepted
+            MOVE to next Student row
+            SELECT Applicant Information
+        END IF
+        MOVE to next Applicant
+    ENDLOOP
+
+    REFRESH reports
+    DISPLAY "X Students Added for Group Y"
+END IF</pre>
+        </div>
+
+        <!-- ── Pre-Pseudocode Questions ── -->
+        <h3>Pre-Pseudocode Questions</h3>
+
+        <p>Before writing pseudocode, ask yourself four questions about the problem.
+        The answers tell you exactly which programming concepts your macro needs.
+        These questions come directly from Professor Sanders' Macro Handout and
+        are the starting point for every macro you plan.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>1. Is there any data you need to get from the user?
+   → Yes = InputBox + Variable
+
+2. Does any value change each time you run it?
+   → Yes = Variable
+
+3. Is there anything dependent on a condition?
+   → Yes = IF Statement
+
+4. Is anything repetitive?
+   → Yes = Loop
+   → Do you know how many times? Yes = For Next, No = Do Until</pre>
+        </div>
+
+        <!-- ── From Pseudocode to Code ── -->
+        <h3>From Pseudocode to Code</h3>
+
+        <p>Good pseudocode maps almost directly to VBA structure. A DEFINE line
+        becomes a Dim statement. A PROMPT line becomes an InputBox. A DO UNTIL
+        loop becomes exactly that in code. An IF THEN becomes an If/Then/End If.
+        The logic and the structure are the same — only the syntax changes.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>Pseudocode → VBA
+
+DEFINE NewGroup As Integer    →  Dim NewGroup As Integer
+PROMPT user for NewGroup      →  NewGroup = InputBox("Enter group number")
+IF records empty THEN         →  If ActiveCell = "" Then
+    DISPLAY message           →      MsgBox "No records found"
+    STOP                      →      Exit Sub
+END IF                        →  End If
+DO UNTIL End_of_File          →  Do Until ActiveCell = ""
+    MOVE to next record       →      ActiveCell.Offset(1, 0).Select
+ENDLOOP                       →  Loop</pre>
+        </div>
+
       </section>
 
       <!-- ── Quick Check ────────────────────────────────────── -->
       <section id="quick-check" aria-labelledby="quick-check-heading">
         <h2 id="quick-check-heading">Quick Check</h2>
-        <!-- TODO: content -->
+
+        <div class="mc-question">
+          <p>1. What is the main purpose of pseudocode?</p>
+          <button class="mc-option" data-correct="false">A. To run a macro without the VBA Editor</button>
+          <button class="mc-option" data-correct="true">B. To plan the logic before writing actual code</button>
+          <button class="mc-option" data-correct="false">C. To document code after it's been written</button>
+          <button class="mc-option" data-correct="false">D. To check for syntax errors</button>
+          <div class="mc-explanation" hidden>
+            <p>Pseudocode is planning, not programming. It has no syntax rules and can't run — its only purpose is to think through the logic before you start writing VBA.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>2. In Sanders pseudocode format, how should keywords be written?</p>
+          <button class="mc-option" data-correct="false">A. In lowercase</button>
+          <button class="mc-option" data-correct="false">B. In italics</button>
+          <button class="mc-option" data-correct="true">C. In CAPITALS</button>
+          <button class="mc-option" data-correct="false">D. In quotes</button>
+          <div class="mc-explanation" hidden>
+            <p>CAPITALIZED keywords like DEFINE, DISPLAY, POPULATE, DO UNTIL, and ENDLOOP make the structure of the pseudocode visually clear and easy to read.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>3. You need a macro that asks for a date, uses it in a calculation, and runs differently depending on whether the result is above or below a threshold. Which concepts do you need?</p>
+          <button class="mc-option" data-correct="false">A. Just a loop</button>
+          <button class="mc-option" data-correct="true">B. Variable and IF statement</button>
+          <button class="mc-option" data-correct="false">C. Just an InputBox</button>
+          <button class="mc-option" data-correct="false">D. Loop and IF statement</button>
+          <div class="mc-explanation" hidden>
+            <p>The date is user input → Variable. The different behavior based on threshold → IF statement. No loop is needed since you're not processing multiple records.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>4. Which pseudocode line correctly ends an IF block?</p>
+          <button class="mc-option" data-correct="false">A. STOP IF</button>
+          <button class="mc-option" data-correct="false">B. CLOSE IF</button>
+          <button class="mc-option" data-correct="true">C. END IF</button>
+          <button class="mc-option" data-correct="false">D. ENDIF (no space)</button>
+          <div class="mc-explanation" hidden>
+            <p>Sanders format uses END IF (two words) to close every IF block. Every IF must have a matching END IF.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>5. You're writing pseudocode for a macro that processes every student in a table but you don't know how many students there are. Which loop instruction is correct?</p>
+          <button class="mc-option" data-correct="false">A. FOR Count = 1 TO NumberOfStudents</button>
+          <button class="mc-option" data-correct="true">B. DO UNTIL End_of_File</button>
+          <button class="mc-option" data-correct="false">C. REPEAT UNTIL Done</button>
+          <button class="mc-option" data-correct="false">D. WHILE records remain</button>
+          <div class="mc-explanation" hidden>
+            <p>When you don't know the count, use DO UNTIL with an end-of-file condition. FOR loops are for when you know the exact count.</p>
+          </div>
+        </div>
+
+        <div class="course-tip">
+          <p>The pseudocode assignment is due before you write any code — that's
+          intentional. If your pseudocode is solid, writing the VBA is mostly
+          just translation. If you're stuck on the code, go back to the pseudocode.</p>
+        </div>
+
       </section>
 
       <!-- ── Easy Wins ──────────────────────────────────────── -->
       <section id="easy-wins" aria-labelledby="easy-wins-heading">
         <h2 id="easy-wins-heading">Easy Wins</h2>
-        <!-- TODO: content -->
-      </section>
 
-      <!-- ── Sample Data ────────────────────────────────────── -->
-      <section id="sample-data" aria-labelledby="sample-data-heading">
-        <h2 id="sample-data-heading">Sample Data</h2>
-        <!-- TODO: content -->
+        <!-- Exercise 1 — Simple Format -->
+        <div class="exercise-simple">
+          <div class="exercise-header">
+            <span class="exercise-title">Answer the Four Questions</span>
+            <span class="exercise-badge">Observation</span>
+          </div>
+          <p>Read this task description and answer the four pre-pseudocode questions:</p>
+          <p><em>"Write a macro that loops through all students in the Applicant
+          Information sheet and counts those whose TAMU GPR is above 3.5.
+          Ask the user what GPR threshold to use instead of hardcoding 3.5.
+          Display the count when done."</em></p>
+          <p>Answer each question:</p>
+          <ol>
+            <li>Is there data to get from the user?</li>
+            <li>Does any value change each time you run it?</li>
+            <li>Is there anything conditional?</li>
+            <li>Is anything repetitive? If yes, do you know how many times?</li>
+          </ol>
+
+          <div class="exercise-hint">
+            <button class="hint-toggle" aria-expanded="false">Show Hint ▼</button>
+            <div class="hint-body" hidden>
+              <p>Work through each question one at a time before looking at the solution.</p>
+            </div>
+          </div>
+
+          <div class="exercise-solution">
+            <button class="solution-toggle" aria-expanded="false">Show Solution ▼</button>
+            <div class="solution-body" hidden>
+              <ol>
+                <li>Yes — the GPR threshold → InputBox + Variable (Double)</li>
+                <li>Yes — the threshold changes each run → Variable</li>
+                <li>Yes — only count students above the threshold → IF statement</li>
+                <li>Yes — process every student → Loop. Don't know how many → Do Until</li>
+              </ol>
+              <p>Concepts needed: Variable, InputBox, IF statement, Do Until loop.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Exercise 2 — Steps Format -->
+        <div class="exercise-steps">
+          <div class="exercise-header">
+            <span class="exercise-title">Write the Pseudocode</span>
+            <span class="exercise-badge">Guided</span>
+          </div>
+          <p>Using the task from Exercise 1, write the pseudocode using Sanders format.</p>
+
+          <div class="exercise-step open">
+            <button class="step-header" aria-expanded="true">Step 1 — Define your variables ▲</button>
+            <div class="step-body">
+              <p>Start with DEFINE and list the variables you identified in Exercise 1.
+              Note the data type in parentheses after each variable name — this is
+              the Sanders pseudocode convention, not a VBA comment.</p>
+              <div class="pseudocode-block">
+                <pre>DEFINE Variables: GPRThreshold (Double), HighGPRCount (Integer)</pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 2 — Get user input ▼</button>
+            <div class="step-body" hidden>
+              <p>Add a PROMPT line for the threshold:</p>
+              <div class="pseudocode-block">
+                <pre>PROMPT user for GPRThreshold</pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 3 — Add the loop and IF ▼</button>
+            <div class="step-body" hidden>
+              <p>Add the loop structure and the conditional check inside it:</p>
+              <div class="pseudocode-block">
+                <pre>SELECT first student record
+
+DO UNTIL End_of_File
+    IF TAMU_GPR &gt; GPRThreshold THEN
+        ADD 1 to HighGPRCount
+    END IF
+    MOVE to next student
+ENDLOOP</pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 4 — Display the result ▼</button>
+            <div class="step-body" hidden>
+              <p>After the loop ends, display the count:</p>
+              <div class="pseudocode-block">
+                <pre>DISPLAY "Students above " GPRThreshold ": " HighGPRCount</pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="exercise-solution">
+            <button class="solution-toggle" aria-expanded="false">View Complete Pseudocode ▼</button>
+            <div class="solution-body" hidden>
+              <div class="pseudocode-block">
+                <pre>DEFINE Variables: GPRThreshold (Double), HighGPRCount (Integer)
+
+PROMPT user for GPRThreshold
+
+SELECT first student record
+
+DO UNTIL End_of_File
+    IF TAMU_GPR &gt; GPRThreshold THEN
+        ADD 1 to HighGPRCount
+    END IF
+    MOVE to next student
+ENDLOOP
+
+DISPLAY "Students above " GPRThreshold ": " HighGPRCount</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </section>
 
       <!-- ── Practice Problem ──────────────────────────────── -->
       <section id="practice-problem" aria-labelledby="practice-problem-heading">
         <h2 id="practice-problem-heading">Practice Problem</h2>
-        <!-- TODO: content -->
+
+        <div class="sample-data-exercise">
+          <h3>Pseudocode the Guard Check Macro</h3>
+          <p>Write pseudocode for the guard check macro from Module 2 using
+          Sanders format. The macro should:</p>
+          <ul>
+            <li>Check if the Applicant Information sheet has records</li>
+            <li>If empty: display a message and stop</li>
+            <li>If not empty: ask for a group number, then display a ready message</li>
+          </ul>
+          <p><strong>Requirements:</strong></p>
+          <ul>
+            <li>Use DEFINE for any variables</li>
+            <li>Use CAPITALS for all keywords</li>
+            <li>Indent logic inside IF blocks</li>
+            <li>End every IF with END IF</li>
+          </ul>
+          <p><strong>Expected pseudocode:</strong></p>
+          <div class="pseudocode-block">
+            <pre>DEFINE Variables: NewGroup (Integer)
+
+SELECT Applicant Information sheet
+
+IF A2 is empty THEN
+    DISPLAY "No applicants found"
+    STOP
+ELSE
+    PROMPT user for NewGroup
+    DISPLAY "Group " NewGroup " is ready to process"
+END IF</pre>
+          </div>
+          <a href="/src/modules/practice-project.html#module-9">See this in the Aggie Advisors project →</a>
+        </div>
+
       </section>
 
       <!-- ── Challenge ─────────────────────────────────────── -->
       <section id="challenge" aria-labelledby="challenge-heading">
-        <h2 id="challenge-heading">Challenge</h2>
-        <p class="challenge-framing">These exercises are perfect preparation for the Sample Exam, which prepares you for the Macro Project Exam itself. Exam format may vary by semester.</p>
-        <!-- TODO: content -->
+        <span id="exam-challenge" aria-hidden="true"></span>
+        <h2 id="challenge-heading">Exam Challenge</h2>
+
+        <div class="exam-challenge">
+          <h3>Pseudocode the Full Aggie Advisors Macro</h3>
+          <p><strong>No hints. No steps. This is exam level.</strong></p>
+          <p>Write complete pseudocode for the full AddNewStudents macro from
+          the Aggie Advisors project. Your pseudocode must cover all of the
+          following using Sanders format:</p>
+          <ol>
+            <li>Variable definitions</li>
+            <li>Guard check for empty applicant list</li>
+            <li>User prompt for group number</li>
+            <li>Copy Applicant Information as backup</li>
+            <li>The main processing loop — reading variables, adding to Student
+            Information, counting accepted students</li>
+            <li>Refresh reports</li>
+            <li>Completion message</li>
+          </ol>
+          <p>Your pseudocode should be detailed enough that someone who doesn't
+          know VBA could understand exactly what the macro does, step by step.</p>
+          <p>Refer to the Aggie Advisors practice project for the full macro
+          context if needed.</p>
+          <a href="/src/modules/practice-project.html#module-9">See the full Aggie Advisors project →</a>
+        </div>
+
       </section>
 
     </main>
@@ -86,7 +443,7 @@
       <div class="module-nav__inner">
         <a href="/src/modules/debugging.html">← F8 Debugging Practice</a>
         <a href="/" class="module-nav__home">All Modules</a>
-        <span aria-hidden="true"></span>
+        <a href="/src/modules/practice-project.html">Practice Project →</a>
       </div>
     </nav>
 

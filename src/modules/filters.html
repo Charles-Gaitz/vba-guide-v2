@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Practice VBA filters and shortcut keys for ACCT 628 — a supplement to your Canvas course materials." />
+  <meta name="description" content="Practice AutoFilter and the FILTER function in VBA for ACCT 628 — Option 2 approach, PasteSpecial Values, and CountA." />
   <title>Filters &amp; Shortcut Keys — VBA Practice for ACCT 628</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,7 +25,6 @@
           <a href="#concept">Concept</a>
           <a href="#quick-check">Quick Check</a>
           <a href="#easy-wins">Easy Wins</a>
-          <a href="#sample-data">Sample Data</a>
           <a href="#practice-problem">Practice Problem</a>
           <a href="#challenge">Challenge</a>
         </nav>
@@ -40,44 +39,440 @@
       </div>
 
       <div class="box-reminder">
-        <p><strong>REMINDER:</strong> Watch the associated course video before working through this module.</p>
+        <p><strong>REMINDER:</strong> To fully understand Filters &amp; Shortcut Keys, you should have already watched the Filters and Shortcut Keys (Option 2) Video in Canvas and followed along with the Macro Demo file. This practice will build upon that foundation.</p>
       </div>
 
       <!-- ── Concept ─────────────────────────────────────────── -->
       <section id="concept" aria-labelledby="concept-heading">
-        <h2 id="concept-heading">Concepts</h2>
-        <!-- TODO: content -->
+        <h2 id="concept-heading">Filters and Shortcut Keys in VBA</h2>
+
+        <p>So far you've processed data by looping through every record and using
+        an IF statement to act on the ones you want. That's Option 1 — it's
+        readable, easy to debug with F8, and works for any condition. Option 2
+        takes a different approach: filter the data to only the records you want,
+        then copy or process all of them at once. Both approaches produce the
+        same result. Option 2 is faster for large datasets. Option 1 is easier
+        to follow and debug. Knowing both gives you flexibility.</p>
+
+        <p>This module covers the Option 2 techniques: AutoFilter to show only
+        matching rows, the FILTER function to extract records into a new location,
+        PasteSpecial to break formula links, and CountA to count results without
+        hardcoding numbers. These are the tools from the Filters and Shortcut
+        Keys demo video.</p>
+
+        <div class="course-tip">
+          <p>Option 1 is what the Step-Through and Build videos focus on. Option 2
+          shows up in the Filters demo. The exam may ask you to identify which
+          approach a given piece of code is using — know the signature patterns
+          of each.</p>
+        </div>
+
+        <!-- ── AutoFilter ── -->
+        <h3>AutoFilter</h3>
+
+        <p>AutoFilter shows only the rows that match a condition and hides the rest.
+        In VBA you apply it to a table using ListObjects and specify which field
+        (column number) and which criteria to filter on. After filtering, only
+        matching rows are visible — you can then copy, delete, or count them.
+        Always remove the filter when you're done.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>' Apply AutoFilter — Field is the column number in the table
+ActiveSheet.ListObjects("TableName").Range.AutoFilter Field:=8, Criteria1:="Deny"
+
+' Delete visible (filtered) rows
+ActiveCell.Rows("1:1").EntireRow.Select
+Range(Selection, Selection.End(xlDown)).Select
+Selection.Delete Shift:=xlUp
+
+' Remove the filter
+ActiveSheet.ListObjects("TableName").Range.AutoFilter Field:=8</pre>
+        </div>
+
+        <p>This is the Option 2 pattern from the Project Demo — filtering for
+        denied students and deleting them:</p>
+
+<pre class="code-block"><code class="language-vba">' FILTER for Denied Students
+ActiveSheet.ListObjects("ApplicantData").Range.AutoFilter Field:=8, _
+    Criteria1:="Deny"
+
+' DELETE Denied Students
+ActiveCell.Rows("1:1").EntireRow.Select
+Range(Selection, Selection.End(xlDown)).Select
+Selection.Delete Shift:=xlUp
+
+' Remove filter
+ActiveSheet.ListObjects("ApplicantData").Range.AutoFilter Field:=8</code></pre>
+
+        <!-- ── FILTER Function in a Cell ── -->
+        <h3>FILTER Function in a Cell</h3>
+
+        <p>The FILTER function extracts matching records from a table into a new
+        location as a formula. In VBA you write it as a string into a cell using
+        Formula2R1C1. The result is a dynamic array — it spills into as many
+        rows as there are matching records. Because it's a formula, you usually
+        follow it with a copy/PasteSpecial step to convert the results to values
+        so they're no longer linked to the original data.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>' Write FILTER formula into a cell
+Range("A3").Formula2R1C1 = "=FILTER(TableName, TableName[Field]=""Value"",)"
+
+' Copy the results
+Range("A3").Select
+Range(Selection, Selection.End(xlDown)).Select
+Range(Selection, Selection.End(xlToRight)).Select
+Selection.Copy
+
+' PasteSpecial Values — breaks formula link
+Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone</pre>
+        </div>
+
+        <!-- ── PasteSpecial Values ── -->
+        <h3>PasteSpecial Values</h3>
+
+        <p>When you copy cells that contain formulas and paste them normally,
+        the pasted cells still contain formulas linked to the original data.
+        PasteSpecial with xlPasteValues pastes only the results — plain numbers
+        and text with no formulas. This is essential after using FILTER or any
+        other formula-based extraction, because you want the data to stand on
+        its own without depending on the source table.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>Selection.Copy
+
+Selection.PasteSpecial Paste:=xlPasteValues, _
+    Operation:=xlNone, _
+    SkipBlanks:=False, _
+    Transpose:=False</pre>
+        </div>
+
+        <!-- ── CountA to Count Results ── -->
+        <h3>CountA to Count Results</h3>
+
+        <p>After filtering or copying data, you often need to know how many records
+        you ended up with. CountA counts non-blank cells — use it on a full column
+        after your filter or paste operation to get the count without hardcoding
+        a number. Subtract 1 if your range includes the header row.</p>
+
+        <div class="syntax-box">
+          <p class="syntax-label">Syntax</p>
+          <pre>' Count non-blank cells in column A (includes header)
+NumberAccepted = Application.WorksheetFunction.CountA(Range("A:A")) - 1
+
+' Or count just the data rows
+NumberAccepted = Application.WorksheetFunction.CountA(Range("A2:A1000"))</pre>
+        </div>
+
       </section>
 
       <!-- ── Quick Check ────────────────────────────────────── -->
       <section id="quick-check" aria-labelledby="quick-check-heading">
         <h2 id="quick-check-heading">Quick Check</h2>
-        <!-- TODO: content -->
+
+        <div class="mc-question">
+          <p>1. What is the main difference between Option 1 (Loop + IF) and Option 2 (Filter + Copy)?</p>
+          <button class="mc-option" data-correct="false">A. Option 1 only works on small datasets</button>
+          <button class="mc-option" data-correct="false">B. Option 2 processes one record at a time</button>
+          <button class="mc-option" data-correct="true">C. Option 1 loops through records individually; Option 2 filters first then acts on all matches at once</button>
+          <button class="mc-option" data-correct="false">D. They produce different results</button>
+          <div class="mc-explanation" hidden>
+            <p>Both produce the same results. Option 1 reads each record, checks a condition, and acts if true. Option 2 filters to only matching records first, then copies or processes all of them together.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>2. After applying AutoFilter, you want to delete all visible rows. What must you do after the deletion?</p>
+          <button class="mc-option" data-correct="false">A. Nothing — AutoFilter turns off automatically</button>
+          <button class="mc-option" data-correct="false">B. Run RefreshAll</button>
+          <button class="mc-option" data-correct="true">C. Remove the AutoFilter</button>
+          <button class="mc-option" data-correct="false">D. Save the file</button>
+          <div class="mc-explanation" hidden>
+            <p>AutoFilter stays on until you explicitly remove it. Always turn it off after you're done so the table returns to showing all records.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>3. Why do you use PasteSpecial Values after copying FILTER results?</p>
+          <button class="mc-option" data-correct="false">A. PasteSpecial is faster than regular paste</button>
+          <button class="mc-option" data-correct="true">B. To break the formula link so the data stands alone</button>
+          <button class="mc-option" data-correct="false">C. Regular paste doesn't work after AutoFilter</button>
+          <button class="mc-option" data-correct="false">D. To convert dates to text</button>
+          <div class="mc-explanation" hidden>
+            <p>FILTER results are formulas linked to the source table. PasteSpecial Values replaces the formulas with their current values — plain data that doesn't change if the source changes.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>4. You use CountA on column A after pasting filtered data. Your data has 30 records plus a header row. What does <code>CountA(Range("A:A"))</code> return?</p>
+          <button class="mc-option" data-correct="false">A. 30</button>
+          <button class="mc-option" data-correct="true">B. 31</button>
+          <button class="mc-option" data-correct="false">C. 29</button>
+          <button class="mc-option" data-correct="false">D. It depends on the filter</button>
+          <div class="mc-explanation" hidden>
+            <p>CountA counts all non-blank cells including the header. With 30 data rows and 1 header, it returns 31. Subtract 1 to get the record count.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>5. Which approach is easier to debug using F8?</p>
+          <button class="mc-option" data-correct="false">A. Option 2 (Filter + Copy) because it's fewer lines</button>
+          <button class="mc-option" data-correct="true">B. Option 1 (Loop + IF) because you can step through each record</button>
+          <button class="mc-option" data-correct="false">C. They are equally easy to debug</button>
+          <button class="mc-option" data-correct="false">D. Neither can be debugged with F8</button>
+          <div class="mc-explanation" hidden>
+            <p>Option 1 processes one record at a time so you can watch each decision happen with F8. Option 2 operates on all matching records at once — harder to inspect mid-execution.</p>
+          </div>
+        </div>
+
+        <div class="course-tip">
+          <p>If an exam question shows you a macro and asks what it does, look for
+          the signature patterns: a Do Until loop with IF = Option 1, AutoFilter
+          or FILTER function = Option 2.</p>
+        </div>
+
       </section>
 
       <!-- ── Easy Wins ──────────────────────────────────────── -->
       <section id="easy-wins" aria-labelledby="easy-wins-heading">
         <h2 id="easy-wins-heading">Easy Wins</h2>
-        <!-- TODO: content -->
-      </section>
 
-      <!-- ── Sample Data ────────────────────────────────────── -->
-      <section id="sample-data" aria-labelledby="sample-data-heading">
-        <h2 id="sample-data-heading">Sample Data</h2>
-        <!-- TODO: content -->
+        <!-- Exercise 1 — Steps Format -->
+        <div class="exercise-steps">
+          <div class="exercise-header">
+            <span class="exercise-title">Apply and Remove AutoFilter</span>
+            <span class="exercise-badge">Guided</span>
+          </div>
+          <p>Apply AutoFilter to the Aggie Advisors data to show only accepted
+          students, then count and remove the filter.</p>
+
+          <div class="exercise-step open">
+            <button class="step-header" aria-expanded="true">Step 1 — Paste in your data ▲</button>
+            <div class="step-body">
+              <p>Use the Aggie Advisors data from the data table below.
+              Make sure it's in a table named <strong>ApplicantData</strong> on Sheet1.
+              If your table has a different name, update the code accordingly.</p>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 2 — Write the filter macro ▼</button>
+            <div class="step-body" hidden>
+              <p>In the VBA Editor, create a new Sub and add:</p>
+<pre class="code-block"><code class="language-vba">Sheets("Sheet1").Select
+ActiveSheet.ListObjects("ApplicantData").Range.AutoFilter Field:=8, _
+    Criteria1:="Accept"</code></pre>
+              <p><code>Field:=8</code> targets column 8 of the table (FinalDecision).
+              Run it — you should see only the 20 accepted students.</p>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 3 — Count the visible rows ▼</button>
+            <div class="step-body" hidden>
+              <p>Add this line after the AutoFilter:</p>
+<pre class="code-block"><code class="language-vba">Dim AcceptCount As Integer
+AcceptCount = Application.WorksheetFunction.CountA(Range("A:A")) - 1
+MsgBox "Accepted students: " &amp; AcceptCount</code></pre>
+              <p>CountA counts all non-blank cells including the header, so subtract 1.</p>
+            </div>
+          </div>
+
+          <div class="exercise-step">
+            <button class="step-header" aria-expanded="false">Step 4 — Remove the filter ▼</button>
+            <div class="step-body" hidden>
+              <p>Add this line last:</p>
+<pre class="code-block"><code class="language-vba">ActiveSheet.ListObjects("ApplicantData").Range.AutoFilter Field:=8</code></pre>
+              <p>Run the full macro. Filter applies, count shows 20, filter removes.</p>
+            </div>
+          </div>
+
+          <div class="exercise-solution">
+            <button class="solution-toggle" aria-expanded="false">View Complete Code ▼</button>
+            <div class="solution-body" hidden>
+<pre class="code-block"><code class="language-vba">Option Explicit
+Sub FilterAndCount()
+    Dim AcceptCount As Integer
+
+    Sheets("Sheet1").Select
+
+    ActiveSheet.ListObjects("ApplicantData").Range.AutoFilter Field:=8, _
+        Criteria1:="Accept"
+
+    AcceptCount = Application.WorksheetFunction.CountA(Range("A:A")) - 1
+    MsgBox "Accepted students: " &amp; AcceptCount
+
+    ActiveSheet.ListObjects("ApplicantData").Range.AutoFilter Field:=8
+End Sub</code></pre>
+              <p><strong>Expected result:</strong> MsgBox shows "Accepted students: 20"</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Exercise 2 — Simple Format -->
+        <div class="exercise-simple">
+          <div class="exercise-header">
+            <span class="exercise-title">CountA Observation</span>
+            <span class="exercise-badge">Observation</span>
+          </div>
+          <p>Run this standalone macro on your Aggie Advisors data.
+          It filters for accepted students, counts the visible rows,
+          displays the count, then removes the filter — all in one pass.
+          Before running, predict: what number will the MsgBox show?</p>
+
+<pre class="code-block"><code class="language-vba">Option Explicit
+Sub CountAccepted()
+    Dim AcceptCount As Integer
+
+    Sheets("Sheet1").Select
+
+    ActiveSheet.ListObjects("ApplicantData").Range.AutoFilter Field:=8, _
+        Criteria1:="Accept"
+
+    AcceptCount = Application.WorksheetFunction.CountA(Range("A:A")) - 1
+    MsgBox "Accepted students: " &amp; AcceptCount
+
+    ActiveSheet.ListObjects("ApplicantData").Range.AutoFilter Field:=8
+End Sub</code></pre>
+
+          <div class="exercise-hint">
+            <button class="hint-toggle" aria-expanded="false">Show Hint ▼</button>
+            <div class="hint-body" hidden>
+              <p>CountA(Range("A:A")) counts every non-blank cell in column A,
+              including the header row. The filter hides non-matching rows but they
+              still exist — CountA only counts what's visible when a filter is active.</p>
+            </div>
+          </div>
+
+          <div class="exercise-solution">
+            <button class="solution-toggle" aria-expanded="false">Show Solution ▼</button>
+            <div class="solution-body" hidden>
+              <p>MsgBox shows "Accepted students: 20".
+              CountA sees 21 non-blank cells (20 accepted rows + 1 header), minus 1 = 20.
+              The 10 denied rows are hidden by the filter so CountA skips them.</p>
+            </div>
+          </div>
+        </div>
+
       </section>
 
       <!-- ── Practice Problem ──────────────────────────────── -->
       <section id="practice-problem" aria-labelledby="practice-problem-heading">
         <h2 id="practice-problem-heading">Practice Problem</h2>
-        <!-- TODO: content -->
+
+        <div class="data-table-section">
+          <p>Copy this data and paste it into cell A1 of a new Excel worksheet.
+          Press Ctrl+V — Excel will split the columns automatically.
+          Make sure the data is formatted as a table named ApplicantData.</p>
+          <button class="data-table-toggle" aria-expanded="false">📋 Show Data Table</button>
+          <div class="data-table-wrap" hidden>
+            <button class="copy-data-btn" data-tsv="StudentID&#9;LastName&#9;FirstName&#9;TAMU_GPR&#9;Grade229&#9;Grade230&#9;Grade327&#9;FinalDecision&#10;724816395&#9;Anderson&#9;Emma&#9;3.842&#9;A&#9;B+&#9;A-&#9;Accept&#10;831924750&#9;Martinez&#9;Carlos&#9;3.156&#9;B&#9;B&#9;B-&#9;Deny&#10;619283740&#9;Thompson&#9;Sarah&#9;3.971&#9;A&#9;A-&#9;A&#9;Accept&#10;748291036&#9;Nguyen&#9;Michael&#9;3.624&#9;B+&#9;A-&#9;B+&#9;Accept&#10;825163947&#9;Williams&#9;Ashley&#9;2.987&#9;C+&#9;B&#9;C&#9;Deny&#10;736481920&#9;Brown&#9;James&#9;3.745&#9;A-&#9;B+&#9;A-&#9;Accept&#10;814729360&#9;Davis&#9;Lauren&#9;3.512&#9;B+&#9;B+&#9;B&#9;Accept&#10;729183640&#9;Wilson&#9;Tyler&#9;2.843&#9;C&#9;C+&#9;B-&#9;Deny&#10;836492710&#9;Johnson&#9;Megan&#9;3.889&#9;A&#9;A&#9;A-&#9;Accept&#10;715824930&#9;Garcia&#9;Daniel&#9;3.234&#9;B&#9;B-&#9;B&#9;Deny&#10;842163950&#9;Miller&#9;Rachel&#9;3.763&#9;A-&#9;A-&#9;B+&#9;Accept&#10;726849130&#9;Moore&#9;Kevin&#9;3.091&#9;B-&#9;C+&#9;B&#9;Deny&#10;819374620&#9;Taylor&#9;Jessica&#9;3.956&#9;A&#9;A-&#9;A&#9;Accept&#10;734826190&#9;Jackson&#9;Ryan&#9;3.478&#9;B+&#9;B&#9;B+&#9;Accept&#10;821649370&#9;White&#9;Brittany&#9;2.765&#9;C&#9;B-&#9;C+&#9;Deny&#10;716293840&#9;Harris&#9;Brandon&#9;3.834&#9;A-&#9;A-&#9;A-&#9;Accept&#10;843716290&#9;Martin&#9;Stephanie&#9;3.612&#9;B+&#9;B+&#9;A-&#9;Accept&#10;728493610&#9;Thompson&#9;Nathan&#9;3.147&#9;B&#9;B-&#9;B&#9;Deny&#10;815264930&#9;Lewis&#9;Amanda&#9;3.891&#9;A&#9;A&#9;A&#9;Accept&#10;731846920&#9;Robinson&#9;Justin&#9;3.423&#9;B+&#9;B&#9;B&#9;Accept&#10;824619730&#9;Clark&#9;Samantha&#9;2.914&#9;C+&#9;B-&#9;C&#9;Deny&#10;719283460&#9;Rodriguez&#9;Matthew&#9;3.756&#9;A-&#9;B+&#9;A-&#9;Accept&#10;836142790&#9;Lee&#9;Kayla&#9;3.534&#9;B+&#9;A-&#9;B+&#9;Accept&#10;724891360&#9;Walker&#9;Andrew&#9;3.068&#9;B-&#9;C+&#9;B-&#9;Deny&#10;811364920&#9;Hall&#9;Courtney&#9;3.847&#9;A&#9;A-&#9;A&#9;Accept&#10;738261490&#9;Allen&#9;Christopher&#9;3.389&#9;B&#9;B+&#9;B&#9;Accept&#10;826419730&#9;Young&#9;Melissa&#9;2.831&#9;C&#9;C+&#9;B-&#9;Deny&#10;713849260&#9;Hernandez&#9;Joshua&#9;3.912&#9;A&#9;A&#9;A-&#9;Accept&#10;841263970&#9;King&#9;Tiffany&#9;3.645&#9;B+&#9;A-&#9;B+&#9;Accept&#10;727491360&#9;Wright&#9;Patrick&#9;3.178&#9;B&#9;B-&#9;B&#9;Deny">Copy to Clipboard</button>
+            <table>
+              <thead>
+                <tr>
+                  <th>StudentID</th><th>LastName</th><th>FirstName</th><th>TAMU_GPR</th>
+                  <th>Grade229</th><th>Grade230</th><th>Grade327</th><th>FinalDecision</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>724816395</td><td>Anderson</td><td>Emma</td><td>3.842</td><td>A</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>831924750</td><td>Martinez</td><td>Carlos</td><td>3.156</td><td>B</td><td>B</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>619283740</td><td>Thompson</td><td>Sarah</td><td>3.971</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>748291036</td><td>Nguyen</td><td>Michael</td><td>3.624</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>825163947</td><td>Williams</td><td>Ashley</td><td>2.987</td><td>C+</td><td>B</td><td>C</td><td>Deny</td></tr>
+                <tr><td>736481920</td><td>Brown</td><td>James</td><td>3.745</td><td>A-</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>814729360</td><td>Davis</td><td>Lauren</td><td>3.512</td><td>B+</td><td>B+</td><td>B</td><td>Accept</td></tr>
+                <tr><td>729183640</td><td>Wilson</td><td>Tyler</td><td>2.843</td><td>C</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>836492710</td><td>Johnson</td><td>Megan</td><td>3.889</td><td>A</td><td>A</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>715824930</td><td>Garcia</td><td>Daniel</td><td>3.234</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+                <tr><td>842163950</td><td>Miller</td><td>Rachel</td><td>3.763</td><td>A-</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>726849130</td><td>Moore</td><td>Kevin</td><td>3.091</td><td>B-</td><td>C+</td><td>B</td><td>Deny</td></tr>
+                <tr><td>819374620</td><td>Taylor</td><td>Jessica</td><td>3.956</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>734826190</td><td>Jackson</td><td>Ryan</td><td>3.478</td><td>B+</td><td>B</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>821649370</td><td>White</td><td>Brittany</td><td>2.765</td><td>C</td><td>B-</td><td>C+</td><td>Deny</td></tr>
+                <tr><td>716293840</td><td>Harris</td><td>Brandon</td><td>3.834</td><td>A-</td><td>A-</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>843716290</td><td>Martin</td><td>Stephanie</td><td>3.612</td><td>B+</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>728493610</td><td>Thompson</td><td>Nathan</td><td>3.147</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+                <tr><td>815264930</td><td>Lewis</td><td>Amanda</td><td>3.891</td><td>A</td><td>A</td><td>A</td><td>Accept</td></tr>
+                <tr><td>731846920</td><td>Robinson</td><td>Justin</td><td>3.423</td><td>B+</td><td>B</td><td>B</td><td>Accept</td></tr>
+                <tr><td>824619730</td><td>Clark</td><td>Samantha</td><td>2.914</td><td>C+</td><td>B-</td><td>C</td><td>Deny</td></tr>
+                <tr><td>719283460</td><td>Rodriguez</td><td>Matthew</td><td>3.756</td><td>A-</td><td>B+</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>836142790</td><td>Lee</td><td>Kayla</td><td>3.534</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>724891360</td><td>Walker</td><td>Andrew</td><td>3.068</td><td>B-</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>811364920</td><td>Hall</td><td>Courtney</td><td>3.847</td><td>A</td><td>A-</td><td>A</td><td>Accept</td></tr>
+                <tr><td>738261490</td><td>Allen</td><td>Christopher</td><td>3.389</td><td>B</td><td>B+</td><td>B</td><td>Accept</td></tr>
+                <tr><td>826419730</td><td>Young</td><td>Melissa</td><td>2.831</td><td>C</td><td>C+</td><td>B-</td><td>Deny</td></tr>
+                <tr><td>713849260</td><td>Hernandez</td><td>Joshua</td><td>3.912</td><td>A</td><td>A</td><td>A-</td><td>Accept</td></tr>
+                <tr><td>841263970</td><td>King</td><td>Tiffany</td><td>3.645</td><td>B+</td><td>A-</td><td>B+</td><td>Accept</td></tr>
+                <tr><td>727491360</td><td>Wright</td><td>Patrick</td><td>3.178</td><td>B</td><td>B-</td><td>B</td><td>Deny</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="sample-data-exercise">
+          <h3>Filter and Copy Accepted Students</h3>
+          <p>Using the Aggie Advisors data, write a macro that uses the Option 2
+          approach to isolate accepted students and copy them to a new sheet.</p>
+          <p><strong>What your macro needs to do:</strong></p>
+          <ul>
+            <li>Navigate to Sheet1 where ApplicantData table lives</li>
+            <li>Apply AutoFilter to ApplicantData, Field 8, Criteria1:="Accept"</li>
+            <li>Select the visible data rows (not the header) and copy them</li>
+            <li>Create or navigate to a sheet named "Accepted Students"</li>
+            <li>PasteSpecial Values to paste without formula links</li>
+            <li>Navigate back to Sheet1 and remove the AutoFilter</li>
+            <li>Count the pasted records on "Accepted Students" using CountA
+            and display: "Accepted students copied: [X]"</li>
+          </ul>
+          <p><strong>Expected result:</strong> 20 rows on the Accepted Students sheet.
+          MsgBox shows "Accepted students copied: 20"</p>
+          <div class="exercise-hint">
+            <button class="hint-toggle" aria-expanded="false">Show Hint ▼</button>
+            <div class="hint-body" hidden>
+              <p><strong>Hint — copying visible filtered rows:</strong></p>
+<pre class="code-block"><code class="language-vba">' Select visible rows after filter — skip header
+Range("A2").Select
+Range(Selection, Selection.End(xlDown)).Select
+Range(Selection, Selection.End(xlToRight)).Select
+Selection.Copy
+
+' Navigate to destination and PasteSpecial
+Sheets("Accepted Students").Select
+Range("A1").Select
+Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, _
+    SkipBlanks:=False, Transpose:=False</code></pre>
+            </div>
+          </div>
+          <a href="/src/modules/practice-project.html#module-7">See this in the Aggie Advisors project →</a>
+        </div>
+
       </section>
 
       <!-- ── Challenge ─────────────────────────────────────── -->
       <section id="challenge" aria-labelledby="challenge-heading">
-        <h2 id="challenge-heading">Challenge</h2>
-        <p class="challenge-framing">These exercises are perfect preparation for the Sample Exam, which prepares you for the Macro Project Exam itself. Exam format may vary by semester.</p>
-        <!-- TODO: content -->
+        <span id="exam-challenge" aria-hidden="true"></span>
+        <h2 id="challenge-heading">Exam Challenge</h2>
+
+        <div class="exam-challenge">
+          <h3>Compare Both Approaches</h3>
+          <p><strong>No hints. No steps. This is exam level.</strong></p>
+          <p>Write two macros that produce the same result using different approaches:</p>
+          <p><strong>Macro 1 — Option1_Count:</strong> Use a Do Until loop with an IF statement
+          to count accepted students. Display the count in a MsgBox.</p>
+          <p><strong>Macro 2 — Option2_Count:</strong> Use AutoFilter to filter for accepted
+          students, use CountA to count them, remove the filter, and display
+          the count in a MsgBox.</p>
+          <p>Both macros must display the same number.</p>
+          <p>After writing both, add a comment at the top of each macro explaining
+          in one sentence when you would choose that approach over the other.</p>
+          <p><strong>Expected result:</strong> Both MsgBoxes show 20.</p>
+          <a href="/src/modules/practice-project.html#module-7">See this in the Aggie Advisors project →</a>
+        </div>
+
       </section>
 
     </main>

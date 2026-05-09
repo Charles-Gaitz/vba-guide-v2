@@ -2306,7 +2306,382 @@ Must use absolute reference only for the initial A2 navigation.
 `href="/src/modules/practice-project.html#module-6"`
 
 ### Module 7 — Filters & Shortcut Keys
-[To be written before filters.html is built]
+
+## Canvas prerequisite (.box-reminder):
+"REMINDER: To fully understand Filters & Shortcut Keys, you should have
+already watched the Filters and Shortcut Keys (Option 2) Video in Canvas
+and followed along with the Macro Demo file. This practice will build
+upon that foundation."
+
+---
+
+## CONCEPT SECTION (id="concept")
+h2 heading: "Filters and Shortcut Keys in VBA"
+
+### Opening — Two Ways to Process Data
+
+**Paragraph 1:**
+So far you've processed data by looping through every record and using
+an IF statement to act on the ones you want. That's Option 1 — it's
+readable, easy to debug with F8, and works for any condition. Option 2
+takes a different approach: filter the data to only the records you want,
+then copy or process all of them at once. Both approaches produce the
+same result. Option 2 is faster for large datasets. Option 1 is easier
+to follow and debug. Knowing both gives you flexibility.
+
+**Paragraph 2:**
+This module covers the Option 2 techniques: AutoFilter to show only
+matching rows, the FILTER function to extract records into a new location,
+PasteSpecial to break formula links, and CountA to count results without
+hardcoding numbers. These are the tools from the Filters and Shortcut
+Keys demo video.
+
+**course-tip (concept):**
+"Option 1 is what the Step-Through and Build videos focus on. Option 2
+shows up in the Filters demo. The exam may ask you to identify which
+approach a given piece of code is using — know the signature patterns
+of each."
+
+---
+
+#### AutoFilter
+
+**Paragraph 1:**
+AutoFilter shows only the rows that match a condition and hides the rest.
+In VBA you apply it to a table using ListObjects and specify which field
+(column number) and which criteria to filter on. After filtering, only
+matching rows are visible — you can then copy, delete, or count them.
+Always remove the filter when you're done.
+
+**.syntax-box:**
+```
+' Apply AutoFilter — Field is the column number in the table
+ActiveSheet.ListObjects("TableName").Range.AutoFilter Field:=8, Criteria1:="Deny"
+
+' Delete visible (filtered) rows
+ActiveCell.Rows("1:1").EntireRow.Select
+Range(Selection, Selection.End(xlDown)).Select
+Selection.Delete Shift:=xlUp
+
+' Remove the filter
+ActiveSheet.ListObjects("TableName").Range.AutoFilter Field:=8
+```
+
+**Introduction sentence before code:**
+"This is the Option 2 pattern from the Project Demo — filtering for
+denied students and deleting them:"
+
+```vba
+' FILTER for Denied Students
+ActiveSheet.ListObjects("ApplicantData").Range.AutoFilter Field:=8, _
+    Criteria1:="Deny"
+
+' DELETE Denied Students
+ActiveCell.Rows("1:1").EntireRow.Select
+Range(Selection, Selection.End(xlDown)).Select
+Selection.Delete Shift:=xlUp
+
+' Remove filter
+ActiveSheet.ListObjects("ApplicantData").Range.AutoFilter Field:=8
+```
+
+---
+
+#### FILTER Function in a Cell
+
+**Paragraph 1:**
+The FILTER function extracts matching records from a table into a new
+location as a formula. In VBA you write it as a string into a cell using
+Formula2R1C1. The result is a dynamic array — it spills into as many
+rows as there are matching records. Because it's a formula, you usually
+follow it with a copy/PasteSpecial step to convert the results to values
+so they're no longer linked to the original data.
+
+**.syntax-box:**
+```
+' Write FILTER formula into a cell
+Range("A3").Formula2R1C1 = "=FILTER(TableName, TableName[Field]=""Value"",)"
+
+' Copy the results
+Range("A3").Select
+Range(Selection, Selection.End(xlDown)).Select
+Range(Selection, Selection.End(xlToRight)).Select
+Selection.Copy
+
+' PasteSpecial Values — breaks formula link
+Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone
+```
+
+---
+
+#### PasteSpecial Values
+
+**Paragraph 1:**
+When you copy cells that contain formulas and paste them normally,
+the pasted cells still contain formulas linked to the original data.
+PasteSpecial with xlPasteValues pastes only the results — plain numbers
+and text with no formulas. This is essential after using FILTER or any
+other formula-based extraction, because you want the data to stand on
+its own without depending on the source table.
+
+**.syntax-box:**
+```
+Selection.Copy
+
+Selection.PasteSpecial Paste:=xlPasteValues, _
+    Operation:=xlNone, _
+    SkipBlanks:=False, _
+    Transpose:=False
+```
+
+---
+
+#### CountA to Count Results
+
+**Paragraph 1:**
+After filtering or copying data, you often need to know how many records
+you ended up with. CountA counts non-blank cells — use it on a full column
+after your filter or paste operation to get the count without hardcoding
+a number. Subtract 1 if your range includes the header row.
+
+**.syntax-box:**
+```
+' Count non-blank cells in column A (includes header)
+NumberAccepted = Application.WorksheetFunction.CountA(Range("A:A")) - 1
+
+' Or count just the data rows
+NumberAccepted = Application.WorksheetFunction.CountA(Range("A2:A1000"))
+```
+
+---
+
+### QUICK CHECK SECTION (id="quick-check")
+
+**Format:** Multiple choice. Lock on click. Immediate feedback.
+
+**Question 1:**
+What is the main difference between Option 1 (Loop + IF) and
+Option 2 (Filter + Copy)?
+- A. Option 1 only works on small datasets
+- B. Option 2 processes one record at a time
+- C. Option 1 loops through records individually; Option 2 filters first then acts on all matches at once ← CORRECT
+- D. They produce different results
+**Explanation:** Both produce the same results. Option 1 reads each
+record, checks a condition, and acts if true. Option 2 filters to only
+matching records first, then copies or processes all of them together.
+
+**Question 2:**
+After applying AutoFilter, you want to delete all visible rows.
+What must you do after the deletion?
+- A. Nothing — AutoFilter turns off automatically
+- B. Run RefreshAll
+- C. Remove the AutoFilter ← CORRECT
+- D. Save the file
+**Explanation:** AutoFilter stays on until you explicitly remove it.
+Always turn it off after you're done so the table returns to showing
+all records.
+
+**Question 3:**
+Why do you use PasteSpecial Values after copying FILTER results?
+- A. PasteSpecial is faster than regular paste
+- B. To break the formula link so the data stands alone ← CORRECT
+- C. Regular paste doesn't work after AutoFilter
+- D. To convert dates to text
+**Explanation:** FILTER results are formulas linked to the source table.
+PasteSpecial Values replaces the formulas with their current values —
+plain data that doesn't change if the source changes.
+
+**Question 4:**
+You use CountA on column A after pasting filtered data. Your data has
+30 records plus a header row. What does CountA(Range("A:A")) return?
+- A. 30
+- B. 31 ← CORRECT
+- C. 29
+- D. It depends on the filter
+**Explanation:** CountA counts all non-blank cells including the header.
+With 30 data rows and 1 header, it returns 31. Subtract 1 to get the
+record count.
+
+**Question 5:**
+Which approach is easier to debug using F8?
+- A. Option 2 (Filter + Copy) because it's fewer lines
+- B. Option 1 (Loop + IF) because you can step through each record ← CORRECT
+- C. They are equally easy to debug
+- D. Neither can be debugged with F8
+**Explanation:** Option 1 processes one record at a time so you can
+watch each decision happen with F8. Option 2 operates on all matching
+records at once — harder to inspect mid-execution.
+
+**course-tip after quick check:**
+"If an exam question shows you a macro and asks what it does, look for
+the signature patterns: a Do Until loop with IF = Option 1, AutoFilter
+or FILTER function = Option 2."
+
+---
+
+### EASY WINS SECTION (id="easy-wins")
+
+#### Exercise 1 — Apply and Remove AutoFilter (STEPS FORMAT)
+**Difficulty:** Guided
+
+Apply AutoFilter to the Aggie Advisors data to show only accepted
+students, then count and remove the filter.
+
+**Step 1 — Paste in your data**
+Use the Aggie Advisors data from the data table below.
+Make sure it's in a table named ApplicantData on Sheet1.
+If your table has a different name, update the code accordingly.
+
+**Step 2 — Write the filter macro**
+In the VBA Editor, create a new Sub and add:
+```vba
+Sheets("Sheet1").Select
+ActiveSheet.ListObjects("ApplicantData").Range.AutoFilter Field:=8, _
+    Criteria1:="Accept"
+```
+Field:=8 targets column 8 of the table (FinalDecision).
+Run it — you should see only the 20 accepted students.
+
+**Step 3 — Count the visible rows**
+Add this line after the AutoFilter:
+```vba
+Dim AcceptCount As Integer
+AcceptCount = Application.WorksheetFunction.CountA(Range("A:A")) - 1
+MsgBox "Accepted students: " & AcceptCount
+```
+CountA counts all non-blank cells including the header, so subtract 1.
+
+**Step 4 — Remove the filter**
+Add this line last:
+```vba
+ActiveSheet.ListObjects("ApplicantData").Range.AutoFilter Field:=8
+```
+Run the full macro. Filter applies, count shows 20, filter removes.
+
+**Complete Code:**
+```vba
+Option Explicit
+Sub FilterAndCount()
+    Dim AcceptCount As Integer
+
+    Sheets("Sheet1").Select
+
+    ActiveSheet.ListObjects("ApplicantData").Range.AutoFilter Field:=8, _
+        Criteria1:="Accept"
+
+    AcceptCount = Application.WorksheetFunction.CountA(Range("A:A")) - 1
+    MsgBox "Accepted students: " & AcceptCount
+
+    ActiveSheet.ListObjects("ApplicantData").Range.AutoFilter Field:=8
+End Sub
+```
+**Expected result:** MsgBox shows "Accepted students: 20"
+
+---
+
+#### Exercise 2 — CountA Observation (SIMPLE FORMAT)
+**Difficulty:** Observation
+
+Run this standalone macro on your Aggie Advisors data.
+It filters for accepted students, counts the visible rows,
+displays the count, then removes the filter — all in one pass.
+Before running, predict: what number will the MsgBox show?
+
+```vba
+Option Explicit
+Sub CountAccepted()
+    Dim AcceptCount As Integer
+
+    Sheets("Sheet1").Select
+
+    ActiveSheet.ListObjects("ApplicantData").Range.AutoFilter Field:=8, _
+        Criteria1:="Accept"
+
+    AcceptCount = Application.WorksheetFunction.CountA(Range("A:A")) - 1
+    MsgBox "Accepted students: " & AcceptCount
+
+    ActiveSheet.ListObjects("ApplicantData").Range.AutoFilter Field:=8
+End Sub
+```
+
+**Hint:** CountA(Range("A:A")) counts every non-blank cell in column A,
+including the header row. The filter hides non-matching rows but they
+still exist — CountA only counts what's visible when a filter is active.
+
+**Solution:** MsgBox shows "Accepted students: 20".
+CountA sees 21 non-blank cells (20 accepted rows + 1 header), minus 1 = 20.
+The 10 denied rows are hidden by the filter so CountA skips them.
+
+---
+
+### PRACTICE PROBLEM SECTION (id="practice-problem")
+
+#### Data Table (Aggie Advisors — 30 records)
+Full 30-record dataset from PRACTICE_PROJECT.md.
+Columns: StudentID | LastName | FirstName | TAMU_GPR | Grade229 | Grade230 | Grade327 | FinalDecision
+
+#### Practice Problem — Filter and Copy Accepted Students
+Using the Aggie Advisors data, write a macro that uses the Option 2
+approach to isolate accepted students and copy them to a new sheet.
+
+**What your macro needs to do:**
+- Navigate to Sheet1 where ApplicantData table lives
+- Apply AutoFilter to ApplicantData, Field 8, Criteria1:="Accept"
+- Select the visible data rows (not the header) and copy them
+- Create or navigate to a sheet named "Accepted Students"
+- PasteSpecial Values to paste without formula links
+- Navigate back to Sheet1 and remove the AutoFilter
+- Count the pasted records on "Accepted Students" using CountA
+  and display: "Accepted students copied: [X]"
+
+**Expected result:** 20 rows on the Accepted Students sheet.
+MsgBox shows "Accepted students copied: 20"
+
+**Hint — copying visible filtered rows:**
+After applying AutoFilter, use this pattern to select and copy
+only the visible data rows (skipping the header):
+```vba
+' Select visible rows after filter — skip header
+Range("A2").Select
+Range(Selection, Selection.End(xlDown)).Select
+Range(Selection, Selection.End(xlToRight)).Select
+Selection.Copy
+
+' Navigate to destination and PasteSpecial
+Sheets("Accepted Students").Select
+Range("A1").Select
+Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, _
+    SkipBlanks:=False, Transpose:=False
+```
+
+**Link:** See this in the Aggie Advisors project →
+`href="/src/modules/practice-project.html#module-7"`
+
+---
+
+### EXAM CHALLENGE SECTION (id="challenge")
+
+**Title:** Compare Both Approaches
+**No hints. Exam level.**
+
+Write two macros that produce the same result using different approaches:
+
+**Macro 1 — Option1_Count:** Use a Do Until loop with an IF statement
+to count accepted students. Display the count in a MsgBox.
+
+**Macro 2 — Option2_Count:** Use AutoFilter to filter for accepted
+students, use CountA to count them, remove the filter, and display
+the count in a MsgBox.
+
+Both macros must display the same number.
+
+After writing both, add a comment at the top of each macro explaining
+in one sentence when you would choose that approach over the other.
+
+**Expected result:** Both MsgBoxes show 20.
+
+**Link:** See this in the Aggie Advisors project →
+`href="/src/modules/practice-project.html#module-7"`
 
 ### Module 8 — F8 Debugging Practice
 
@@ -2655,7 +3030,380 @@ Bug 2 may require stepping through a few accepted records to notice.)
 `href="/src/modules/practice-project.html#module-8"`
 
 ### Module 9 — Pseudocode
-[To be written before pseudocode.html is built]
+
+## Canvas prerequisite (.box-reminder):
+"REMINDER: To fully understand Pseudocode, you should have already watched
+the Pseudocode Video in Canvas and followed along with the Macro Demo file.
+This practice will build upon that foundation."
+
+---
+
+## CONCEPT SECTION (id="concept")
+h2 heading: "Pseudocode in VBA"
+
+### Opening — What Pseudocode Is
+
+**Paragraph 1:**
+Pseudocode is plain-language logic written before you write any code.
+It's not VBA — it has no syntax rules, it won't compile, and Excel
+can't run it. Its only job is to help you think through the logic of
+a macro before you start recording or typing. A well-written pseudocode
+is like an outline for an essay: if the outline is clear, the writing
+goes much faster and stays on track.
+
+**Paragraph 2:**
+Professor Sanders requires pseudocode as the first step of the macro
+project for a reason. Students who skip it and go straight to code
+spend far more time debugging than students who plan first. Pseudocode
+forces you to identify what programming concepts you need — IF statements,
+variables, loops — before you're in the middle of writing code and
+second-guessing yourself.
+
+**course-tip (concept):**
+"The pseudocode assignment is graded on communication, not syntax.
+Ask yourself: if someone who doesn't know VBA read this, would they
+understand what the macro does? If yes, it's good pseudocode."
+
+---
+
+#### Sanders Pseudocode Format
+
+**Paragraph 1:**
+Professor Sanders uses a specific pseudocode format in this course.
+Keywords are CAPITALIZED. Logic inside IF blocks and loops is indented.
+Every IF ends with END IF. Every loop starts with a loop instruction
+and ends with ENDLOOP or NEXT. Variable names and field names are
+used consistently throughout — not "the student" in one place and
+"applicant" in another.
+
+**.syntax-box:**
+```
+DEFINE Variables: VariableName1, VariableName2
+
+IF condition THEN
+    PERFORM action
+    DISPLAY result
+ELSE
+    DISPLAY alternate message
+END IF
+
+SELECT first record
+DO UNTIL End_of_File
+    PERFORM action on current record
+    MOVE to next record
+ENDLOOP
+```
+
+**Introduction sentence before pseudocode block:**
+"This is the pseudocode structure from the Project Demo — the logic
+for adding accepted students to the roster:"
+
+```
+DEFINE Variables: NewGroup, NumberAccepted, UIN, GPR
+
+IF Applicant Records is Empty THEN
+    DISPLAY Message "No applicants found"
+ELSE
+    PROMPT user for NewGroup
+    DISPLAY NewGroup on Valid Values
+    COPY Applicant Information sheet as backup
+
+    SELECT first Applicant record
+
+    DO UNTIL End_of_File
+        IF FinalDecision = Accept THEN
+            POPULATE variables for UIN, GPR
+            SELECT Student Information
+            DISPLAY UIN, GPR, NewGroup, TrackCode
+            ADD 1 to NumberAccepted
+            MOVE to next Student row
+            SELECT Applicant Information
+        END IF
+        MOVE to next Applicant
+    ENDLOOP
+
+    REFRESH reports
+    DISPLAY "X Students Added for Group Y"
+END IF
+```
+NOTE: Render as .pseudocode-block, NOT .code-block.
+
+---
+
+#### Pre-Pseudocode Questions
+
+**Paragraph 1:**
+Before writing pseudocode, ask yourself four questions about the problem.
+The answers tell you exactly which programming concepts your macro needs.
+These questions come directly from Professor Sanders' Macro Handout and
+are the starting point for every macro you plan.
+
+**.syntax-box:**
+```
+1. Is there any data you need to get from the user?
+   → Yes = InputBox + Variable
+
+2. Does any value change each time you run it?
+   → Yes = Variable
+
+3. Is there anything dependent on a condition?
+   → Yes = IF Statement
+
+4. Is anything repetitive?
+   → Yes = Loop
+   → Do you know how many times? Yes = For Next, No = Do Until
+```
+
+---
+
+#### From Pseudocode to Code
+
+**Paragraph 1:**
+Good pseudocode maps almost directly to VBA structure. A DEFINE line
+becomes a Dim statement. A PROMPT line becomes an InputBox. A DO UNTIL
+loop becomes exactly that in code. An IF THEN becomes an If/Then/End If.
+The logic and the structure are the same — only the syntax changes.
+
+**.syntax-box:**
+```
+Pseudocode → VBA
+
+DEFINE NewGroup As Integer    →  Dim NewGroup As Integer
+PROMPT user for NewGroup      →  NewGroup = InputBox("Enter group number")
+IF records empty THEN         →  If ActiveCell = "" Then
+    DISPLAY message           →      MsgBox "No records found"
+    STOP                      →      Exit Sub
+END IF                        →  End If
+DO UNTIL End_of_File          →  Do Until ActiveCell = ""
+    MOVE to next record       →      ActiveCell.Offset(1, 0).Select
+ENDLOOP                       →  Loop
+```
+
+---
+
+### QUICK CHECK SECTION (id="quick-check")
+
+**Format:** Multiple choice. Lock on click. Immediate feedback.
+
+**Question 1:**
+What is the main purpose of pseudocode?
+- A. To run a macro without the VBA Editor
+- B. To plan the logic before writing actual code ← CORRECT
+- C. To document code after it's been written
+- D. To check for syntax errors
+**Explanation:** Pseudocode is planning, not programming. It has no
+syntax rules and can't run — its only purpose is to think through
+the logic before you start writing VBA.
+
+**Question 2:**
+In Sanders pseudocode format, how should keywords be written?
+- A. In lowercase
+- B. In italics
+- C. In CAPITALS ← CORRECT
+- D. In quotes
+**Explanation:** CAPITALIZED keywords like DEFINE, DISPLAY, POPULATE,
+DO UNTIL, and ENDLOOP make the structure of the pseudocode visually
+clear and easy to read.
+
+**Question 3:**
+You need a macro that asks for a date, uses it in a calculation, and
+runs differently depending on whether the result is above or below a
+threshold. Which concepts do you need?
+- A. Just a loop
+- B. Variable and IF statement ← CORRECT
+- C. Just an InputBox
+- D. Loop and IF statement
+**Explanation:** The date is user input → Variable. The different
+behavior based on threshold → IF statement. No loop is needed since
+you're not processing multiple records.
+
+**Question 4:**
+Which pseudocode line correctly ends an IF block?
+- A. STOP IF
+- B. CLOSE IF
+- C. END IF ← CORRECT
+- D. ENDIF (no space)
+**Explanation:** Sanders format uses END IF (two words) to close every
+IF block. Every IF must have a matching END IF.
+
+**Question 5:**
+You're writing pseudocode for a macro that processes every student in
+a table but you don't know how many students there are. Which loop
+instruction is correct?
+- A. FOR Count = 1 TO NumberOfStudents
+- B. DO UNTIL End_of_File ← CORRECT
+- C. REPEAT UNTIL Done
+- D. WHILE records remain
+**Explanation:** When you don't know the count, use DO UNTIL with an
+end-of-file condition. FOR loops are for when you know the exact count.
+
+**course-tip after quick check:**
+"The pseudocode assignment is due before you write any code — that's
+intentional. If your pseudocode is solid, writing the VBA is mostly
+just translation. If you're stuck on the code, go back to the pseudocode."
+
+---
+
+### EASY WINS SECTION (id="easy-wins")
+
+#### Exercise 1 — Answer the Four Questions (SIMPLE FORMAT)
+**Difficulty:** Observation
+
+Read this task description and answer the four pre-pseudocode questions:
+
+*"Write a macro that loops through all students in the Applicant
+Information sheet and counts those whose TAMU GPR is above 3.5.
+Ask the user what GPR threshold to use instead of hardcoding 3.5.
+Display the count when done."*
+
+Answer each question:
+1. Is there data to get from the user?
+2. Does any value change each time you run it?
+3. Is there anything conditional?
+4. Is anything repetitive? If yes, do you know how many times?
+
+**Hint:** Work through each question one at a time before looking
+at the solution.
+
+**Solution:**
+1. Yes — the GPR threshold → InputBox + Variable (Double)
+2. Yes — the threshold changes each run → Variable
+3. Yes — only count students above the threshold → IF statement
+4. Yes — process every student → Loop. Don't know how many → Do Until
+
+Concepts needed: Variable, InputBox, IF statement, Do Until loop.
+
+---
+
+#### Exercise 2 — Write the Pseudocode (STEPS FORMAT)
+**Difficulty:** Guided
+
+Using the task from Exercise 1, write the pseudocode using Sanders format.
+
+**Step 1 — Define your variables**
+Start with DEFINE and list the variables you identified in Exercise 1.
+Note the data type in parentheses after each variable name — this is
+the Sanders pseudocode convention, not a VBA comment.
+
+```
+DEFINE Variables: GPRThreshold (Double), HighGPRCount (Integer)
+```
+NOTE: Render as .pseudocode-block, NOT .code-block.
+
+**Step 2 — Get user input**
+Add a PROMPT line for the threshold:
+```
+PROMPT user for GPRThreshold
+```
+NOTE: Render as .pseudocode-block, NOT .code-block.
+
+**Step 3 — Add the loop and IF**
+```
+SELECT first student record
+
+DO UNTIL End_of_File
+    IF TAMU_GPR > GPRThreshold THEN
+        ADD 1 to HighGPRCount
+    END IF
+    MOVE to next student
+ENDLOOP
+```
+NOTE: Render as .pseudocode-block, NOT .code-block.
+
+**Step 4 — Display the result**
+```
+DISPLAY "Students above " GPRThreshold ": " HighGPRCount
+```
+NOTE: Render as .pseudocode-block, NOT .code-block.
+
+**Complete Pseudocode:**
+```
+DEFINE Variables: GPRThreshold (Double), HighGPRCount (Integer)
+
+PROMPT user for GPRThreshold
+
+SELECT first student record
+
+DO UNTIL End_of_File
+    IF TAMU_GPR > GPRThreshold THEN
+        ADD 1 to HighGPRCount
+    END IF
+    MOVE to next student
+ENDLOOP
+
+DISPLAY "Students above " GPRThreshold ": " HighGPRCount
+```
+NOTE: Render as .pseudocode-block, NOT .code-block.
+
+---
+
+### PRACTICE PROBLEM SECTION (id="practice-problem")
+
+#### No data table needed for this module.
+The practice problem is a planning exercise, not a coding exercise.
+Use .sample-data-exercise directly with no .data-table-section.
+Do NOT include an .exercise-hint component.
+
+#### Practice Problem — Pseudocode the Guard Check Macro
+Write pseudocode for the guard check macro from Module 2 using
+Sanders format. The macro should:
+- Check if the Applicant Information sheet has records
+- If empty: display a message and stop
+- If not empty: ask for a group number, then display a ready message
+
+**Requirements:**
+- Use DEFINE for any variables
+- Use CAPITALS for all keywords
+- Indent logic inside IF blocks
+- End every IF with END IF
+
+**Expected pseudocode:**
+```
+DEFINE Variables: NewGroup (Integer)
+
+SELECT Applicant Information sheet
+
+IF A2 is empty THEN
+    DISPLAY "No applicants found"
+    STOP
+ELSE
+    PROMPT user for NewGroup
+    DISPLAY "Group " NewGroup " is ready to process"
+END IF
+```
+NOTE: Render as .pseudocode-block, NOT .code-block.
+
+**Link:** See this in the Aggie Advisors project →
+`href="/src/modules/practice-project.html#module-9"`
+
+---
+
+### EXAM CHALLENGE SECTION (id="challenge")
+
+**Title:** Pseudocode the Full Aggie Advisors Macro
+**No hints. Exam level.**
+
+Write complete pseudocode for the full AddNewStudents macro from
+the Aggie Advisors project. Your pseudocode must cover all of the
+following using Sanders format:
+
+1. Variable definitions
+2. Guard check for empty applicant list
+3. User prompt for group number
+4. Copy Applicant Information as backup
+5. The main processing loop — reading variables, adding to Student
+   Information, counting accepted students
+6. Refresh reports
+7. Completion message
+
+Your pseudocode should be detailed enough that someone who doesn't
+know VBA could understand exactly what the macro does, step by step.
+
+Refer to the Aggie Advisors practice project for the full macro
+context if needed.
+
+**Link:** See the full Aggie Advisors project →
+`href="/src/modules/practice-project.html#module-9"`
 
 ### Practice Project Page
 [To be written before practice-project.html is built]
