@@ -13,7 +13,13 @@
 #easy-wins h2,
 #sample-data h2,
 #practice-problem h2,
-#challenge h2 {
+#challenge h2,
+#scenario h2,
+#setup h2,
+#data h2,
+#modules h2,
+#complete-macro h2,
+#final-run h2 {
   font-size:     var(--text-3xl);
   font-weight:   700;
   color:         var(--accent);
@@ -23,7 +29,8 @@
   margin-top:    var(--space-12);
 }
 
-#concept h3 {
+#concept h3,
+#setup h3 {
   font-size:     var(--text-xl);
   font-weight:   600;
   color:         var(--text);
@@ -836,4 +843,75 @@ pre.code-block code {
   border-radius: 4px;
   margin-top:    var(--space-2);
   font-size:     var(--text-sm);
+}
+
+
+/* ── 20. Practice Project — Module Guide Cards ──────────────── */
+
+#modules > div {
+  display:       flex;
+  flex-direction: column;
+  gap:           var(--space-3);
+  padding:       var(--space-6);
+  border-radius: 6px;
+  border:        1px solid var(--border);
+  border-left:   4px solid var(--accent);
+  background:    var(--surface);
+  margin-bottom: var(--space-4);
+}
+
+#modules > div h3 {
+  font-size:   var(--text-xl);
+  font-weight: 700;
+  color:       var(--text);
+  margin:      0;
+}
+
+#modules > div p {
+  margin: 0;
+}
+
+#modules > div ol,
+#modules > div ul {
+  margin: 0;
+  padding-left: var(--space-6);
+}
+
+#modules > div a {
+  display:         inline-block;
+  margin-top:      var(--space-2);
+  font-size:       var(--text-sm);
+  font-weight:     500;
+  color:           var(--accent);
+  text-decoration: none;
+}
+
+#modules > div a:hover {
+  text-decoration: underline;
+}
+
+
+/* ── 21. Practice Project — Setup Tables ────────────────────── */
+
+#setup table {
+  width:           100%;
+  border-collapse: collapse;
+  font-size:       var(--text-sm);
+  margin:          var(--space-4) 0;
+}
+
+#setup table th {
+  background: var(--accent);
+  color:      var(--surface);
+  padding:    var(--space-2) var(--space-3);
+  text-align: left;
+}
+
+#setup table td {
+  padding:       var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+
+#setup table tr:nth-child(even) td {
+  background: var(--surface-alt);
 }

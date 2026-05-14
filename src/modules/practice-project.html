@@ -98,15 +98,14 @@
 
         <h3>Sheet 5 — Group Summary</h3>
         <ul>
-          <li>Leave blank for now</li>
-          <li>Create a Named Range: select cell B2, name it <code>CurrentGroup</code></li>
+          <li>Type 30 into cell B2 as the starting group number, then select B2 and create a Named Range called <code>CurrentGroup</code> pointing to that cell.</li>
         </ul>
 
         <h3>Sheet 6 — Valid Values</h3>
         <ul>
           <li>Column A header: Group Number</li>
           <li>Enter groups 30 through 34 in rows 2–6</li>
-          <li>Create a Named Range: select cell D2, name it <code>AcceptValue</code>, value = "Accept"</li>
+          <li>In cell D2, type the word Accept (without quotes). Then select cell D2 and create a Named Range called <code>AcceptValue</code> pointing to that cell. This is the value the macro compares against to identify accepted applicants.</li>
         </ul>
 
         <table>
@@ -180,9 +179,15 @@
           </div>
         </div>
 
-        <p>Verification totals — use these to check your macro answers:
-        Total applicants: 30 | Accepted: 20 | Denied: 10 |
-        Average GPR accepted: 3.7175 | Average GPR denied: 3.0014</p>
+        <div class="box-tip">
+          <p><strong>Verification totals</strong> — use these to check your macro answers:</p>
+          <ul>
+            <li>Total applicants: 30</li>
+            <li>Accepted: 20 &nbsp;|&nbsp; Denied: 10</li>
+            <li>Average GPR (accepted): 3.7175</li>
+            <li>Average GPR (denied): 3.0014</li>
+          </ul>
+        </div>
 
       </section>
 
