@@ -23,9 +23,9 @@
         </p>
         <nav class="anchor-nav" aria-label="Page sections">
           <a href="#concept">Concept</a>
-          <a href="#setup">Setup</a>
-          <a href="#walkthrough">Walkthrough</a>
-          <a href="#on-your-own">On Your Own</a>
+          <a href="#quick-check">Quick Check</a>
+          <a href="#easy-wins">Easy Wins</a>
+          <a href="#practice-problem">Practice Problem</a>
           <a href="#challenge">Challenge</a>
         </nav>
       </div>
@@ -39,10 +39,9 @@
       </div>
 
       <div class="box-reminder">
-        <p>REMINDER: To get the most out of this module, you should have already watched
+        <p><strong>REMINDER:</strong> To get the most out of this module, you should have already watched
         the Macro Demo videos in Canvas and followed along with the Macro Demo file.
-        This module is different from the others — the entire point is to practice
-        a technique, not read about it. Open Excel and VBA before you start.</p>
+        This practice will build upon that foundation.</p>
       </div>
 
       <!-- ── Concept ─────────────────────────────────────────── -->
@@ -68,11 +67,7 @@
           practiced stepping through code and watching what actually happens.</p>
         </div>
 
-      </section>
-
-      <!-- ── Setup ──────────────────────────────────────────── -->
-      <section id="setup" aria-labelledby="setup-heading">
-        <h2 id="setup-heading">Setting Up Your Screen</h2>
+        <h3>Setting Up Your Screen</h3>
 
         <p>The key to F8 debugging is having both windows visible at the same time — the
         VBA Editor on one side, Excel on the other. When you step through code, you need
@@ -80,32 +75,28 @@
         Watch Window simultaneously. If you can only see one window at a time, you're
         missing half the information.</p>
 
-        <h3>How to set up</h3>
-        <ol>
-          <li>Open Excel and press <strong>Alt+F11</strong> to open the VBA Editor</li>
-          <li>In the VBA Editor, go to <strong>Window → Tile Vertically</strong> (or drag the VBA window
-          to one side of your screen and Excel to the other)</li>
-          <li>Open the Watch Window: <strong>View → Watch Window</strong> in the VBA Editor</li>
-          <li>You should now see: Excel on one side, VBA Editor + Watch Window on the other</li>
-        </ol>
+        <div class="syntax-box">
+          <p class="syntax-label">Setup</p>
+          <pre>1. Open Excel → press Alt+F11 to open the VBA Editor
+2. VBA Editor: Window → Tile Vertically (or drag windows side by side)
+3. VBA Editor: View → Watch Window
+4. Result: Excel on one side, VBA Editor + Watch Window on the other</pre>
+        </div>
 
-        <h3>How to add a Watch</h3>
-        <ol>
-          <li>In your code, highlight the variable name you want to watch</li>
-          <li>Drag it down to the Watch Window — or right-click → Add Watch</li>
-          <li>The Watch Window shows the variable's current value and data type</li>
-          <li>Add both sides of an IF comparison when debugging a condition — seeing
-          what each side actually contains is how you catch type mismatches</li>
-        </ol>
+        <h3>How to Add a Watch</h3>
 
-        <h3>How to set a Breakpoint</h3>
-        <ol>
-          <li>Click in the grey margin bar to the left of the line where you want to pause</li>
-          <li>A red dot appears — this is your breakpoint</li>
-          <li>Press <strong>F5</strong> (Play) to run the macro — it will stop at the breakpoint</li>
-          <li>Then use <strong>F8</strong> to step one line at a time from that point</li>
-          <li>Press <strong>F9</strong> to toggle a breakpoint on/off, or click the red dot to remove it</li>
-        </ol>
+        <p>Highlight any variable name in your code and drag it down to the Watch Window
+        — or right-click and choose Add Watch. The Watch Window shows the variable's current
+        value and data type, updating live as you step through with F8. When debugging an
+        IF condition, add both sides of the comparison so you can see exactly what each
+        side contains when it evaluates.</p>
+
+        <h3>How to Set a Breakpoint</h3>
+
+        <p>Click the grey margin bar to the left of any line to set a breakpoint — a red dot
+        appears. Press F5 to run the macro at full speed; it pauses at the breakpoint.
+        Then use F8 to step one line at a time from that point. Press F9 to toggle a
+        breakpoint on/off, or click the red dot to remove it.</p>
 
         <div class="course-tip">
           <p>Set your breakpoint at the start of the loop, not the start of the macro.
@@ -115,23 +106,108 @@
 
       </section>
 
-      <!-- ── Walkthrough ────────────────────────────────────── -->
-      <section id="walkthrough" aria-labelledby="walkthrough-heading">
-        <h2 id="walkthrough-heading">Guided Walkthrough — Find the Bug</h2>
+      <!-- ── Quick Check ─────────────────────────────────────── -->
+      <section id="quick-check" aria-labelledby="quick-check-heading">
+        <h2 id="quick-check-heading">Quick Check</h2>
+
+        <div class="mc-question">
+          <p>1. You press F8 once inside the VBA Editor. What happens?</p>
+          <button class="mc-option" data-correct="false">A. The entire macro runs from start to finish</button>
+          <button class="mc-option" data-correct="true">B. The next single line of code executes</button>
+          <button class="mc-option" data-correct="false">C. The macro pauses and waits for input</button>
+          <button class="mc-option" data-correct="false">D. The VBA Editor closes</button>
+          <div class="mc-explanation" hidden>
+            <p>Each F8 keypress executes exactly one line of code. This lets you watch
+            what happens in Excel — cursor movement, cell values, variable changes — after
+            each individual instruction.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>2. Your macro runs without an error but gives the wrong answer. What is the best first step?</p>
+          <button class="mc-option" data-correct="false">A. Re-read the code slowly until you spot the problem</button>
+          <button class="mc-option" data-correct="false">B. Delete the macro and start over</button>
+          <button class="mc-option" data-correct="true">C. Set a breakpoint and use F8 with the Watch Window to observe what each line actually does</button>
+          <button class="mc-option" data-correct="false">D. Add MsgBox statements throughout the macro to print variable values</button>
+          <div class="mc-explanation" hidden>
+            <p>A macro that runs without error but produces wrong results has a logic error —
+            the code is valid VBA but the logic is wrong. F8 with the Watch Window is the right
+            tool: you watch variables and see exactly where the behavior diverges from what you expected.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>3. You want to debug a loop that processes 30 records. Where should you set your breakpoint?</p>
+          <button class="mc-option" data-correct="false">A. On the very first line of the macro (Sub line)</button>
+          <button class="mc-option" data-correct="true">B. On the Do Until line at the start of the loop</button>
+          <button class="mc-option" data-correct="false">C. On the MsgBox at the end of the macro</button>
+          <button class="mc-option" data-correct="false">D. Breakpoints don't work inside loops</button>
+          <div class="mc-explanation" hidden>
+            <p>Setting the breakpoint at the loop lets the setup code run at full speed (F5),
+            then you step through the loop itself with F8. Stepping from line 1 means pressing
+            F8 through every navigation and variable declaration before you even reach the
+            interesting part.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>4. What does the Watch Window show you?</p>
+          <button class="mc-option" data-correct="false">A. A list of all macros in the workbook</button>
+          <button class="mc-option" data-correct="false">B. The contents of the active Excel cell</button>
+          <button class="mc-option" data-correct="true">C. The current value and data type of variables you are watching, updated live as you step through</button>
+          <button class="mc-option" data-correct="false">D. Error messages from the last macro run</button>
+          <div class="mc-explanation" hidden>
+            <p>The Watch Window monitors any variables you add to it and shows their value
+            and data type, updating after each F8 step. This is how you catch a variable
+            that isn't changing the way you expect — or is holding the wrong value when
+            an IF condition evaluates.</p>
+          </div>
+        </div>
+
+        <div class="mc-question">
+          <p>5. A macro runs and produces the wrong number. You step through with F8 and watch
+          a counter variable in the Watch Window. After the first loop iteration it shows 100,
+          after the second it shows 200, after the third it shows 300. The correct value after
+          three iterations should be 600. What type of bug is this?</p>
+          <button class="mc-option" data-correct="false">A. The variable was declared with the wrong data type</button>
+          <button class="mc-option" data-correct="true">B. The variable is being replaced each iteration instead of accumulated</button>
+          <button class="mc-option" data-correct="false">C. The loop condition is wrong</button>
+          <button class="mc-option" data-correct="false">D. The variable was never declared</button>
+          <div class="mc-explanation" hidden>
+            <p>The counter is showing the current row's value each time instead of adding to
+            a running total. The line is probably <code>Total = ActiveCell</code> when it
+            should be <code>Total = Total + ActiveCell</code>. This is the most common
+            accumulation bug and exactly the type F8 catches immediately.</p>
+          </div>
+        </div>
+
+        <div class="course-tip">
+          <p>Question 2 is the mindset shift. When there's no error message, students often
+          assume the code is fine and look for a data problem. A logic bug means the code
+          runs perfectly — it just does the wrong thing. F8 is the only reliable way to
+          find it.</p>
+        </div>
+
+      </section>
+
+      <!-- ── Easy Wins ──────────────────────────────────────── -->
+      <section id="easy-wins" aria-labelledby="easy-wins-heading">
+        <h2 id="easy-wins-heading">Easy Wins</h2>
+
+        <h3>Guided Walkthrough — Find the Bug</h3>
 
         <p>The macro below runs without an error message but gives the wrong answer.
         Your job is to find the bug using F8 and the Watch Window. Follow each step
         exactly — this is the technique you'll use on the exam.</p>
 
-        <p>Copy this macro into a new module in Excel. This is a modified version of the
+        <p>Copy this macro into a new module in Excel. It is a modified version of the
         CumulativeTotal macro from the Macro Handout. It should add up all the values in
         column A and display the total — but it gives the wrong answer. Don't try to spot
         the bug by reading. Follow the steps.</p>
 
-        <p>Assume your data is in a worksheet named "Totals" with numeric values
-        in column A starting at row 2. Create 5 rows with the values 100, 200,
-        300, 400, 500 in cells A2:A6. Column A must have the data — this is
-        where the macro starts and loops through records.</p>
+        <p>Create a worksheet named "Totals" and put the values 100, 200, 300, 400, 500
+        in cells A2 through A6. Column A must have the data — this is where the macro
+        starts and loops.</p>
 
 <pre class="code-block"><code class="language-vba">Option Explicit
 Sub CumulativeTotal_Broken()
@@ -156,7 +232,7 @@ End Sub</code></pre>
             <button class="step-header" aria-expanded="true">Step 1 — Run it first and note the wrong answer</button>
             <div class="step-body">
               <p>Press <strong>F5</strong> to run the macro normally. Write down the number in the MsgBox.
-              If your column A has 100, 200, 300, 400, 500 — the correct total is 1500.
+              With the values 100, 200, 300, 400, 500 — the correct total is 1500.
               The macro will show 500 instead (only the last value, not the accumulated sum).
               Now you know what you're looking for.</p>
             </div>
@@ -240,9 +316,9 @@ End Sub</code></pre>
 
       </section>
 
-      <!-- ── On Your Own ─────────────────────────────────────── -->
-      <section id="on-your-own" aria-labelledby="on-your-own-heading">
-        <h2 id="on-your-own-heading">On Your Own — Debug Without Guidance</h2>
+      <!-- ── Practice Problem ───────────────────────────────── -->
+      <section id="practice-problem" aria-labelledby="practice-problem-heading">
+        <h2 id="practice-problem-heading">Practice Problem</h2>
 
         <p>Same technique, no step-by-step this time. This macro should find all students
         with a GPR above 3.5 and count them — but it runs and always shows 0.

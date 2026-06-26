@@ -168,11 +168,12 @@ End Sub</code></pre>
 
         <div class="syntax-box">
           <p class="syntax-label">Syntax</p>
-          <pre>' Variable — no quotes, exists only while macro runs
-NewGroup = InputBox("Enter group number")
+          <pre>
+            ' Variable — no quotes, exists only while macro runs
+              LegalDrinkingAge = InputBox("Enter the current legal drinking age")
 
-' Named Range — quotes required, exists on worksheet
-Range("LegalDrinkingAge") = LegalDrinkingAge</pre>
+            ' Named Range — quotes required, exists on worksheet
+              Range("LegalDrinkingAge") = LegalDrinkingAge</pre>
         </div>
 
         <p>This example from the Macro Handout shows both in the same macro:</p>
